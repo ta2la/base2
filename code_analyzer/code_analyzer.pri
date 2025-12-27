@@ -8,7 +8,9 @@ HEADERS += \
     $$PWD/AnalyzerNode.h \
     $$PWD/AnalyzerNet.h \
     $$PWD/AnalyzerSys.h \
-    $$PWD/AnalyzerConnector.h
+    $$PWD/AnalyzerConnector.h \
+    $$PWD/AnalyzerModule.h \
+    $$PWD/AnalyzerModuleCol.h
 
 #SOURCES += \
 

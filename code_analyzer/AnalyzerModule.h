@@ -15,38 +15,30 @@
 //=============================================================================
 #pragma once
 
-#include "AnalyzerNode.h"
+
+#include <QString>
+#include <QFileInfo>
+#include <QDir>
 
 /// @view:beg
 
-class AnalyzerConnector
+class AnalyzerModule
 //=============================================================================
 {
 public:
-//! @section Construction
-    AnalyzerConnector(const QString& node1, const QString& node2) :
-        node1_(node1),
-        node2_(node2)
+    /// @section Construction
+    explicit AnalyzerModule(const QString& dirPath)
+        : dirPath_(dirPath)
     {
     }
 
-    //! @section Accessors
-    const QString& node1() const { return node1_; }
-    const QString& node2() const { return node2_; }
+    /// @section Accessors
+    const QString& dirPath() const { return dirPath_; }
 
-    //node1-node2
-    static QString signature(const QString& node1, const QString& node2)
-    {
-            return node1 + "-" + node2;
-    }
-
-    QString signature() const { return signature(node1_, node2_); }
-
-    //=============================================================================
+//=============================================================================
 protected:
-//! @section Data
-    QString node1_;
-    QString node2_;
+    /// @section Data
+    QString dirPath_;
 };
 
 /// @view:end

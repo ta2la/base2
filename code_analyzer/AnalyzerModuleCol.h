@@ -15,38 +15,37 @@
 //=============================================================================
 #pragma once
 
-#include "AnalyzerNode.h"
+#include "AnalyzerModule.h"
 
 /// @view:beg
 
-class AnalyzerConnector
+//=============================================================================
+class AnalyzerModuleCol
 //=============================================================================
 {
 public:
-//! @section Construction
-    AnalyzerConnector(const QString& node1, const QString& node2) :
-        node1_(node1),
-        node2_(node2)
+    /// @section Construction
+    AnalyzerModuleCol() = default;
+
+    /// @section Methods
+    void add(const QString& dir)
     {
+        modules_.append(AnalyzerModule(dir));
     }
 
-    //! @section Accessors
-    const QString& node1() const { return node1_; }
-    const QString& node2() const { return node2_; }
-
-    //node1-node2
-    static QString signature(const QString& node1, const QString& node2)
+    int count() const
     {
-            return node1 + "-" + node2;
+        return modules_.count();
     }
 
-    QString signature() const { return signature(node1_, node2_); }
+    const AnalyzerModule& get(int index) const
+    {
+        return modules_.at(index);
+    }
 
     //=============================================================================
 protected:
-//! @section Data
-    QString node1_;
-    QString node2_;
+    /// @section Data
+    QList<AnalyzerModule> modules_;
 };
-
-/// @view:end
+/// @view:beg
