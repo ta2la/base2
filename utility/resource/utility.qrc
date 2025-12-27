@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>InteractiveOutput.qml</file>
+        <file>Interactive.qml</file>
+    </qresource>
+</RCC>
