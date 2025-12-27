@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>CmdsExecuted.qml</file>
+        <file>PopupCmd.qml</file>
+        <file>GenericApp.qml</file>
+        <file>images/icon.svg</file>
+    </qresource>
+</RCC>
