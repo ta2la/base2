@@ -27,6 +27,7 @@
 #include <QJsonArray>
 #include <QFileDialog>
 #include <QString>
+#include <AnalyzerModuleCol.h>
 
 ///@view:beg
 class  Cmds_code_analyzer {
@@ -51,7 +52,8 @@ public:
 
         QStringList files;
 
-        for (QString& dirStr : dirs_) {
+        for (int i = 0; i < dirs_.count(); i++) {
+            QString dirStr = dirs_.get(i).dirPath();
             QDir dir(dirStr);
             if (!dir.exists()) result += args.appendError("directory does not exist");
 
@@ -102,7 +104,9 @@ public:
             return args.appendError("no dir to analyze");
 
         // stejný průchod jako dir_load_net / dir_merge_files
-        for (const QString& dirStr : dirs_) {
+        //for (const QString& dirStr : dirs_) {
+        for (int i = 0; i < dirs_.count(); i++) {
+            QString dirStr = dirs_.get(i).dirPath();
             QDir moduleDir(dirStr);
             if (!moduleDir.exists()) {
                 args.appendError("directory does not exist: " + dirStr);
@@ -158,13 +162,13 @@ public:
 protected:
     /// @section Data
     inline static AnalyzerSys sys_;
-    inline static QStringList dirs_ = QStringList()
-        << "../../../base2/base/"
-        << "../../../base2/cmd_sys"
-        << "../../../base2/cmd_sys_display"
-        << "../../../base2/code_analyzer"
-        << "../../../apky/PROMPT_ASSEMBLER"
-        << "../../../base2/utility";
+    inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol()
+        << AnalyzerModule( "../../../base2/base/")
+        << AnalyzerModule( "../../../base2/cmd_sys")
+        << AnalyzerModule("../../../base2/cmd_sys_display")
+        << AnalyzerModule("../../../base2/code_analyzer")
+        << AnalyzerModule("../../../apky/PROMPT_ASSEMBLER")
+        << AnalyzerModule("../../../base2/utility");
 
     friend class Cmds_code_analyzer_test;
 };

@@ -27,6 +27,15 @@ public:
     /// @section Construction
     AnalyzerModuleCol() = default;
 
+    operator QStringList() const
+    {
+        QStringList result;
+        for (const AnalyzerModule& m : modules_) {
+            result.append(m.dirPath());
+        }
+        return result;
+    }
+
     /// @section Methods
     void add(const QString& dir)
     {
@@ -41,6 +50,23 @@ public:
     const AnalyzerModule& get(int index) const
     {
         return modules_.at(index);
+    }
+
+    AnalyzerModuleCol& operator<<(const AnalyzerModule& module)
+    {
+        modules_.append(module);
+        return *this;
+    }
+
+    QString first() const
+    {
+        Q_ASSERT(!modules_.isEmpty());
+        return modules_.first().dirPath();
+    }
+
+    bool isEmpty() const
+    {
+        return modules_.isEmpty();
     }
 
     //=============================================================================

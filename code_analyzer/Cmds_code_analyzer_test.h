@@ -44,7 +44,9 @@ public:
 
         QStringList uniqueDirs;
 
-        for (const QString& dirStr : Cmds_code_analyzer::dirs_) {
+        //for (const QString& dirStr : Cmds_code_analyzer::dirs_) {
+        for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); i++) {
+            QString dirStr = Cmds_code_analyzer::dirs_.get(i).dirPath();
             if (!uniqueDirs.contains(dirStr))
                 uniqueDirs.append(dirStr);
         }
@@ -89,7 +91,9 @@ public:
         QStringList files;
 
         // stejná logika jako dir_load_net
-        for (const QString& dirStr : Cmds_code_analyzer::dirs_) {
+        //for (const QString& dirStr : Cmds_code_analyzer::dirs_) {
+        for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); i++) {
+            QString dirStr = Cmds_code_analyzer::dirs_.get(i).dirPath();
             QDir dir(dirStr);
             if (!dir.exists()) {
                 args.appendError("directory does not exist: " + dirStr);
