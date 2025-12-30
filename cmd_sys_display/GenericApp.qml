@@ -27,6 +27,7 @@ Rectangle  {
         tabCmdlineEx.visible   = (tabCmdlineEx.objectName    === tabName) ? true : false;
         tabInteractive.visible = (tabInteractive.objectName    === tabName) ? true : false;
         tabAbout.visible       = (tabAbout.objectName   === tabName) ? true : false;
+        tabAnalyzer.visible    = (tabAnalyzer.objectName === tabName)
     }
 
     Rectangle { id: mainSpace; color: "#4cc4bc"
@@ -41,6 +42,15 @@ Rectangle  {
                  text: "Cmdline";  onClicked: activateTab("tabInteractive") }
         Button { id: buttonAbout;       x:260+120*2; y:10; width: 110; height: 30;
                  text: "About";    onClicked: {activateTab("tabAbout") } }
+        Button {
+            id: buttonAnalyzer
+            x: 260 + 120*3
+            y: 10
+            width: 110
+            height: 30
+            text: "Analyzer"
+            onClicked: activateTab("tabAnalyzer")
+        }
     }
 
     Rectangle { objectName: "tabCmdlineEx"; id: tabCmdlineEx
@@ -78,6 +88,32 @@ Rectangle  {
             textFormat: Text.RichText
             text: "<p><b>PROMPT Assembler</b></p>" +
             "<p>Copyright 2025 Pert Talla. All right reserved.</p>"
+        }
+    }
+
+    Rectangle {
+        objectName: "tabAnalyzer"
+        id: tabAnalyzer
+
+        visible: false
+        x: 10; y: 50
+        width: root.width - 20
+        height: root.height - 60
+        color: "#F0F0F0"
+
+        Column {
+            anchors.fill: parent
+            anchors.margins: 10
+            spacing: 4
+
+            Repeater {
+                model: analyzerModules
+
+                delegate: Text {
+                    text: moduleData.module
+                    font.pointSize: 12
+                }
+            }
         }
     }
 }

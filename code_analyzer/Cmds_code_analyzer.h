@@ -37,7 +37,21 @@ public:
 //! @section Construction
     Cmds_code_analyzer() = delete;
 //<METHODS>
+    static void createModel() {
+        static bool initialized = false;
+        if (!initialized) {
+            initialized = true;
+
+            dirs_.add("../../../base2/base/");
+            dirs_.add("../../../base2/cmd_sys");
+            dirs_.add("../../../base2/cmd_sys_display");
+            dirs_.add("../../../base2/code_analyzer");
+            dirs_.add("../../../apky/PROMPT_ASSEMBLER");
+            dirs_.add("../../../base2/utility");
+        }
+    }
     static void registerCmds_() {
+
 ///@view:beg
     CMD_SYS.add("dir_merge_files",
     [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
@@ -162,14 +176,15 @@ public:
 protected:
     /// @section Data
     inline static AnalyzerSys sys_;
-    inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol()
-        << AnalyzerModule( "../../../base2/base/")
+    inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol();
+        /*<< AnalyzerModule( "../../../base2/base/")
         << AnalyzerModule( "../../../base2/cmd_sys")
         << AnalyzerModule("../../../base2/cmd_sys_display")
         << AnalyzerModule("../../../base2/code_analyzer")
         << AnalyzerModule("../../../apky/PROMPT_ASSEMBLER")
-        << AnalyzerModule("../../../base2/utility");
+        << AnalyzerModule("../../../base2/utility");*/
 
     friend class Cmds_code_analyzer_test;
+    friend int main(int, char**);
 };
 ///@view:end

@@ -16,16 +16,51 @@
 #pragma once
 
 #include "AnalyzerModule.h"
+#include <QAbstractListModel>
 
 /// @view:beg
 
 //=============================================================================
-class AnalyzerModuleCol
+class AnalyzerModuleCol : public QAbstractListModel
 //=============================================================================
 {
+    Q_OBJECT
 public:
+    enum Roles {
+        DataRole = Qt::UserRole + 1
+    };
     /// @section Construction
-    AnalyzerModuleCol() = default;
+    explicit AnalyzerModuleCol(QObject* parent = nullptr)
+        : QAbstractListModel(parent)
+    {}
+
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override
+    {
+        Q_UNUSED(parent)
+        return modules_.count();
+    }
+
+    QHash<int, QByteArray> roleNames() const override
+    {
+        return {
+            { DataRole, "moduleData" }
+        };
+    }
+
+    QVariant data(
+        const QModelIndex& index,
+        int role) const override
+    {
+        if (!index.isValid())
+            return QVariant();
+
+        if (role != DataRole)
+            return QVariant();
+
+        return QVariant::fromValue(
+            modules_.at(index.row()).data()
+            );
+    }
 
     operator QStringList() const
     {
@@ -39,7 +74,10 @@ public:
     /// @section Methods
     void add(const QString& dir)
     {
+        const int row = modules_.count();
+        beginInsertRows(QModelIndex(), row, row);
         modules_.append(AnalyzerModule(dir));
+        endInsertRows();
     }
 
     int count() const

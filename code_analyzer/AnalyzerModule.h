@@ -22,23 +22,63 @@
 
 /// @view:beg
 
+struct AnalyzerModuleData
+//=============================================================================
+{
+    Q_GADGET
+
+    Q_PROPERTY(QString dirPath READ dirPath CONSTANT)
+    Q_PROPERTY(QString module  READ module  CONSTANT)
+    Q_PROPERTY(bool    used    READ used    CONSTANT)
+
+public:
+    explicit AnalyzerModuleData(
+        const QString& dirPath,
+        bool used = true)
+        : dirPath_(dirPath)
+        , module_(QDir(dirPath).dirName())
+        , used_(used)
+    {}
+
+    QString dirPath() const { return dirPath_; }
+    QString module()  const { return module_; }
+    bool used() const { return used_; }
+
+private:
+    QString dirPath_;
+    QString module_;
+    bool    used_;
+};
+
+Q_DECLARE_METATYPE(AnalyzerModuleData)
+
 class AnalyzerModule
 //=============================================================================
 {
 public:
     /// @section Construction
-    explicit AnalyzerModule(const QString& dirPath)
-        : dirPath_(dirPath)
+    explicit AnalyzerModule(const QString& dirPath, bool used = true)
+        : dirPath_(dirPath),
+        used_(used)
     {
     }
 
     /// @section Accessors
     const QString& dirPath() const { return dirPath_; }
 
+    bool used() const { return used_; }
+    void setUsed(bool value) { used_ = value; }
+
+    AnalyzerModuleData data() const
+    {
+        return AnalyzerModuleData(dirPath_, used_);
+    }
+
 //=============================================================================
 protected:
     /// @section Data
     QString dirPath_;
+    bool    used_;
 };
 
 /// @view:end
