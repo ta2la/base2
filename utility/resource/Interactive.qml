@@ -6,6 +6,7 @@ import QtQuick.Controls 2.4
 /// @view:include #include "ModelControls.h"
 
 Rectangle {
+    visible: true
     Rectangle {
         x: 10
         y: 10

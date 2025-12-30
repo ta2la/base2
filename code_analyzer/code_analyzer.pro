@@ -10,5 +10,7 @@ INCLUDEPATH += $$PWD/../../base2/base
 INCLUDEPATH += $$PWD/../../base2/cmd_sys
 INCLUDEPATH += $$PWD/../../base2/cmd_sys_display
 
+RESOURCES += code_analyzer.qrc
+
 QT += websockets
 QT += core gui widgets

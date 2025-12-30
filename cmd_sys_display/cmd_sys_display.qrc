@@ -3,6 +3,7 @@
         <file>CmdsExecuted.qml</file>
         <file>PopupCmd.qml</file>
         <file>GenericApp.qml</file>
+        <file>GenericAppOrig.qml</file>
         <file>images/icon.svg</file>
     </qresource>
 </RCC>
