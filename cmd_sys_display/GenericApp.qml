@@ -30,15 +30,15 @@ Rectangle  {
         Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler" }
 
         Row {
-            x: 260
+            x: 250
             y: 10
-            spacing: 10
+            spacing: 5
 
             Repeater {
                 model: mainTabs
 
                 delegate: Button {
-                    width: 110
+                    width: 90
                     height: 30
                     text: model.text
 
@@ -48,20 +48,6 @@ Rectangle  {
                 }
             }
         }
-
-        /*Button { id: buttonInteractive; x:260+120;   y:10; width: 110; height: 30;
-                 text: "Cmdline";
-                 onClicked: { contentLoader.source = "qrc:/Interactive.qml"; }
-        }
-        Button {
-            id: buttonAnalyzer
-            x: 260 + 120*3
-            y: 10
-            width: 110
-            height: 30
-            text: "Analyzer"
-            onClicked: { contentLoader.source = "qrc:/TabAnalyzer.qml"; }
-        }*/
     }
 
     Loader {

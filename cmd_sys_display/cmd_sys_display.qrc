@@ -4,6 +4,7 @@
         <file>PopupCmd.qml</file>
         <file>GenericApp.qml</file>
         <file>GenericAppOrig.qml</file>
+        <file>TabCmdline.qml</file>
         <file>images/icon.svg</file>
     </qresource>
 </RCC>
