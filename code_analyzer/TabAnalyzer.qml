@@ -41,6 +41,7 @@ Rectangle {
                         "<a href='system_open_path " + moduleData.dirPath + "'>" +
                         moduleData.module +
                         "</a>"
+                    textFormat: Text.RichText
                     font.pointSize: 9
                     color: "#808080"
                     height: 20
