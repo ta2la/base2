@@ -74,9 +74,11 @@ public:
     /// @section Methods
     void add(const QString& dir)
     {
+        const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
+
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
-        modules_.append(AnalyzerModule(dir));
+        modules_.append(AnalyzerModule(norm));
         endInsertRows();
     }
 
@@ -105,6 +107,19 @@ public:
     bool isEmpty() const
     {
         return modules_.isEmpty();
+    }
+
+    void setModuleUsed(int index, bool used)
+    {
+        if (index < 0 || index >= modules_.count()) return;
+
+        AnalyzerModule& m = modules_[index];
+        if (m.used() == used) return;
+
+        m.setUsed(used);
+
+        const QModelIndex modelIndex = createIndex(index, 0);
+        emit dataChanged(modelIndex, modelIndex, { DataRole });
     }
 
     //=============================================================================

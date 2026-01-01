@@ -45,9 +45,9 @@ public:
             dirs_.add("../../../base2/base/");
             dirs_.add("../../../base2/cmd_sys");
             dirs_.add("../../../base2/cmd_sys_display");
+            dirs_.add("../../../base2/utility");
             dirs_.add("../../../base2/code_analyzer");
             dirs_.add("../../../apky/PROMPT_ASSEMBLER");
-            dirs_.add("../../../base2/utility");
         }
     }
     static void registerCmds_() {
@@ -67,11 +67,22 @@ public:
         QStringList files;
 
         for (int i = 0; i < dirs_.count(); i++) {
-            QString dirStr = dirs_.get(i).dirPath();
-            QDir dir(dirStr);
-            if (!dir.exists()) result += args.appendError("directory does not exist");
 
-            files << AnalyzerCode::getFiles(dir, QStringList() << "*.cpp" << "*.h" << "*.qml");
+            const AnalyzerModule& mod = dirs_.get(i);
+            if (!mod.used())
+                continue;   // ← VYPNUTÝ MODUL
+
+            const QString dirStr = mod.dirPath();
+            QDir dir(dirStr);
+            if (!dir.exists()) {
+                result += args.appendError("directory does not exist");
+                continue;
+            }
+
+            files << AnalyzerCode::getFiles(
+                dir,
+                QStringList() << "*.cpp" << "*.h" << "*.qml"
+            );
         }
 
         QDir dir(dirs_.first());
@@ -167,6 +178,36 @@ public:
         args.append("<a href='system_dot_to_svg " +
                     dotFileName +
                     "'>[DOT-&gtSVG]</a>");
+
+        return 0;
+    });
+    CMD_SYS.add("set_module_used",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        if (args.count() < 3)
+            return args.appendError(
+                "usage: set_module_used <index> <0|1>");
+
+        bool okIndex = false;
+        bool okUsed  = false;
+
+        const int index =
+            args.get(1).value().toInt(&okIndex);
+        const int usedInt =
+            args.get(2).value().toInt(&okUsed);
+
+        if (!okIndex || !okUsed)
+            return args.appendError("invalid arguments");
+
+        const bool used = (usedInt != 0);
+
+        Cmds_code_analyzer::dirs_.setModuleUsed(index, used);
+
+        args.append(
+            QString("module[%1] -> %2")
+                .arg(index)
+                .arg(used ? "used" : "unused"),
+            "OK");
 
         return 0;
     });

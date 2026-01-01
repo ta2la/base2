@@ -28,6 +28,7 @@ struct AnalyzerModuleData
     Q_GADGET
 
     Q_PROPERTY(QString dirPath READ dirPath CONSTANT)
+    Q_PROPERTY(QString dirPathModuleLess READ dirPathModuleLess CONSTANT)
     Q_PROPERTY(QString module  READ module  CONSTANT)
     Q_PROPERTY(bool    used    READ used    CONSTANT)
 
@@ -43,6 +44,7 @@ public:
     QString dirPath() const { return dirPath_; }
     QString module()  const { return module_; }
     bool used() const { return used_; }
+    QString dirPathModuleLess() const { return QFileInfo(dirPath_).dir().absolutePath(); }
 
 private:
     QString dirPath_;
