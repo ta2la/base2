@@ -125,9 +125,16 @@ public:
             if (content.isEmpty())
                 continue;
 
-            outFile.write("\n// ---- FILE: ");
-            outFile.write(path.toUtf8());
+            QFileInfo fi(path);
+            const QString fileName = fi.fileName();
+            const QString module   = fi.dir().dirName();
+
+            outFile.write("\n// ---- module:");
+            outFile.write(module.toUtf8());
+            outFile.write("     ");
+            outFile.write(fileName.toUtf8());
             outFile.write(" ----\n\n");
+            // ----------------------
 
             outFile.write(content);
             outFile.write("\n");
