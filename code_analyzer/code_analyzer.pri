@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/AnalyzerSys.h \
     $$PWD/AnalyzerConnector.h \
     $$PWD/AnalyzerModule.h \
-    $$PWD/AnalyzerModuleCol.h
+    $$PWD/AnalyzerModuleCol.h \
+    $$PWD/AnalyzerModuleFilesModel.h
 
 #SOURCES += \
 

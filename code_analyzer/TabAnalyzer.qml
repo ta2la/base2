@@ -76,6 +76,25 @@ Rectangle {
                     }
                 }
 
+                // ---- files list (NEW)
+                Column {
+                    width: parent.width
+                    spacing: 2
+                    leftPadding: 26    // visual nesting under module
+
+                    Repeater {
+                        model: moduleData.files
+
+                        delegate: Text {
+                            text: "• " + fileName
+                            font.pointSize: 10
+                            color: "#404040"
+                            height: 16
+                            verticalAlignment: Text.AlignVCenter
+                        }
+                    }
+                }
+
                 // vodorovná čára za každým řádkem
                 Rectangle { //**
                     width: parent.width

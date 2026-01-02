@@ -15,6 +15,7 @@
 //=============================================================================
 #pragma once
 
+#include "AnalyzerModuleFilesModel.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -31,25 +32,30 @@ struct AnalyzerModuleData
     Q_PROPERTY(QString dirPathModuleLess READ dirPathModuleLess CONSTANT)
     Q_PROPERTY(QString module  READ module  CONSTANT)
     Q_PROPERTY(bool    used    READ used    CONSTANT)
+    Q_PROPERTY(QObject* files   READ files   CONSTANT)
 
 public:
     explicit AnalyzerModuleData(
         const QString& dirPath,
-        bool used = true)
+        bool used,
+        QObject* filesModel )
         : dirPath_(dirPath)
         , module_(QDir(dirPath).dirName())
         , used_(used)
+        , filesModel_(filesModel)
     {}
 
     QString dirPath() const { return dirPath_; }
     QString module()  const { return module_; }
     bool used() const { return used_; }
     QString dirPathModuleLess() const { return QFileInfo(dirPath_).dir().absolutePath(); }
+    QObject* files() const { return filesModel_; }
 
 private:
     QString dirPath_;
     QString module_;
     bool    used_;
+    QObject* filesModel_ = nullptr;
 };
 
 Q_DECLARE_METATYPE(AnalyzerModuleData)
@@ -63,6 +69,14 @@ public:
         : dirPath_(dirPath),
         used_(used)
     {
+        QStringList demoFiles {
+            "main.cpp",
+            "controller.h",
+            "view.qml"
+        };
+
+        filesModel_ =
+            new AnalyzerModuleFilesModel(demoFiles);
     }
 
     /// @section Accessors
@@ -73,7 +87,7 @@ public:
 
     AnalyzerModuleData data() const
     {
-        return AnalyzerModuleData(dirPath_, used_);
+        return AnalyzerModuleData(dirPath_, used_, filesModel_);
     }
 
 //=============================================================================
@@ -81,6 +95,7 @@ protected:
     /// @section Data
     QString dirPath_;
     bool    used_;
+    QObject* filesModel_ = nullptr;
 };
 
 /// @view:end
