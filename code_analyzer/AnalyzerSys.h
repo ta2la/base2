@@ -33,17 +33,32 @@ public:
     //=================================
     void add(const QString& filePath, const QString& moduleName)
     {
-        const QString name = AnalyzerNode::nameFromFilePath(filePath);
+        const QString name =
+            AnalyzerNode::nameFromFilePath(filePath);
 
         auto it = nodes_.find(name);
         if (it == nodes_.end()) {
-            nodes_.insert(name, AnalyzerNode(filePath, moduleName));
-        }
-        else {
-            it->insertSuffix(filePath);
+            /*nodes_.insert(
+                name,
+                std::make_unique<AnalyzerNode>(filePath, moduleName)
+                );*/
+            nodes_.emplace(
+                name,
+                std::make_unique<AnalyzerNode>(filePath, moduleName)
+                );
+        } else {
+            //it.value()->insertSuffix(filePath);
+            it->second->insertSuffix(filePath);
         }
 
         net_.addIncludesFromFile(filePath);
+    }
+
+    //=================================
+    AnalyzerNode* node(const QString& name) const
+    {
+        auto it = nodes_.find(name);
+        return (it == nodes_.end()) ? nullptr : it->second.get();
     }
 
     //=================================
@@ -52,7 +67,7 @@ public:
         QStringList parts;
 
         for (auto it = nodes_.cbegin(); it != nodes_.cend(); ++it) {
-            parts.append(it.value().toStringDebug());
+            parts.append(it->second->toStringDebug());
         }
 
         return parts.join(" ");
@@ -127,10 +142,10 @@ protected:
         QMap<QString, QList<const AnalyzerNode*>> groups;
 
         for (auto it = nodes_.cbegin(); it != nodes_.cend(); ++it) {
-            const AnalyzerNode& node = it.value();
+            const AnalyzerNode& node = *it->second;
 
             if (node.name() == "main" || node.name() == "Main") {
-                s << label_(&it.value(), "");
+                s << label_(&node, "");
                 continue;
             }
 
@@ -155,7 +170,7 @@ protected:
 
 
 /// @section Data
-    QMap<QString, AnalyzerNode> nodes_;
+    std::map<QString, std::unique_ptr<AnalyzerNode>> nodes_;
     AnalyzerNet                 net_;
 };
 

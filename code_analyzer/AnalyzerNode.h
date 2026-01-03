@@ -161,8 +161,8 @@ public:
     }
 
 private:
-    QString       dir_;
-    QString       name_;
+    QString dir_;
+    QString name_;
     QString module_;
 
     QSet<QString> extensions_;
