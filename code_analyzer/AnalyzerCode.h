@@ -63,6 +63,17 @@ public:
     //=========================================================================
     static QByteArray extractView(const QByteArray& input)
     {
+        static const QByteArray kAt          = QByteArrayLiteral("@");
+
+        static const QByteArray kViewBeg     = kAt + "view:beg";
+        static const QByteArray kViewEnd     = kAt + "view:end";
+        static const QByteArray kViewExport  = kAt + "view:export";
+        static const QByteArray kViewExclude = kAt + "view:exclude";
+        static const QByteArray kSection     = kAt + "section";
+
+        static const QByteArray kSepEq       = QByteArrayLiteral("//=====");
+        static const QByteArray kSepDash     = QByteArrayLiteral("//-----");
+
         QByteArray result;
         QList<QByteArray> lines = input.split('\n');
 
@@ -70,33 +81,25 @@ public:
 
         for (const QByteArray& line : lines) {
 
-            if (line.contains("@" \
-                              "view:beg")) {
-                inBlock = true;
-                continue;
-            }
+            if (line.contains(kViewBeg)) { inBlock = true;  continue; }
+            if (line.contains(kViewEnd)) { inBlock = false; continue; }
 
-            if (line.contains("@" \
-                              "view:end")) {
-                inBlock = false;
-                continue;
-            }
-
-            int exportPos = line.indexOf("@" \
-                                         "view:export");
+            int exportPos = line.indexOf(kViewExport);
             if (exportPos >= 0) {
                 result.append(line.left(exportPos).trimmed());
                 result.append('\n');
                 continue;
             }
 
-            if (inBlock) {
-                if (line.contains("@" \
-                                  "view:exclude")) continue;
+            if (!inBlock) continue;
 
-                result.append(line);
-                result.append('\n');
-            }
+            if (line.contains(kViewExclude)) continue;
+            if (line.contains(kSection))     continue;
+            if (line.startsWith(kSepEq))     continue;
+            if (line.startsWith(kSepDash))   continue;
+
+            result.append(line);
+            result.append('\n');
         }
 
         return result;
@@ -138,8 +141,6 @@ public:
 
             outFile.write(content);
             outFile.write("\n");
-
-            f.close();
         }
     }
 
