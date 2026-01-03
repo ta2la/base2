@@ -86,7 +86,7 @@ Rectangle {
                         model: moduleData.files
 
                         delegate: Text {
-                            text: "• " + fileName
+                            text: "• " + fileData.name
                             font.pointSize: 10
                             color: "#404040"
                             height: 16

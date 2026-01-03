@@ -15,9 +15,12 @@
 //=============================================================================
 #pragma once
 
+#include "AnalyzerModuleFileData.h"
+#include "AnalyzerCode.h"
 
 #include <QAbstractListModel>
 #include <QStringList>
+#include <QDir>
 
 /// @view:beg
 
@@ -26,19 +29,46 @@ class AnalyzerModuleFilesModel : public QAbstractListModel
     Q_OBJECT
 public:
     enum Roles {
-        FileNameRole = Qt::UserRole + 1
+        FileDataRole = Qt::UserRole + 1
     };
 
     explicit AnalyzerModuleFilesModel(QObject* parent = nullptr)
         : QAbstractListModel(parent)
     {}
 
-    // Demo population
-    explicit AnalyzerModuleFilesModel(const QStringList& demoFiles,
-                                      QObject* parent = nullptr)
-        : QAbstractListModel(parent),
-        files_(demoFiles)
-    {}
+    explicit AnalyzerModuleFilesModel(
+        const QStringList& names,
+        QObject* parent = nullptr)
+        : QAbstractListModel(parent)
+    {
+        for (const QString& n : names)
+            files_.append(AnalyzerModuleFileData(n));
+    }
+
+    void resetFromDir(const QString& dirPath)
+    {
+        beginResetModel();
+        files_.clear();
+
+        QDir dir(dirPath);
+        if (dir.exists()) {
+            const QStringList paths =
+                AnalyzerCode::getFiles(
+                    dir,
+                    QStringList() << "*.h" << "*.cpp" << "*.qml"
+                    );
+
+            for (const QString& path : paths) {
+                files_.append(
+                    AnalyzerModuleFileData(
+                        QFileInfo(path).fileName()
+                        )
+                    );
+            }
+        }
+
+        endResetModel();
+    }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override
     {
@@ -48,24 +78,21 @@ public:
 
     QVariant data(const QModelIndex& index, int role) const override
     {
-        if (!index.isValid() || index.row() < 0 || index.row() >= files_.size())
-            return {};
+        if (!index.isValid() || role != FileDataRole)
+            return QVariant();
 
-        if (role == FileNameRole)
-            return files_.at(index.row());
-
-        return {};
+        return QVariant::fromValue(files_.at(index.row()));
     }
 
     QHash<int, QByteArray> roleNames() const override
     {
         return {
-            { FileNameRole, "fileName" }
+            { FileDataRole, "fileData" }
         };
     }
 
 private:
-    QStringList files_;
+    QList<AnalyzerModuleFileData> files_;
 };
 
 /// @view:end
