@@ -6,5 +6,7 @@
 !*.pri
 !*.qrc
 !*.qml
+!images/
+!images/*.svg
 qrc_*.*
 moc_*.*
