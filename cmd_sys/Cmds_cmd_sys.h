@@ -23,7 +23,7 @@
 #include "CmdUtils.h"
 
 #include <QFile>
-
+#include <QTextStream>
 
 ///@view:beg
 
