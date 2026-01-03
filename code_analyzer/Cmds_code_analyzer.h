@@ -130,7 +130,7 @@ public:
 
         // stejný průchod jako dir_load_net / dir_merge_files
         //for (const QString& dirStr : dirs_) {
-        for (int i = 0; i < dirs_.count(); i++) {
+        /*for (int i = 0; i < dirs_.count(); i++) {
             QString dirStr = dirs_.get(i).dirPath();
             QDir moduleDir(dirStr);
             if (!moduleDir.exists()) {
@@ -150,7 +150,7 @@ public:
             for (const QString& filePath : moduleFiles) {
                 sys_.add(filePath, moduleName);
             }
-        }
+        }*/
 
         // výstupní soubor – stejný základ jako dir_merge_files, ale .dot
         QDir dir(dirs_.first());
@@ -227,5 +227,6 @@ protected:
 
     friend class Cmds_code_analyzer_test;
     friend int main(int, char**);
+    friend class AnalyzerCode;
 };
 ///@view:end

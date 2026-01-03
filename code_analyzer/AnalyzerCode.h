@@ -20,6 +20,7 @@
 #pragma once
 
 #include "CmdSys.h"
+//#include "Cmds_code_analyzer.h"
 
 #include <QStringList>
 #include <QDir>
@@ -184,6 +185,9 @@ public:
 
         return result;
     }
+
+    //=============================================================================
+    static void loadDot();
 
     //=============================================================================
 protected:

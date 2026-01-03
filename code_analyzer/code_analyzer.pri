@@ -14,5 +14,6 @@ HEADERS += \
     $$PWD/AnalyzerModuleFilesModel.h \
     $$PWD/AnalyzerModuleFileData.h
 
-#SOURCES += \
+SOURCES += \
+    $$PWD/AnalyzerCode.cpp
 
