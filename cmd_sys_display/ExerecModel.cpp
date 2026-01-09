@@ -38,15 +38,15 @@ ExerecModel::ExerecModel() :
 void ExerecModel::commandExecuted()
 {
     CmdSys& cmdsys = CMD_SYS;
-    CmdExeRecCol& reccol = CmdExeRecCol::instance();
-    int sysCount = CmdExeRecCol::instance().count();
+    CmdExeRecCol& reccol = CmdExeRecCol::inst();
+    int sysCount = CmdExeRecCol::inst().count();
 
     if ( sysCount > countIncluded_ ) {
         beginInsertRows(QModelIndex(), countIncluded_, sysCount-1);
         countIncluded_ = sysCount;
         endInsertRows();
 
-        ExerecModelProxy::instance().sort(0, Qt::AscendingOrder);
+        ExerecModelProxy::inst().sort(0, Qt::AscendingOrder);
     }
 }
 
@@ -55,7 +55,7 @@ QVariant ExerecModel::data(const QModelIndex &modelIndex, int role) const
 {
     if (!modelIndex.isValid()) return QVariant();
 
-    CmdExeRecCol& exeRecord = CmdExeRecCol::instance();
+    CmdExeRecCol& exeRecord = CmdExeRecCol::inst();
     int row = modelIndex.row();
     CmdExeRec& exeRec = exeRecord.get(row);
 

@@ -33,7 +33,7 @@ class  CmdExeRecCol : public CmdExeGuard {
 public:
 //! @section Construction
     CmdExeRecCol();
-    static CmdExeRecCol& instance() { static CmdExeRecCol i; return i; }
+    static CmdExeRecCol& inst() { static CmdExeRecCol i; return i; }
 //! @section Data
     void commandExecuted() override;
     void add(bool found, const QString& argsIn, const QString& argsInOut,

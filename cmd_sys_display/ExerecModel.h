@@ -33,7 +33,7 @@ public:
     enum EExerecModelRoles { exerecData = Qt::UserRole + 1, cmdName };
 //! @section Construction
     ExerecModel();
-    static ExerecModel& instance() { static ExerecModel i; return i; }
+    static ExerecModel& inst() { static ExerecModel i; return i; }
 //<METHODS>
 //! @section Overrides
     void commandExecuted() override;

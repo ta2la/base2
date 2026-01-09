@@ -22,8 +22,9 @@
 #include "CmdContextIface.h"
 
 #include <QSharedPointer>
+#include <QMap>
 
-#define CONTEXT CmdContext::instance()
+//#define CMD_CONTEXT CmdContext::inst()
 
 //=============================================================================
 class  MonitorSocketCmd  {
@@ -31,7 +32,7 @@ class  MonitorSocketCmd  {
 public:
 //! @section Construction
     MonitorSocketCmd() = default;
-    static MonitorSocketCmd& instance() { static MonitorSocketCmd i; return i; }
+    static MonitorSocketCmd& inst() { static MonitorSocketCmd i; return i; }
 //<METHODS>
     void add(int id) {
         auto it = registry_.find(id);

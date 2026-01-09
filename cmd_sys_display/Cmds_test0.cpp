@@ -44,7 +44,7 @@ int Cmds_test0::argcol_to_string(CmdArgCol& args, QByteArray* data, const QShare
 //=============================================================================
 int Cmds_test0::zakleta_princezna(CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context)
 {
-
+    return 0;
 }
 
 //=============================================================================

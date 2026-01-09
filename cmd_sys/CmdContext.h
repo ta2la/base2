@@ -25,7 +25,7 @@
 
 ///@view:beg
 
-#define CONTEXT CmdContext::instance()
+#define CMD_CONTEXT CmdContext::inst()
 
 //=============================================================================
 class  CmdContext final : public CmdContextIface {
@@ -33,7 +33,7 @@ class  CmdContext final : public CmdContextIface {
 public:
 //! @section Construction
     CmdContext() = default;
-    static QSharedPointer<CmdContext> instance()
+    static QSharedPointer<CmdContext> inst()
     {   static QSharedPointer<CmdContext> i(new CmdContext()); return i; }
 //<METHODS>
     void reply(QString cmd, QByteArray data) {};

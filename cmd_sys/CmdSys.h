@@ -35,7 +35,7 @@ class CmdExeGuard;
 
 ///@view:beg
 
-#define CMD_SYS  CmdSys::instance()
+#define CMD_SYS  CmdSys::inst()
 #define CMD_ARGS ( CmdArgCol&, QByteArray*, const QSharedPointer<CmdContextIface>& )
 #define CMD_ARGS_U ( [[maybe_unused]] CmdArgCol& args, [[maybe_unused]] QByteArray* data, [[maybe_unused]] const QSharedPointer<CmdContextIface>& context )
 
@@ -46,9 +46,9 @@ class  CmdSys : public QObject {
 public:
 //! @section Construction
     CmdSys() : QObject(nullptr) {};
-    static CmdSys& instance() { static CmdSys i; return i; }
+    static CmdSys& inst() { static CmdSys i; return i; }
 //! @section Neighbours
-    //CmdExeRecCol& exeRecord() { return CmdExeRecCol::instance(); };
+    //CmdExeRecCol& exeRecord() { return CmdExeRecCol::inst(); };
 //<METHODS>
     int execute(const QString& args, const QString& sourceName = "", int sourceIndex = -1);
     void execute_threadSafe(const QString& args, const QString& sourceName = "", int sourceIndex = -1);

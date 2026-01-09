@@ -19,6 +19,7 @@
 #include <QStringList>
 #include <QFileInfo>
 #include <QSet>
+#include <QTextStream>
 
 /// @view:beg
 

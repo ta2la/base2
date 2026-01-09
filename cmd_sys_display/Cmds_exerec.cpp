@@ -35,12 +35,12 @@ int Cmds_exerec::exerec_remove_filterout_command(CmdArgCol& args, QByteArray* da
     CmdArg arg1 = args.get(1);
     if (arg1.value().isEmpty()) return 0;
 
-    Model_filteroutCmds::instance().cmdRemove(arg1.value());
+    Model_filteroutCmds::inst().cmdRemove(arg1.value());
 
     //QString comp = filteroutCommands_codeSegment();
-    //ExerecCodeSegments::instance().qmlExcludedCommandsSet(comp);
+    //ExerecCodeSegments::inst().qmlExcludedCommandsSet(comp);
 
-    ExerecModelProxy::instance().invalidateFilterOverride();
+    ExerecModelProxy::inst().invalidateFilterOverride();
 
     return 0;
 }
@@ -51,12 +51,12 @@ int Cmds_exerec::exerec_add_filterout_command(CmdArgCol& args, QByteArray* data,
     CmdArg arg1 = args.get(1);
     if (arg1.value().isEmpty()) return 0;
 
-    Model_filteroutCmds::instance().cmdAdd(arg1.value());
+    Model_filteroutCmds::inst().cmdAdd(arg1.value());
 
     /*QString comp = filteroutCommands_codeSegment();
-    ExerecCodeSegments::instance().qmlExcludedCommandsSet(comp);*/
+    ExerecCodeSegments::inst().qmlExcludedCommandsSet(comp);*/
 
-    ExerecModelProxy::instance().invalidateFilterOverride();
+    ExerecModelProxy::inst().invalidateFilterOverride();
 
     return 0;
 }
@@ -64,7 +64,7 @@ int Cmds_exerec::exerec_add_filterout_command(CmdArgCol& args, QByteArray* data,
 //=============================================================================
 int Cmds_exerec::cmds_stop_record(CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context)
 {
-    CmdExeRecCol::instance().cacheSet();
+    CmdExeRecCol::inst().cacheSet();
     return 0;
 }
 

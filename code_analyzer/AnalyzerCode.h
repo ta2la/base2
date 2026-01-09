@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QDir>
 #include <QDirIterator>
+#include <QTextStream>
 
 /// @view:beg
 

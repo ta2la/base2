@@ -20,6 +20,13 @@
 #include <QCoreApplication>
 #include <QThread>
 
+//#include <QScopeGuard>
+
+#include <QDebug>
+
+#include <memory>
+#include <functional>
+
 ///@view:beg
 
 //=============================================================================
@@ -69,8 +76,8 @@ int CmdSys::execute_(CmdArgCol& args, QByteArray* data, const QSharedPointer<Cmd
     if (!cmd->excludeExeRec()) {
         recordCmd = true;
     }
-    else if (!MonitorSocketCmd::instance().isEmpty()) {
-        if ( MonitorSocketCmd::instance().registered(context->uniqueId()) ) recordCmd = true;
+    else if (!MonitorSocketCmd::inst().isEmpty()) {
+        if ( MonitorSocketCmd::inst().registered(context->uniqueId()) ) recordCmd = true;
     }
 
     if (recordCmd) {
@@ -106,9 +113,15 @@ int CmdSys::execute(const QString& args, const QString& sourceName, int sourceIn
     }
 
     executingArgs_ = CmdArgCol(args);
-    auto guard = qScopeGuard([this] { executingArgs_ = CmdArgCol(); });
 
-    return execute_(executingArgs_, nullptr, CONTEXT, sourceName, sourceIndex);
+    //auto guard = qScopeGuard([this] { executingArgs_ = CmdArgCol(); });
+
+    auto result = execute_(executingArgs_, nullptr, CMD_CONTEXT, sourceName, sourceIndex);
+
+    qDebug() << executingArgs_.toString();
+
+    executingArgs_ = CmdArgCol();
+    return 0;
 }
 
 ///@view:end

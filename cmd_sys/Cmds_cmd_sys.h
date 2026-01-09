@@ -64,8 +64,11 @@ public:
             }
 
             QTextStream stream(&file);
-            stream.setEncoding(QStringConverter::Utf8);
-
+            #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            #define QT_TEXTSTREAM_SET_UTF8(ts) (ts).setCodec("UTF-8")
+            #else
+            #define QT_TEXTSTREAM_SET_UTF8(ts) (ts).setEncoding(QStringConverter::Utf8)
+            #endif
             QString script = stream.readAll();
 
             QStringList commands =

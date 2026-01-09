@@ -35,6 +35,13 @@ struct AnalyzerModuleData
     Q_PROPERTY(QObject* files   READ files   CONSTANT)
 
 public:
+    AnalyzerModuleData()
+        : dirPath_()
+        , module_()
+        , used_(false)
+        , filesModel_(nullptr)
+    {}
+
     explicit AnalyzerModuleData(
         const QString& dirPath,
         bool used,

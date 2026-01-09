@@ -27,7 +27,7 @@
 
 ///@view:beg
 
-#define UI_CONTROL UiControl::instance()
+#define UI_CONTROL UiControl::inst()
 
 //===================================================================
 class Interactive_uiControl : public QObject, public CmdExeGuard {
@@ -41,7 +41,7 @@ public:
     {
         CMD_SYS.reg(this);
     };
-    static Interactive_uiControl& instance() { /*assert(!GlobalSettings::nodebug());*/
+    static Interactive_uiControl& inst() { /*assert(!GlobalSettings::nodebug());*/
                                         static Interactive_uiControl i; return i; }
 //===================================================================
 //<INTERNALS>

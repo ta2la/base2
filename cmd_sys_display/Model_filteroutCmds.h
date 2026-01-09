@@ -21,6 +21,7 @@
 
 #include "CmdExeGuard.h"
 #include <QAbstractListModel>
+#include <QDebug>
 
 ///@view:beg
 
@@ -32,7 +33,7 @@ public:
     enum EExerecModelRoles { cmd = Qt::UserRole + 1 };
 //! @section Construction
     Model_filteroutCmds() = default;
-    static Model_filteroutCmds& instance()        { static Model_filteroutCmds i; return i; }
+    static Model_filteroutCmds& inst()        { static Model_filteroutCmds i; return i; }
 
 //! @section Methods
     QStringList cmdsExcluded() { return cmds_; }

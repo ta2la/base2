@@ -44,7 +44,7 @@ public:
 
             // původní záměr – zatím neimplementováno
             assert(0);
-            // Model_controlsEx::instance().setContent(argText.value());
+            // Model_controlsEx::inst().setContent(argText.value());
 
             return 0;
         });

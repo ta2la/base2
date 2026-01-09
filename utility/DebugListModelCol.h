@@ -38,7 +38,7 @@ public:
 //! @section Construction
     DebugListModelCol() = default;
     virtual ~DebugListModelCol() {}
-    static DebugListModelCol& instance() { static DebugListModelCol i; return i; }
+    static DebugListModelCol& inst() { static DebugListModelCol i; return i; }
 //! @section Items
     DebugListModel& get(const QString& name) {
         auto it = models_.find(name);

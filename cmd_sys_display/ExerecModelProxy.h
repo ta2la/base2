@@ -33,9 +33,9 @@ class  ExerecModelProxy: public QSortFilterProxyModel {
 public:
 //! @section Construction
     ExerecModelProxy() {
-        setSourceModel(&ExerecModel::instance());
+        setSourceModel(&ExerecModel::inst());
     }
-    static ExerecModelProxy& instance() { static ExerecModelProxy i; return i; }
+    static ExerecModelProxy& inst() { static ExerecModelProxy i; return i; }
 //! @section Methods
 //! @section Overrides
     bool lessThan(const QModelIndex &top, const QModelIndex &bottom) const override {
@@ -46,7 +46,7 @@ public:
             // Get the index for the column you want to check (e.g., column 0)
         QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
         QString value = index.data(ExerecModel::EExerecModelRoles::cmdName).toString();
-        bool result = !Model_filteroutCmds::instance().contains(value);
+        bool result = !Model_filteroutCmds::inst().contains(value);
         return result;
     }
 //=============================================================================

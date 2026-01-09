@@ -13,9 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //=============================================================================
-import QtQuick 2.7
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 2.4
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
 
 /// @view:include #include "ExerecModelProxy.h"
 

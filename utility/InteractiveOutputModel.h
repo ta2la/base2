@@ -32,11 +32,11 @@ public:
 //<CONSTRUCTION>
     InteractiveOutputModel() = delete;
 
-    static DebugListModel& instance() { return DebugListModelCol::instance().get("interactiveOutput"); }
+    static DebugListModel& inst() { return DebugListModelCol::inst().get("interactiveOutput"); }
 
     static void append(const QString& item) {
         items_.prepend(item);
-        instance().updateList(items_);
+        inst().updateList(items_);
     }
 //===================================================================
 //<INTERNALS>

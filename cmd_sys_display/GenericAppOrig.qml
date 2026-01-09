@@ -13,8 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //=============================================================================
-import QtQuick 2.7
-import QtQuick.Controls 2.4
+import QtQuick 2.15
+import QtQuick.Controls 2.15
 
 ///@view:beg
 
@@ -27,7 +27,7 @@ Rectangle  {
         tabCmdlineEx.visible   = (tabCmdlineEx.objectName    === tabName) ? true : false;
         tabInteractive.visible = (tabInteractive.objectName    === tabName) ? true : false;
         tabAbout.visible       = (tabAbout.objectName   === tabName) ? true : false;
-        tabAnalyzer.visible    = (tabAnalyzer.objectName === tabName)
+        tabAnalyzer.visible    = (tabAnalyzer.objectName === tabName) ? true : false;
     }
 
     Rectangle { id: mainSpace; color: "#4cc4bc"
