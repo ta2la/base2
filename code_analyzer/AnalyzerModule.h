@@ -72,19 +72,7 @@ class AnalyzerModule
 {
 public:
     /// @section Construction
-    explicit AnalyzerModule(const QString& dirPath, bool used = true)
-        : dirPath_(dirPath),
-        used_(used)
-    {
-        QStringList demoFiles {
-            "main.cpp",
-            "controller.h",
-            "view.qml"
-        };
-
-        filesModel_ =
-            new AnalyzerModuleFilesModel(demoFiles);
-    }
+    explicit AnalyzerModule(const QString& dirPath, bool used = true);
 
     /// @section Accessors
     const QString& dirPath() const { return dirPath_; }

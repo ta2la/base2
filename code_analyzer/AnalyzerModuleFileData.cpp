@@ -13,31 +13,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //=============================================================================
-#pragma once
 
-#include <QAbstractListModel>
-#include <QStringList>
+#include "AnalyzerModuleFileData.h"
+#include "Cmds_code_analyzer.h"
 
 /// @view:beg
 
-class AnalyzerNode;
-
-struct AnalyzerModuleFileData
+//=============================================================================
+AnalyzerModuleFileData::AnalyzerModuleFileData(const QString& name) :
+    node_(Cmds_code_analyzer::sys_.node(name))
 {
-    Q_GADGET
 
-    Q_PROPERTY(QString name READ name CONSTANT)
+}
 
-public:
-    AnalyzerModuleFileData() = default;
-    explicit AnalyzerModuleFileData(const QString& name);
+//=============================================================================
+QString AnalyzerModuleFileData::name() const
+{
+    if (!node_)
+        return "UNKNOWN";
 
-    QString name() const;
+    return node_->name();
+}
 
-private:
-    const AnalyzerNode* node_ = nullptr;
-};
-
-Q_DECLARE_METATYPE(AnalyzerModuleFileData)
+//=============================================================================
 
 /// @view:end

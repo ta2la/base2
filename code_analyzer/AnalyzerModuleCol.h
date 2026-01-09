@@ -18,6 +18,8 @@
 #include "AnalyzerModule.h"
 #include <QAbstractListModel>
 
+#include "AnalyzerSys.h"
+
 /// @view:beg
 
 //=============================================================================
@@ -121,6 +123,20 @@ public:
         const QModelIndex modelIndex = createIndex(index, 0);
         emit dataChanged(modelIndex, modelIndex, { DataRole });
     }
+
+    /*void loadFilesModel()
+    {
+        AnalyzerSys& sys = Cmds_code_analyzer::sys_;
+
+        for (AnalyzerModule& m : modules_) {
+            const QString moduleName = QDir(m.dirPath()).dirName();
+
+            QStringList nodes = sys.nodeNamesForModule(moduleName);
+
+            auto* fm = static_cast<AnalyzerModuleFilesModel*>(m.filesModel_);
+            fm->appendFromNames(nodes);
+        }
+    }*/
 
     //=============================================================================
 protected:

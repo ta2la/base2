@@ -22,6 +22,7 @@
 #include "CmdSys.h"
 #include "AnalyzerCode.h"
 #include "AnalyzerSys.h"
+#include "AnalyzerModuleFileData.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -42,20 +43,20 @@ public:
         if (!initialized) {
             initialized = true;
 
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Addons");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Data");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Dialogs");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver");
+            //dirs_.add("D:/reposAiAiAiAi/apps/src/Addons");
+            //dirs_.add("D:/reposAiAiAiAi/apps/src/Data");
+            //dirs_.add("D:/reposAiAiAiAi/apps/src/Dialogs");
+            //dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels");
+            //dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
+            //dirs_.add("D:/reposAiAiAiAi/apps/src/Solver");
             //dirs_.add("D:/reposAiAiAiAi/apps/src/Data/RxData/Structure");
 
-            //dirs_.add("../../../base2/base/");
-            //dirs_.add("../../../base2/cmd_sys");
-            //dirs_.add("../../../base2/cmd_sys_display");
-            //dirs_.add("../../../base2/utility");
-            //dirs_.add("../../../base2/code_analyzer");
-            //dirs_.add("../../../apky/PROMPT_ASSEMBLER");
+            dirs_.add("../../../base2/base/");
+            dirs_.add("../../../base2/cmd_sys");
+            dirs_.add("../../../base2/cmd_sys_display");
+            dirs_.add("../../../base2/utility");
+            dirs_.add("../../../base2/code_analyzer");
+            dirs_.add("../../../apky/PROMPT_ASSEMBLER");
         }
     }
     static void registerCmds_() {
@@ -236,5 +237,7 @@ protected:
     friend class Cmds_code_analyzer_test;
     friend int main(int, char**);
     friend class AnalyzerCode;
+    friend struct AnalyzerModuleFileData;
+    friend class AnalyzerModule;
 };
 ///@view:end

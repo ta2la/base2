@@ -61,7 +61,7 @@ public:
             for (const QString& path : paths) {
                 files_.append(
                     AnalyzerModuleFileData(
-                        QFileInfo(path).fileName()
+                         QFileInfo(path).completeBaseName()
                         )
                     );
             }

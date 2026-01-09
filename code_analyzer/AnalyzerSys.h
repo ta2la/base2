@@ -168,10 +168,26 @@ protected:
         return out;
     }
 
+    QStringList nodeNamesForModule(const QString& module) const
+    {
+        QStringList result;
+
+        for (auto it = nodes_.cbegin(); it != nodes_.cend(); ++it) {
+            const AnalyzerNode& n = *it->second;
+            if (n.module() == module)
+                result.append(n.name());
+        }
+
+        result.sort();
+        return result;
+    }
+
 
 /// @section Data
     std::map<QString, std::unique_ptr<AnalyzerNode>> nodes_;
     AnalyzerNet                 net_;
+
+    friend class AnalyzerModule;
 };
 
 /// @view:end
