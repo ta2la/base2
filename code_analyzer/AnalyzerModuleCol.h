@@ -138,6 +138,14 @@ public:
         }
     }*/
 
+    void loadFilesModels()
+    {
+        const int n = modules_.count();
+        for (int i = 0; i < n; ++i) {
+            modules_[i].buildFilesModel();
+        }
+    }
+
     //=============================================================================
 protected:
     /// @section Data

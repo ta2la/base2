@@ -45,7 +45,7 @@ public:
     explicit AnalyzerModuleData(
         const QString& dirPath,
         bool used,
-        QObject* filesModel )
+        AnalyzerModuleFilesModel* filesModel )
         : dirPath_(dirPath)
         , module_(QDir(dirPath).dirName())
         , used_(used)
@@ -73,6 +73,7 @@ class AnalyzerModule
 public:
     /// @section Construction
     explicit AnalyzerModule(const QString& dirPath, bool used = true);
+    void buildFilesModel();
 
     /// @section Accessors
     const QString& dirPath() const { return dirPath_; }
@@ -88,9 +89,9 @@ public:
 //=============================================================================
 protected:
     /// @section Data
-    QString dirPath_;
-    bool    used_;
-    QObject* filesModel_ = nullptr;
+    QString  dirPath_;
+    bool     used_;
+    AnalyzerModuleFilesModel* filesModel_ = nullptr;
 };
 
 /// @view:end

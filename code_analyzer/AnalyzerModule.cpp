@@ -38,4 +38,13 @@ AnalyzerModule::AnalyzerModule(const QString& dirPath, bool used)
         filesModel_ = new AnalyzerModuleFilesModel();
     }
 
+void AnalyzerModule::buildFilesModel()
+    {
+    const QString moduleName = QDir(dirPath_).dirName();
+    AnalyzerSys& sys = Cmds_code_analyzer::sys_;
+
+    const QStringList nodes = sys.nodeNamesForModule(moduleName);
+    filesModel_->resetFromNames(nodes);
+    }
+
 /// @view:end

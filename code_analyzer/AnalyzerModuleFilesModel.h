@@ -45,6 +45,15 @@ public:
             files_.append(AnalyzerModuleFileData(n));
     }
 
+    void resetFromNames(const QStringList& names)
+    {
+        beginResetModel();
+        files_.clear();
+        for (const QString& n : names)
+            files_.append(AnalyzerModuleFileData(n));
+        endResetModel();
+    }
+
     void resetFromDir(const QString& dirPath)
     {
         beginResetModel();
