@@ -43,6 +43,14 @@ void AnalyzerCode::loadDot()
                 );
 
         for (const QString& filePath : files) {
+            const QString base = QFileInfo(filePath).fileName();
+
+            // exclude generated files
+            if (base.startsWith("moc_"))
+                continue;
+            if (base.startsWith("qrc"))
+                continue;
+
             Cmds_code_analyzer::sys_.add(filePath, moduleName);
         }
     }

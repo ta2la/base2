@@ -43,6 +43,14 @@ public:
     //=================================
     void addIncludesFromFile(const QString& filePath)
     {
+        const QString base = QFileInfo(filePath).fileName();
+
+        // exclude generated files
+        if (base.startsWith("moc_"))
+            return;
+        if (base.startsWith("qrc"))
+            return;
+
         QString log("logcmd ");
 
         const QString from = AnalyzerNode::nameFromFilePath(filePath);

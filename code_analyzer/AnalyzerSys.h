@@ -192,6 +192,22 @@ protected:
         return std::isfinite(d);
     }
 
+    QString targetingPrompt() const
+    {
+        QString out;
+        QTextStream s(&out);
+
+        const AnalyzerNode* centerNode = node(center_);
+
+        const QString centerModule =
+            centerNode ? centerNode->module() : QString("<unknown>");
+
+        s << "// TARGETING MODULE: " << centerModule << "\n";
+        //s << "// CENTER NODE:      " << center_ << "\n";
+
+        return out;
+    }
+
 
 /// @section Data
     std::map<QString, std::unique_ptr<AnalyzerNode>> nodes_;

@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QString>
 #include <AnalyzerModuleCol.h>
+#include <unistd.h>
 
 ///@view:beg
 class  Cmds_code_analyzer {
@@ -71,11 +72,8 @@ public:
 
         if (dirs_.isEmpty()) return args.appendError("no dir to solve");
 
-        bool useViews =
-            (args.get("views", "__UNDEF__").value() != "__UNDEF__");
-
-        bool byDist =
-            (args.get("bydist", "__UNDEF__").value() != "__UNDEF__");
+        bool useViews = (args.get("views", "__UNDEF__").value() != "__UNDEF__");
+        bool byDist   = (args.get("bydist", "__UNDEF__").value() != "__UNDEF__");
 
         QStringList files;
 
@@ -122,7 +120,16 @@ public:
         if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
             return args.appendError("dir_merge_files: cannot open output file");
 
+        if (byDist) {
+            const QString prompt = Cmds_code_analyzer::sys_.targetingPrompt();
+            outFile.write(prompt.toUtf8());
+            outFile.write("\n\n");
+        }
+
         AnalyzerCode::composeToFile(files, outFile, useViews);
+
+        outFile.write("\nin the next task follow strictly the style of the code above");
+        outFile.write("\nprefer conservative solution, do not rebuild code, if not specified");
 
         outFile.close();
 
