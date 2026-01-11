@@ -93,6 +93,8 @@ void AnalyzerDistCalc::addObservers()
 {
     const QString& center = sys_->center_;
     const auto& connectors = sys_->net_.connectors_;
+    const AnalyzerNode* centerNode = sys_->node(sys_->center_);
+    const QString centerModule = centerNode ? centerNode->module() : QString();
 
     if (center.isEmpty())
         return;
@@ -102,15 +104,26 @@ void AnalyzerDistCalc::addObservers()
 
         // X -> center  ==> observer
         if (c.node2() == center && c.node1() != center) {
-            if (AnalyzerNode* n = sys_->node(c.node1())) {
+            AnalyzerNode* n = sys_->node(c.node1());
+            if(!n) continue;
 
-                const double d = n->distToCenter();
-
-                // only override "not a number" (NaN / ±inf)
-                if (!std::isfinite(d)) {
-                    n->setDistToCenter(-1);
-                }
+            if (!std::isfinite(n->distToCenter())) {
+                n->setDistToCenter(-1);
             }
+        }
+    }
+
+    for (auto it = sys_->nodes_.cbegin(); it != sys_->nodes_.cend(); ++it) {
+        AnalyzerNode* n = it->second.get();
+
+        if (n->name() == center)
+            continue;
+
+        if (n->module() != centerModule)
+            continue;
+
+        if (!std::isfinite(n->distToCenter())) {
+            n->setDistToCenter(-100);
         }
     }
 }

@@ -173,6 +173,8 @@ public:
         distToCenter_ = v;
     }
 
+    double distToCenter() { return distToCenter_; }
+
 private:
     QString dir_;
     QString name_;

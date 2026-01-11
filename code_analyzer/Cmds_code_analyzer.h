@@ -62,7 +62,7 @@ public:
     }
     static void registerCmds_() {
 
-///@view:beg
+//@view:beg
     CMD_SYS.add("dir_merge_files",
     [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
         Q_UNUSED(data) Q_UNUSED(context) ///@view:exclude
@@ -73,6 +73,9 @@ public:
 
         bool useViews =
             (args.get("views", "__UNDEF__").value() != "__UNDEF__");
+
+        bool byDist =
+            (args.get("bydist", "__UNDEF__").value() != "__UNDEF__");
 
         QStringList files;
 
@@ -89,10 +92,21 @@ public:
                 continue;
             }
 
-            files << AnalyzerCode::getFiles(
+            QStringList allFiles = AnalyzerCode::getFiles(
                 dir,
                 QStringList() << "*.cpp" << "*.h" << "*.qml"
             );
+
+            for (const QString& path : allFiles) {
+                if (byDist) {
+                    const QString node =
+                        AnalyzerNode::nameFromFilePath(path);
+
+                    if (!Cmds_code_analyzer::sys_.isNodeExportableByDist(node))
+                        continue;
+                }
+                files << path;
+            }
         }
 
         QDir dir(dirs_.first());

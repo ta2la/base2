@@ -182,6 +182,16 @@ protected:
         return result;
     }
 
+    bool isNodeExportableByDist(const QString& name) const
+    {
+        auto it = nodes_.find(name);
+        if (it == nodes_.end())
+            return false;
+
+        const double d = it->second->distToCenter();
+        return std::isfinite(d);
+    }
+
 
 /// @section Data
     std::map<QString, std::unique_ptr<AnalyzerNode>> nodes_;
