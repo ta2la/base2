@@ -85,6 +85,7 @@ protected:
 
 /// @section friends
     friend class AnalyzerSys;
+    friend class AnalyzerDistCalc;
 };
 
 /// @view:end

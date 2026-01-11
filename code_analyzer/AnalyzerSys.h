@@ -185,9 +185,12 @@ protected:
 
 /// @section Data
     std::map<QString, std::unique_ptr<AnalyzerNode>> nodes_;
-    AnalyzerNet                 net_;
+    AnalyzerNet                                      net_;
+    QString                                          center_ = "AnalyzerSys";
 
     friend class AnalyzerModule;
+    friend class AnalyzerDistCalc;
+    friend class AnalyzerModuleFileData;
 };
 
 /// @view:end

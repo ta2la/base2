@@ -41,12 +41,14 @@ public:
     }
 
     QString signature() const { return signature(node1_, node2_); }
+    double length() const { return length_; };
 
     //=============================================================================
 protected:
 //! @section Data
     QString node1_;
     QString node2_;
+    double length_ = 1.0;
 };
 
 /// @view:end

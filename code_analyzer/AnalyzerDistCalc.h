@@ -15,6 +15,8 @@
 //=============================================================================
 #pragma once
 
+#include "AnalyzerSys.h"
+
 #include <QAbstractListModel>
 #include <QStringList>
 
@@ -22,26 +24,26 @@
 
 class AnalyzerNode;
 
-struct AnalyzerModuleFileData
+class AnalyzerDistCalc
 {
-    Q_GADGET
-
-    Q_PROPERTY(QString name   READ name CONSTANT)
-    Q_PROPERTY(double  dist   READ dist CONSTANT)
-    Q_PROPERTY(bool    center READ isCenter CONSTANT)
-
 public:
-    AnalyzerModuleFileData() = default;
-    explicit AnalyzerModuleFileData(const QString& name);
+    AnalyzerDistCalc(AnalyzerSys& sys)
+        : sys_(&sys)
+    {
+        buildGraph();
+    }
 
-    QString name() const;
-    double  dist() const;
-    bool    isCenter() const;
+    void buildGraph();
+    void calculate();
 
-private:
-    const AnalyzerNode* node_ = nullptr;
+    struct Edge {
+        QString to;
+        double w;
+    };
+
+protected:
+    QMap<QString, QList<Edge>> graph_;
+    AnalyzerSys*               sys_;
 };
-
-Q_DECLARE_METATYPE(AnalyzerModuleFileData)
 
 /// @view:end

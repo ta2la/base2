@@ -36,5 +36,18 @@ QString AnalyzerModuleFileData::name() const
 }
 
 //=============================================================================
+double AnalyzerModuleFileData::dist() const
+{
+    if (!node_) return 1;
+    return node_->distToCenter();
+}
+
+bool AnalyzerModuleFileData::isCenter() const
+{
+    if (!node_) return false;
+    return node_->name() == Cmds_code_analyzer::sys_.center_;
+}
+
+//=============================================================================
 
 /// @view:end

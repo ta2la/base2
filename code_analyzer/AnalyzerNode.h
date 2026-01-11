@@ -50,6 +50,7 @@ public:
     QString name()   const { return name_; }
     QString module() const { return module_; }
     const QSet<QString>& extensions() const { return extensions_; }
+    double distToCenter() const { return distToCenter_; }
 
     static QString nameFromFilePath(const QString& filePath)
     {
@@ -161,10 +162,22 @@ public:
         return result;
     }
 
+    void setDistToCenter(double v)
+    {
+        // normalizace: žádné záporné vzdálenosti
+        if (v < 0.0) v = 0.0;
+
+        // NaN nebo ±inf → nekonečno
+        if (!std::isfinite(v)) v = std::numeric_limits<double>::infinity();
+
+        distToCenter_ = v;
+    }
+
 private:
     QString dir_;
     QString name_;
     QString module_;
+    double  distToCenter_ = 1;
 
     QSet<QString> extensions_;
 

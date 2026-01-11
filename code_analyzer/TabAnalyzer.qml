@@ -85,12 +85,41 @@ Rectangle {
                     Repeater {
                         model: moduleData.files
 
-                        delegate: Text {
-                            text: "• " + fileData.name
-                            font.pointSize: 10
-                            color: "#404040"
+                        delegate: Row {
+                            width: parent.width
                             height: 16
-                            verticalAlignment: Text.AlignVCenter
+                            spacing: 8
+
+                            Rectangle {
+                                width: 200
+                                height: parent.height
+                                color: fileData.center ? "#E6C1D8" : "transparent"
+
+                                Text {
+                                    anchors.fill: parent
+                                    leftPadding: 2
+                                    text: "• " + fileData.name
+                                    font.pointSize: 10
+                                    color: "#404040"
+                                    elide: Text.ElideRight
+                                    verticalAlignment: Text.AlignVCenter
+                                }
+                            }
+
+                            Text {
+                                width: 50
+                                horizontalAlignment: Text.AlignRight
+                                //text: fileData.dist.toFixed(1)
+                                font.pointSize: 9
+                                color: "#606060"
+                                verticalAlignment: Text.AlignVCenter
+                                text: {
+                                    if (fileData.dist === Infinity)
+                                        return "-";
+                                    else
+                                        return fileData.dist.toFixed(1);
+                                }
+                            }
                         }
                     }
                 }

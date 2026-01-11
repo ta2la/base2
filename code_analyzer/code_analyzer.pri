@@ -12,10 +12,12 @@ HEADERS += \
     $$PWD/AnalyzerModule.h \
     $$PWD/AnalyzerModuleCol.h \
     $$PWD/AnalyzerModuleFilesModel.h \
-    $$PWD/AnalyzerModuleFileData.h
+    $$PWD/AnalyzerModuleFileData.h \
+    $$PWD/AnalyzerDistCalc.h
 
 SOURCES += \
     $$PWD/AnalyzerCode.cpp \
     $$PWD/AnalyzerModuleFileData.cpp \
-    $$PWD/AnalyzerModule.cpp
+    $$PWD/AnalyzerModule.cpp \
+    $$PWD/AnalyzerDistCalc.cpp
 
