@@ -23,6 +23,7 @@
 #include "AnalyzerCode.h"
 #include "AnalyzerSys.h"
 #include "AnalyzerModuleFileData.h"
+#include "AnalyzerDistCalc.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -56,7 +57,7 @@ public:
             dirs_.add("../../../base2/cmd_sys_display");
             dirs_.add("../../../base2/utility");
             dirs_.add("../../../base2/code_analyzer");
-            dirs_.add("../../../apky/PROMPT_ASSEMBLER");
+            dirs_.add("../../../APPS/PROMPT_ASSEMBLER");
         }
     }
     static void registerCmds_() {
@@ -220,6 +221,33 @@ public:
 
         return 0;
     });
+    CMD_SYS.add("analyzer_set_center",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        if (args.count() < 2)
+            return args.appendError("usage: analyzer_set_center <nodeName>");
+
+        const QString name = args.get(1).value();
+
+        AnalyzerSys& sys = Cmds_code_analyzer::sys_;
+
+        if (!sys.node(name))
+            return args.appendError("unknown node: " + name);
+
+        // nastav nový střed
+        sys.center_ = name;
+
+        // přepočítáme vzdálenosti
+        AnalyzerDistCalc calc(sys);
+        calc.calculate();
+        calc.addObservers();
+
+        Cmds_code_analyzer::dirs_.resetAllFilesModels();
+
+        args.append("center -> " + name, "OK");
+
+        return 0;
+    });
 
     }
 //=============================================================================
@@ -239,5 +267,6 @@ protected:
     friend class AnalyzerCode;
     friend struct AnalyzerModuleFileData;
     friend class AnalyzerModule;
+    friend class Cmds_code_analyzer;
 };
 ///@view:end

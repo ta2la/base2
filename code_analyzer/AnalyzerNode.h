@@ -165,10 +165,10 @@ public:
     void setDistToCenter(double v)
     {
         // normalizace: žádné záporné vzdálenosti
-        if (v < 0.0) v = 0.0;
+        //if (v < 0.0) v = 0.0;
 
         // NaN nebo ±inf → nekonečno
-        if (!std::isfinite(v)) v = std::numeric_limits<double>::infinity();
+        //if (!std::isfinite(v)) v = std::numeric_limits<double>::infinity();
 
         distToCenter_ = v;
     }

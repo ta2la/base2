@@ -104,6 +104,17 @@ Rectangle {
                                     elide: Text.ElideRight
                                     verticalAlignment: Text.AlignVCenter
                                 }
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+
+                                    onClicked: {
+                                        interactiveIface.callCmd(
+                                            "analyzer_set_center " + fileData.name
+                                        )
+                                    }
+                                }
                             }
 
                             Text {
@@ -111,6 +122,7 @@ Rectangle {
                                 horizontalAlignment: Text.AlignRight
                                 //text: fileData.dist.toFixed(1)
                                 font.pointSize: 9
+                                font.bold: isFinite(fileData.dist) && fileData.dist >= 0
                                 color: "#606060"
                                 verticalAlignment: Text.AlignVCenter
                                 text: {

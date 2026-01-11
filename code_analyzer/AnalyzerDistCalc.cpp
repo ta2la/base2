@@ -89,5 +89,32 @@ void AnalyzerDistCalc::calculate()
 }
 
 //=============================================================================
+void AnalyzerDistCalc::addObservers()
+{
+    const QString& center = sys_->center_;
+    const auto& connectors = sys_->net_.connectors_;
+
+    if (center.isEmpty())
+        return;
+
+    for (auto it = connectors.cbegin(); it != connectors.cend(); ++it) {
+        const AnalyzerConnector& c = it.value();
+
+        // X -> center  ==> observer
+        if (c.node2() == center && c.node1() != center) {
+            if (AnalyzerNode* n = sys_->node(c.node1())) {
+
+                const double d = n->distToCenter();
+
+                // only override "not a number" (NaN / ±inf)
+                if (!std::isfinite(d)) {
+                    n->setDistToCenter(-1);
+                }
+            }
+        }
+    }
+}
+
+//=============================================================================
 
 /// @view:end

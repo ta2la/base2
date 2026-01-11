@@ -92,6 +92,8 @@ protected:
     QString  dirPath_;
     bool     used_;
     AnalyzerModuleFilesModel* filesModel_ = nullptr;
+
+    friend class AnalyzerModuleCol;
 };
 
 /// @view:end

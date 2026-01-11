@@ -35,6 +35,7 @@ public:
 
     void buildGraph();
     void calculate();
+    void addObservers();
 
     struct Edge {
         QString to;

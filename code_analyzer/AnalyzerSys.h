@@ -191,6 +191,7 @@ protected:
     friend class AnalyzerModule;
     friend class AnalyzerDistCalc;
     friend class AnalyzerModuleFileData;
+    friend class Cmds_code_analyzer;
 };
 
 /// @view:end

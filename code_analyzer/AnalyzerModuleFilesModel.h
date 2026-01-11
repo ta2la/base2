@@ -102,6 +102,8 @@ public:
 
 private:
     QList<AnalyzerModuleFileData> files_;
+
+    friend class AnalyzerModuleCol;
 };
 
 /// @view:end
