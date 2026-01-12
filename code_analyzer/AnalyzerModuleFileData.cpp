@@ -42,10 +42,22 @@ double AnalyzerModuleFileData::dist() const
     return node_->distToCenter();
 }
 
+//=============================================================================
 bool AnalyzerModuleFileData::isCenter() const
 {
     if (!node_) return false;
     return node_->name() == Cmds_code_analyzer::sys_.center_;
+}
+
+//=============================================================================
+QStringList AnalyzerModuleFileData::types() const
+{
+    if (!node_)
+        return {};
+
+    QStringList list = node_->extensions().values();
+    list.sort();
+    return list;
 }
 
 //=============================================================================

@@ -29,6 +29,7 @@ struct AnalyzerModuleFileData
     Q_PROPERTY(QString name   READ name CONSTANT)
     Q_PROPERTY(double  dist   READ dist CONSTANT)
     Q_PROPERTY(bool    center READ isCenter CONSTANT)
+    Q_PROPERTY(QStringList types  READ types CONSTANT)
 
 public:
     AnalyzerModuleFileData() = default;
@@ -37,6 +38,7 @@ public:
     QString name() const;
     double  dist() const;
     bool    isCenter() const;
+    QStringList types() const;
 
 private:
     const AnalyzerNode* node_ = nullptr;

@@ -71,6 +71,7 @@ Rectangle {
                     Text {
                         text: moduleData.module
                         font.pointSize: 12
+                        font.weight: Font.DemiBold
                         verticalAlignment: Text.AlignVCenter
                         height: parent.height
                     }
@@ -98,7 +99,12 @@ Rectangle {
                                 Text {
                                     anchors.fill: parent
                                     leftPadding: 2
-                                    text: "• " + fileData.name
+                                    textFormat: Text.RichText
+                                    text: {
+                                        var t = fileData.types
+                                        if (!t || t.length === 0) return "• " + fileData.name
+                                        return "• " + fileData.name + " <span style='font-weight:600'>[" + t.join(", ") + "]</span>"
+                                        }
                                     font.pointSize: 10
                                     color: "#404040"
                                     elide: Text.ElideRight
