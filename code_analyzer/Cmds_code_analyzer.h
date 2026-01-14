@@ -44,33 +44,6 @@ public:
         static bool initialized = false;
         if (!initialized) {
             initialized = true;
-
-/*            //dirs_.add("D:/reposAiAiAiAi/apps/src/Addons");
-
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Data");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Data/RxData/Structure");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Dialogs/EditDialogs");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels/AdapterModels/MainModels");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels/AdapterModels/ProxyModels/DialogModels");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver/Export");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver/TableModels");
-            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver");
-            //RSectionResultsSTresses.h getStressPointResults(...)
-            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionSolver");
-
-
-            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
-            //SectionStressCalculator.h
-            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionSolver");
-            //FemTorsWrapper getStressPointResults(...)*/
-
-           /* dirs_.add("../../../base2/base/");
-            dirs_.add("../../../base2/cmd_sys");
-            dirs_.add("../../../base2/cmd_sys_display");
-            dirs_.add("../../../base2/utility");
-            dirs_.add("../../../base2/code_analyzer");
-            dirs_.add("../../../APPS/PROMPT_ASSEMBLER");*/
         }
     }
     static void registerCmds_() {
@@ -296,12 +269,6 @@ protected:
     /// @section Data
     inline static AnalyzerSys sys_;
     inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol();
-        /*<< AnalyzerModule( "../../../base2/base/")
-        << AnalyzerModule( "../../../base2/cmd_sys")
-        << AnalyzerModule("../../../base2/cmd_sys_display")
-        << AnalyzerModule("../../../base2/code_analyzer")
-        << AnalyzerModule("../../../apky/PROMPT_ASSEMBLER")
-        << AnalyzerModule("../../../base2/utility");*/
 
     friend class Cmds_code_analyzer_test;
     friend int main(int, char**);
