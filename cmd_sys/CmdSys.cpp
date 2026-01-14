@@ -118,7 +118,7 @@ int CmdSys::execute(const QString& args, const QString& sourceName, int sourceIn
 
     auto result = execute_(executingArgs_, nullptr, CMD_CONTEXT, sourceName, sourceIndex);
 
-    qDebug() << executingArgs_.toString();
+    //qDebug() << executingArgs_.toString();
 
     executingArgs_ = CmdArgCol();
     return 0;

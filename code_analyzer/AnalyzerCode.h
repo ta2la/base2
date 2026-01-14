@@ -36,8 +36,8 @@ public:
     AnalyzerCode() = delete; /// @view:exclude
     //! @section Methods         /// @view:exclude
     //=========================================================================
-    static QStringList getFiles(QDir& dir, QStringList filters) {
-        QDirIterator it(
+    static QStringList getFiles(QDir& dir, QStringList filters, bool recursive) {
+        /*QDirIterator it(
             dir.absolutePath(),
             filters,
             QDir::Files | QDir::NoSymLinks,
@@ -48,7 +48,28 @@ public:
 
         while (it.hasNext()) files << it.next();
 
+        return files;*/
+
+        QStringList files;
+
+        if (recursive) {              // CHANGED
+            QDirIterator it(
+                dir.absolutePath(),
+                filters,
+                QDir::Files | QDir::NoSymLinks,
+                QDirIterator::Subdirectories
+                );
+            while (it.hasNext()) files << it.next();
+        }
+        else {                        // CHANGED
+            QFileInfoList list =
+                dir.entryInfoList(filters, QDir::Files | QDir::NoSymLinks);
+            for (const QFileInfo& fi : list)
+                files << fi.absoluteFilePath();
+        }
+
         return files;
+
     }
 
     //=========================================================================

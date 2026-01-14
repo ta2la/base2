@@ -30,7 +30,7 @@
 #include <QFileDialog>
 #include <QString>
 #include <AnalyzerModuleCol.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 ///@view:beg
 class  Cmds_code_analyzer {
@@ -45,20 +45,32 @@ public:
         if (!initialized) {
             initialized = true;
 
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Addons");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Data");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Dialogs");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Solver");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Data/RxData/Structure");
+/*            //dirs_.add("D:/reposAiAiAiAi/apps/src/Addons");
 
-            dirs_.add("../../../base2/base/");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/Data");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/Data/RxData/Structure");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/Dialogs/EditDialogs");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels/AdapterModels/MainModels");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels/AdapterModels/ProxyModels/DialogModels");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver/Export");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver/TableModels");
+            dirs_.add("D:/reposAiAiAiAi/apps/src/Solver");
+            //RSectionResultsSTresses.h getStressPointResults(...)
+            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionSolver");
+
+
+            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
+            //SectionStressCalculator.h
+            dirs_.add("D:/reposAiAiAiAi/apps/src/SectionSolver");
+            //FemTorsWrapper getStressPointResults(...)*/
+
+           /* dirs_.add("../../../base2/base/");
             dirs_.add("../../../base2/cmd_sys");
             dirs_.add("../../../base2/cmd_sys_display");
             dirs_.add("../../../base2/utility");
             dirs_.add("../../../base2/code_analyzer");
-            dirs_.add("../../../APPS/PROMPT_ASSEMBLER");
+            dirs_.add("../../../APPS/PROMPT_ASSEMBLER");*/
         }
     }
     static void registerCmds_() {
@@ -92,7 +104,8 @@ public:
 
             QStringList allFiles = AnalyzerCode::getFiles(
                 dir,
-                QStringList() << "*.cpp" << "*.h" << "*.qml"
+                QStringList() << "*.cpp" << "*.h" << "*.qml",
+                true
             );
 
             for (const QString& path : allFiles) {
@@ -158,30 +171,6 @@ public:
 
         if (dirs_.isEmpty())
             return args.appendError("no dir to analyze");
-
-        // stejný průchod jako dir_load_net / dir_merge_files
-        //for (const QString& dirStr : dirs_) {
-        /*for (int i = 0; i < dirs_.count(); i++) {
-            QString dirStr = dirs_.get(i).dirPath();
-            QDir moduleDir(dirStr);
-            if (!moduleDir.exists()) {
-                args.appendError("directory does not exist: " + dirStr);
-                continue;
-            }
-
-            QStringList moduleFiles =
-            AnalyzerCode::getFiles(
-                moduleDir,
-                QStringList() << "*.h" << "*.cpp" << "*.qml"
-                );
-
-            const QString moduleName = moduleDir.dirName();
-
-            // naplnění uzlů + hran
-            for (const QString& filePath : moduleFiles) {
-                sys_.add(filePath, moduleName);
-            }
-        }*/
 
         // výstupní soubor – stejný základ jako dir_merge_files, ale .dot
         QDir dir(dirs_.first());
@@ -267,6 +256,37 @@ public:
 
         args.append("center -> " + name, "OK");
 
+        return 0;
+    });
+
+    CMD_SYS.add("analyzer_bootstrap",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        Q_UNUSED(args)
+
+        Cmds_code_analyzer::createModel();
+
+        AnalyzerCode::loadDot();
+
+        Cmds_code_analyzer::dirs_.loadFilesModels();
+
+        AnalyzerDistCalc(Cmds_code_analyzer::sys_).calculate();
+        AnalyzerDistCalc(Cmds_code_analyzer::sys_).addObservers();
+
+        return 0;
+    });
+
+    CMD_SYS.add("module_add",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        if (args.count() < 2)
+            return args.appendError("usage: module_add <dirPath>");
+
+        const QString dir = args.get(1).value();
+
+        Cmds_code_analyzer::dirs_.add(dir);
+
+        args.append(dir, "MODULE_ADDED");
         return 0;
     });
 

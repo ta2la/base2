@@ -81,6 +81,43 @@ public:
             return 0;
         });
 
+        CMD_SYS.add("execute_script",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+            if (args.count() < 2)
+                return args.appendError("usage: execute_init_script <file>");
+
+            const QString fileName = args.get(1).value();
+
+            QFile file(fileName);
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+                return args.appendError("cannot open file: " + fileName);
+
+            QTextStream in(&file);
+            uint lineNumber = 0;
+
+            while (!in.atEnd()) {
+                ++lineNumber;
+
+                QString line = in.readLine().trimmed();
+                if (line.isEmpty())
+                    continue;
+                if (line.startsWith("#"))
+                    continue;
+
+                const bool ok = (CMD_SYS.execute(line) == 0);
+
+                if (!ok) {
+                    return args.appendError(
+                        QString("init failed at line %1").arg(lineNumber)
+                        );
+                }
+            }
+
+            args.append(fileName, "INIT_OK");
+            return 0;
+        });
+
         return true;
     }
 

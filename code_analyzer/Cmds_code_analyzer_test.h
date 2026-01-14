@@ -74,7 +74,7 @@ public:
         if (Cmds_code_analyzer::dirs_.isEmpty()) return args.appendError("no dir to solve");
 
         QDir dir(Cmds_code_analyzer::dirs_.first());
-        QStringList files = AnalyzerCode::getFiles(dir, QStringList()<<"*.pro");
+        QStringList files = AnalyzerCode::getFiles(dir, QStringList()<<"*.pro", true);
 
         for (QString& file: files) {
             result += args.append(file, "FILE");
@@ -102,7 +102,8 @@ public:
 
             files << AnalyzerCode::getFiles(
                 dir,
-                QStringList() << "*.h" << "*.cpp" << "*.qml"
+                QStringList() << "*.h" << "*.cpp" << "*.qml",
+                true
                 );
         }
 

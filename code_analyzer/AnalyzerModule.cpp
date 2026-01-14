@@ -19,22 +19,11 @@
 
 /// @view:beg
 
-AnalyzerModule::AnalyzerModule(const QString& dirPath, bool used)
+AnalyzerModule::AnalyzerModule(const QString& dirPath, bool subdirs, bool used)
         : dirPath_(dirPath),
-        used_(used)
+        used_(used),
+        subdirs_(subdirs)
     {
-        /*QStringList demoFiles {
-            "main.cpp",
-            "controller.h",
-            "view.qml"
-        };*/
-
-        /*const QString moduleName = QDir(dirPath_).dirName();
-
-        AnalyzerSys& sys = Cmds_code_analyzer::sys_;
-
-        QStringList nodes = sys.nodeNamesForModule(moduleName);*/
-
         filesModel_ = new AnalyzerModuleFilesModel();
     }
 

@@ -64,7 +64,8 @@ public:
             const QStringList paths =
                 AnalyzerCode::getFiles(
                     dir,
-                    QStringList() << "*.h" << "*.cpp" << "*.qml"
+                    QStringList() << "*.h" << "*.cpp" << "*.qml",
+                    true
                     );
 
             for (const QString& path : paths) {
