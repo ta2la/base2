@@ -2,6 +2,7 @@
 !build_target.pri
 !.gitignore
 !/base
+!/object_registry
 !/utility
 !/cmd_sys
 !/cmd_sys_display
