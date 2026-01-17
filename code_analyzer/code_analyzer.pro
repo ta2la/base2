@@ -7,6 +7,7 @@ include($$PWD/../build_target.pri)
 include(code_analyzer.pri)
 
 INCLUDEPATH += $$PWD/../../base2/base
+INCLUDEPATH += $$PWD/../../base2/utility
 INCLUDEPATH += $$PWD/../../base2/cmd_sys
 INCLUDEPATH += $$PWD/../../base2/cmd_sys_display
 INCLUDEPATH += $$PWD/../../base2/code_data

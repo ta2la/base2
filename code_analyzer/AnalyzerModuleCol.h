@@ -16,9 +16,12 @@
 #pragma once
 
 #include "AnalyzerModule.h"
+#include "AnalyzerSys.h"
+#include "OregUpdateLock.h"
+
 #include <QAbstractListModel>
 
-#include "AnalyzerSys.h"
+
 
 /// @view:beg
 
@@ -83,6 +86,8 @@ public:
         modules_.append(AnalyzerModule(norm));
         endInsertRows();
 
+
+        OregUpdateLock l;
         CodeData::inst().modules().add(norm);
 
     }

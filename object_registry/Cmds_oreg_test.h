@@ -40,7 +40,7 @@ public:
         CMD_SYS.add("oreg_test_container_display", oreg_test_container_display );
         CMD_SYS.add("oreg_test_pool_solve",        oreg_test_pool_solve );
 
-        CMD_SYS.add(
+        /*CMD_SYS.add(
         "oreg_list_containers",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -65,7 +65,41 @@ public:
             }
 
             return 0;
-        });
+        });*/
+
+        CMD_SYS.add(
+        "oreg_list_containers",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+            OregPool& pool = OregPool::instance();
+
+            if (pool.containers_.isEmpty())
+                return args.appendWarning("no oreg containers");
+
+            args.append("<br>", "BR");
+
+            const int count = pool.containers_.size();
+
+            for (int i = 0; i < count; ++i) {
+
+                OregContainer* c = pool.containers_.at(i);
+                if (!c)
+                    continue;
+
+                QString out;
+                QTextStream s(&out);
+
+                s << "<a href='oreg_test_container_display " << i << "'>";
+                s << "container: " << c->name();
+                s << "&nbsp;&nbsp;index=" << i;
+                s << "</a><br>";
+
+                args.append(out, "CONTAINER");
+            }
+
+            return 0;
+        }
+        );
 
     }
 //=============================================================================
