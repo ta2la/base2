@@ -20,24 +20,36 @@
 #pragma once
 
 #include "CodeModule.h"
-#include "CodeModuleCol.h"
+#include "CodeNode.h"
+
+#include <map>
+
+class CodeModule;
 
 /// @view:beg
 
-class  CodeData
 //=============================================================================
+class  CodeModuleCol
 {
 public:
-    //! @section Construction
-    CodeData();
-    static CodeData& inst() { static CodeData i;  return i; }
-    //! @section Neighbours
-    CodeModuleCol& modules()       { return modules_; }
-    const CodeModuleCol& modules() const { return modules_; }
-    //! @section Methods
+    CodeModuleCol();
+
+    //<METHODS>
+    //bool add(const QString& name, const QString& path);
+
+    CodeModule* get(const QString& name);
+    const CodeModule* get(const QString& name) const;
+
+    bool contains(const QString& name) const;
+    int  count() const;
+
+    QStringList names() const;
+
+    void add(const QString& path);
+
 //=============================================================================
 protected:
-    CodeModuleCol modules_;
+    std::map<QString, CodeModule*> modules_;
 };
 
 /// @view:end

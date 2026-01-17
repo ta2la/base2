@@ -45,18 +45,12 @@ public:
         if (!initialized) {
             initialized = true;
 
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Addons");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Data");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Dialogs");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/ItemModels");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/SectionLibrary");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Solver");
-            //dirs_.add("D:/reposAiAiAiAi/apps/src/Data/RxData/Structure");
-
             dirs_.add("../../../base2/base/");
             dirs_.add("../../../base2/cmd_sys");
             dirs_.add("../../../base2/cmd_sys_display");
+            dirs_.add("../../../base2/object_registry");
             dirs_.add("../../../base2/utility");
+            dirs_.add("../../../base2/code_data");
             dirs_.add("../../../base2/code_analyzer");
             dirs_.add("../../../APPS/PROMPT_ASSEMBLER");
         }

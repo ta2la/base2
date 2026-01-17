@@ -18,6 +18,9 @@
 #include "AnalyzerNode.h"
 #include "AnalyzerNet.h"
 
+#include "CodeData.h"
+#include "Cmds_oreg_test.h"
+
 /// @view:beg
 
 class AnalyzerSys
@@ -202,8 +205,8 @@ protected:
         const QString centerModule =
             centerNode ? centerNode->module() : QString("<unknown>");
 
-        s << "// TARGETING MODULE: " << centerModule << "\n";
-        //s << "// CENTER NODE:      " << center_ << "\n";
+        //s << "// TARGETING MODULE: " << centerModule << "\n";
+        s << "// TARGETING MODULE: code_data\n";
 
         return out;
     }

@@ -19,25 +19,36 @@
  */
 #pragma once
 
-#include "CodeModule.h"
-#include "CodeModuleCol.h"
+#include "OregObject.h"
+#include "CodeNodeCol.h"
+#include "CodeNode.h"
+#include "OregContainerList.h"
 
 /// @view:beg
 
-class  CodeData
+class  CodeModule : public OregObject
 //=============================================================================
 {
 public:
-    //! @section Construction
-    CodeData();
-    static CodeData& inst() { static CodeData i;  return i; }
-    //! @section Neighbours
-    CodeModuleCol& modules()       { return modules_; }
-    const CodeModuleCol& modules() const { return modules_; }
+    //!` @section Construction
+    CodeModule(const QString& path);
+    void loadFiles();
     //! @section Methods
+    const QString& name() const { return name_; }
+    const QString& path() const { return path_; }
+
+    CodeNodeCol& nodes()       { return nodes_; }
+    const CodeNodeCol& nodes() const { return nodes_; }
+
 //=============================================================================
+    //! @section Overrides
+    QString oo_to_string(EStringFormat format = SF_BASIC) const override;
 protected:
-    CodeModuleCol modules_;
+    QString name_;
+    QString path_;
+
+    CodeNodeCol nodes_;
+    OregContainerList filteredNodes_;
 };
 
 /// @view:end

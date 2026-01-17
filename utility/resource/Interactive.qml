@@ -26,10 +26,10 @@ Rectangle {
                 x: 0; y: 10; width: root.width-20;
                 Button { text: "Code Focus";  height: parent.selb===text? 32:18;
                           onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls start_stop");}}
-                Button { text: "Disable Cmd"; height: parent.selb===text? 32:18;
-                          onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls disabled");}}
                 Button { text: "Test Cmd";    height: parent.selb===text? 32:18;
                           onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls test");}}
+                Button { text: "Disable Cmd"; height: parent.selb===text? 32:18;
+                          onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls disabled");}}
             }
         }
 

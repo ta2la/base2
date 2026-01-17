@@ -82,6 +82,9 @@ public:
         beginInsertRows(QModelIndex(), row, row);
         modules_.append(AnalyzerModule(norm));
         endInsertRows();
+
+        CodeData::inst().modules().add(norm);
+
     }
 
     int count() const

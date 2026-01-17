@@ -20,6 +20,8 @@
 #pragma once
 
 #include "CmdSys.h"
+#include "OregContainer.h"
+#include "OregPool.h"
 
 class OregObject;
 class DebugRecordItem;
@@ -37,6 +39,34 @@ public:
         CMD_SYS.add("oreg_test_create_container",  oreg_test_create_container );
         CMD_SYS.add("oreg_test_container_display", oreg_test_container_display );
         CMD_SYS.add("oreg_test_pool_solve",        oreg_test_pool_solve );
+
+        CMD_SYS.add(
+        "oreg_list_containers",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+            OregPool& pool = OregPool::instance();
+
+            if (pool.containers_.isEmpty())
+                return args.appendWarning("no oreg containers");
+
+            args.append("<br>", "BR");
+
+            for (OregContainer* c : pool.containers_) {
+
+                if (!c)
+                    continue;
+
+                args.append(
+                    QString("container: %1  id=%2<br>")
+                        .arg(c->name())
+                        .arg(reinterpret_cast<quintptr>(c)),
+                    "CONTAINER"
+                    );
+            }
+
+            return 0;
+        });
+
     }
 //=============================================================================
 protected:

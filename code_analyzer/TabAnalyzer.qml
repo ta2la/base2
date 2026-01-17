@@ -88,7 +88,7 @@ Rectangle {
 
                         delegate: Row {
                             width: parent.width
-                            height: 16
+                            height: 12
                             spacing: 8
 
                             Rectangle {

@@ -19,25 +19,32 @@
  */
 #pragma once
 
-#include "CodeModule.h"
-#include "CodeModuleCol.h"
+#include <map>
+#include <QString>
+#include <QStringList>
+
+class CodeNode;
 
 /// @view:beg
 
-class  CodeData
-//=============================================================================
+class CodeNodeCol
 {
 public:
-    //! @section Construction
-    CodeData();
-    static CodeData& inst() { static CodeData i;  return i; }
-    //! @section Neighbours
-    CodeModuleCol& modules()       { return modules_; }
-    const CodeModuleCol& modules() const { return modules_; }
-    //! @section Methods
-//=============================================================================
+    CodeNodeCol() = default;
+
+    //<METHODS>
+    CodeNode*       get(const QString& name);
+    const CodeNode* get(const QString& name) const;
+
+    bool contains(const QString& name) const;
+    int  count() const;
+
+    QStringList names() const;
+
+    void add(CodeNode* node);
+
 protected:
-    CodeModuleCol modules_;
+    std::map<QString, CodeNode*> nodes_;
 };
 
 /// @view:end

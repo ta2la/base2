@@ -19,25 +19,39 @@
  */
 #pragma once
 
-#include "CodeModule.h"
 #include "CodeModuleCol.h"
+
+#include <QSet>
+
+class CodeModule;
 
 /// @view:beg
 
-class  CodeData
-//=============================================================================
+class CodeNode : public OregObject
 {
 public:
-    //! @section Construction
-    CodeData();
-    static CodeData& inst() { static CodeData i;  return i; }
-    //! @section Neighbours
-    CodeModuleCol& modules()       { return modules_; }
-    const CodeModuleCol& modules() const { return modules_; }
-    //! @section Methods
-//=============================================================================
+    CodeNode(
+        const QString& filePath,
+        CodeModule* module
+        );
+
+    const QString& dir() const    { return dir_; }
+    const QString& name() const   { return name_; }
+    CodeModule*    module() const { return module_; }
+
+    QStringList extensions() const;
+
+    void addExtension(const QString& ext);
+
+    QString oo_to_string(EStringFormat format = SF_BASIC) const override;
+
 protected:
-    CodeModuleCol modules_;
+    QString     dir_;        // full file path
+    QString     name_;       // base name (no suffix)
+    CodeModule* module_ = nullptr;
+
+    QSet<QString> extensions_;
 };
+
 
 /// @view:end

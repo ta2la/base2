@@ -19,25 +19,36 @@
  */
 #pragma once
 
-#include "CodeModule.h"
-#include "CodeModuleCol.h"
+#include "CodeNode.h"
+#include "OregFilter.h"
 
 /// @view:beg
 
-class  CodeData
-//=============================================================================
+class CodeNodeModuleFilter : public OregFilter
 {
 public:
-    //! @section Construction
-    CodeData();
-    static CodeData& inst() { static CodeData i;  return i; }
-    //! @section Neighbours
-    CodeModuleCol& modules()       { return modules_; }
-    const CodeModuleCol& modules() const { return modules_; }
-    //! @section Methods
-//=============================================================================
+    explicit CodeNodeModuleFilter(const QString& moduleName)
+        : moduleName_(moduleName)
+    {}
+
+    bool pass(OregObject* object) override
+    {
+        if (!object)
+            return false;
+
+        CodeNode* node = dynamic_cast<CodeNode*>(object);
+        if (!node)
+            return false;
+
+        CodeModule* mod = node->module();
+        if (!mod)
+            return false;
+
+        return mod->name() == moduleName_;
+    }
+
 protected:
-    CodeModuleCol modules_;
+    QString moduleName_;
 };
 
 /// @view:end
