@@ -19,40 +19,39 @@
  */
 #pragma once
 
-#include "CodeModule.h"
-#include "CodeNode.h"
-#include "CodeConnector.h"
-
-#include <map>
-
-class CodeModule;
+#include <QString>
 
 /// @view:beg
 
-//=============================================================================
-class  CodeModuleCol
+class CodeConnector
 {
 public:
-    CodeModuleCol();
+    CodeConnector(
+        const QString& node1,
+        const QString& node2)
+        : node1_(node1)
+        , node2_(node2)
+    {}
 
-    //<METHODS>
-    //bool add(const QString& name, const QString& path);
+    const QString& node1() const { return node1_; }
+    const QString& node2() const { return node2_; }
 
-    CodeModule* get(const QString& name);
-    const CodeModule* get(const QString& name) const;
+    // node1-node2
+    static QString signature(
+        const QString& node1,
+        const QString& node2)
+    {
+        return node1 + "-" + node2;
+    }
 
-    bool contains(const QString& name) const;
-    int  count() const;
+    QString signature() const
+    {
+        return signature(node1_, node2_);
+    }
 
-    QStringList names() const;
-
-    void add(const QString& path);
-
-    QList<CodeConnector> connectors() const;
-    QStringList nodes() const;
-//=============================================================================
 protected:
-    std::map<QString, CodeModule*> modules_;
+    QString node1_;
+    QString node2_;
 };
 
 /// @view:end

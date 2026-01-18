@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/AnalyzerModuleCol.h \
     $$PWD/AnalyzerModuleFilesModel.h \
     $$PWD/AnalyzerModuleFileData.h \
-    $$PWD/AnalyzerDistCalc.h
+    $$PWD/AnalyzerDistCalc.h \
+    $$PWD/AnalyzerCalc_dot.h
 
 SOURCES += \
     $$PWD/AnalyzerCode.cpp \

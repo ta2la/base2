@@ -17,6 +17,7 @@
 
 #include "AnalyzerNode.h"
 #include "AnalyzerNet.h"
+#include "AnalyzerCalc_dot.h"
 
 #include "CodeData.h"
 #include "Cmds_oreg_test.h"
@@ -83,7 +84,7 @@ public:
         QTextStream s(&out);
 
         s << "digraph Analyzer {\n";
-        s << toDot_();
+        s << AnalyzerCalc_dot::toDot_();
         s << net_.toDot_();
         s << "}\n";
 
@@ -94,7 +95,7 @@ public:
 protected:
     /// @section Internals
     //=================================
-    QString label_ (const AnalyzerNode* n, const QString& prefix = "    ") const {
+    /*QString label_ (const AnalyzerNode* n, const QString& prefix = "    ") const {
         QString out;
         QTextStream s(&out);
 
@@ -135,41 +136,93 @@ protected:
         s << "[label=\"" << lbl << "\"" << attrs << "];\n";
 
         return out;
-    }
+    }*/
+
+    /*QString label3(const CodeNode* n, const QString& prefix = "    ") const
+    {
+        if (!n)
+            return QString();
+
+        QString out;
+        QTextStream s(&out);
+
+        QString attrs;
+
+        // QML → gray box
+        if (n->extensions().contains("qml")) {
+            attrs =
+                " shape=box"
+                " style=filled"
+                " fillcolor=\"#DADADA\"";
+        }
+
+        // *Model* → blue box
+        if (n->name().contains("Model")) {
+            attrs += ", shape=box"
+                     ", style=filled"
+                     ", fillcolor=\"#6FA3D8\"";
+        }
+
+        // Cmds_* → violet box
+        if (n->name().startsWith("Cmds_")) {
+            attrs += ", shape=box"
+                     ", style=filled"
+                     ", fillcolor=\"#E6C1D8\"";
+        }
+
+        s << prefix << "\"" << n->name() << "\" ";
+
+        // label text
+        QString lbl;
+        {
+            QString base = n->name();
+
+            QStringList exts = n->extensions();
+            if (!exts.isEmpty()) {
+                lbl = base + "\\n[" + exts.join(" ") + "]";
+            } else {
+                lbl = base;
+            }
+        }
+
+        s << "[label=\"" << lbl << "\"" << attrs << "];\n";
+
+        return out;
+    }*/
     //=================================
-    QString toDot_() const
+   /* QString toDot_() const
     {
         QString out;
         QTextStream s(&out);
 
-        QMap<QString, QList<const AnalyzerNode*>> groups;
+        const CodeModuleCol& modules =
+            CodeData::inst().modules();
 
-        for (auto it = nodes_.cbegin(); it != nodes_.cend(); ++it) {
-            const AnalyzerNode& node = *it->second;
-
-            if (node.name() == "main" || node.name() == "Main") {
-                s << label_(&node, "");
+        // modules = clusters
+        for (const QString& moduleName : modules.names()) {
+            const CodeModule* module = modules.get(moduleName);
+            if (!module)
                 continue;
+
+            s << "  subgraph cluster_" << module->name() << " {\n";
+            s << "    label=\"" << module->name() << "\";\n";
+
+           const CodeNodeCol& nodes = module->nodes();
+
+            // nodes
+            for (const QString& nodeName : nodes.names()) {
+                const CodeNode* n = nodes.get(nodeName);
+                if (!n)
+                    continue;
+
+                s << label3(n);
             }
-
-            groups[node.module()].append(&node);
-        }
-
-        for (auto it = groups.cbegin(); it != groups.cend(); ++it) {
-
-            const QString& module = it.key();
-            const QList<const AnalyzerNode*>& nodes = it.value();
-
-            s << "  subgraph cluster_" << module << " {\n";
-            s << "    label=\"" << module << "\";\n";
-
-            for (const AnalyzerNode* n : nodes) s << label_(n);
 
             s << "  }\n";
         }
 
         return out;
-    }
+    }*/
 
     QStringList nodeNamesForModule(const QString& module) const
     {

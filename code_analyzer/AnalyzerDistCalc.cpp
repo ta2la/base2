@@ -28,16 +28,32 @@ void AnalyzerDistCalc::buildGraph()
     graph_.clear();
 
     // zajistíme existenci všech uzlů
-    for (auto it = sys_->nodes_.cbegin(); it != sys_->nodes_.cend(); ++it) {
+    /*for (auto it = sys_->nodes_.cbegin(); it != sys_->nodes_.cend(); ++it) {
         graph_[it->first];   // vytvoří prázdný seznam hran
+    }*/
+
+    const QStringList nodes =
+        CodeData::inst().modules().nodes();
+
+    for (const QString& name : nodes) {
+        graph_[name];   // vytvoří prázdný seznam hran
     }
 
     // zkopírujeme všechny konektory do adjacency listu
-    for (auto it = sys_->net_.connectors_.cbegin();
+    /*for (auto it = sys_->net_.connectors_.cbegin();
          it != sys_->net_.connectors_.cend(); ++it)
     {
         const AnalyzerConnector& c = it.value();
         graph_[c.node1()].append({ c.node2(), c.length() });
+    }*/
+
+    // NEW: get connectors from code_data (stack-local)
+    const QList<CodeConnector> connectors =
+        CodeData::inst().modules().connectors();
+
+    // zkopírujeme všechny konektory do adjacency listu
+    for (const CodeConnector& c : connectors) {
+        graph_[c.node1()].append({ c.node2(), 1.0 });
     }
 }
 

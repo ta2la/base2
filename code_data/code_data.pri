@@ -7,7 +7,8 @@ HEADERS += \
     $$PWD/CodeModuleCol.h \
     $$PWD/CodeNode.h \
     $$PWD/CodeNodeCol.h \
-    $$PWD/CodeNodeModuleFilter.h
+    $$PWD/CodeNodeModuleFilter.h \
+    $$PWD/CodeConnector.h
 
 SOURCES += \
     $$PWD/CodeData.cpp \

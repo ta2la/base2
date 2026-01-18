@@ -57,6 +57,7 @@ protected:
     static QStringList extractIncludes_(const QString& filePath);
 
     friend class AnalyzerNet;
+    friend class CodeModuleCol;
 };
 
 

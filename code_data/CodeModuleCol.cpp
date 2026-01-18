@@ -66,4 +66,58 @@ void CodeModuleCol::add(const QString& path)
     module->loadFiles();
 }
 
+QList<CodeConnector> CodeModuleCol::connectors() const
+{
+    QList<CodeConnector> result;
+
+    // iterate modules
+    for (const auto& mit : modules_) {
+        const CodeModule* module = mit.second;
+        if (!module)
+            continue;
+
+        // then CodeNodeCol nodes_
+        const CodeNodeCol& nodes = module->nodes();
+
+        for (const auto& nit : nodes.nodes_) {
+            const CodeNode* node = nit.second;
+            if (!node)
+                continue;
+
+            const QString& from = node->name();
+
+            // CodeNode = first
+            // QSet<QString> dependencies_ = second
+            for (const QString& to : node->dependencies_) {
+                result.append(CodeConnector(from, to));
+            }
+        }
+    }
+
+    return result;
+}
+
+QStringList CodeModuleCol::nodes() const
+{
+    QStringList result;
+
+    for (const auto& mit : modules_) {
+        const CodeModule* module = mit.second;
+        if (!module)
+            continue;
+
+        const CodeNodeCol& nodes = module->nodes();
+
+        for (const auto& nit : nodes.nodes_) {
+            const CodeNode* node = nit.second;
+            if (!node)
+                continue;
+
+            result.append(node->name());
+        }
+    }
+
+    return result;
+}
+
 /// @view:end

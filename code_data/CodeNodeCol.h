@@ -45,6 +45,8 @@ public:
 
 protected:
     std::map<QString, CodeNode*> nodes_;
+
+    friend class CodeModuleCol;
 };
 
 /// @view:end
