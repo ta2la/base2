@@ -22,6 +22,7 @@
 #include "CodeModule.h"
 #include "CodeNode.h"
 #include "CodeConnector.h"
+#include "CodeNodeAddress.h"
 
 #include <map>
 
@@ -41,6 +42,9 @@ public:
     CodeModule* get(const QString& name);
     const CodeModule* get(const QString& name) const;
 
+    CodeNode*       get(const CodeNodeAddress& addr);
+    const CodeNode* get(const CodeNodeAddress& addr) const;
+
     bool contains(const QString& name) const;
     int  count() const;
 
@@ -50,6 +54,8 @@ public:
 
     QList<CodeConnector> connectors() const;
     QStringList nodes() const;
+
+    QStringList filePathsForNode(const QString& nodeName) const;
 //=============================================================================
 protected:
     std::map<QString, CodeModule*> modules_;

@@ -72,37 +72,50 @@ public:
 
         QStringList files;
 
-        for (int i = 0; i < dirs_.count(); i++) {
+        const CodeModuleCol& modules = CodeData::inst().modules();
 
-            const AnalyzerModule& mod = dirs_.get(i);
-            if (!mod.used())
-                continue;   // ← VYPNUTÝ MODUL
+        // iterujeme přímo přes moduly z code_data
+        const QStringList moduleNames = modules.names();
 
-            const QString dirStr = mod.dirPath();
-            QDir dir(dirStr);
-            if (!dir.exists()) {
-                result += args.appendError("directory does not exist");
+        for (const QString& moduleName : moduleNames) {
+
+            const CodeModule* module = modules.get(moduleName);
+            if (!module)
                 continue;
-            }
 
-            QStringList allFiles = AnalyzerCode::getFiles(
-                dir,
-                QStringList() << "*.cpp" << "*.h" << "*.qml"
-            );
+            const CodeNodeCol& nodes = module->nodes();
 
-            for (const QString& path : allFiles) {
+            // iterace přes uzly modulu
+            for (const QString& nodeName : nodes.names()) {
+
                 if (byDist) {
-                    const QString node =
-                        AnalyzerNode::nameFromFilePath(path);
-
-                    if (!Cmds_code_analyzer::sys_.isNodeExportableByDist(node))
+                    if (!Cmds_code_analyzer::sys_.isNodeExportableByDist(nodeName))
                         continue;
                 }
-                files << path;
+
+                const CodeNode* node = nodes.get(nodeName);
+                if (!node)
+                    continue;
+
+                // CodeNode::dir() = původní filePath
+                const QString filePath = node->dir();
+                const QString dir  = QFileInfo(filePath).absolutePath();
+                const QString base = node->name();
+
+                const QStringList exts = node->extensions();
+
+                for (const QString& ext : exts) {
+                    if (ext == "whole h")
+                        files << dir + "/" + base + ".h";
+                    else if (ext == "whole cpp")
+                        files << dir + "/" + base + ".cpp";
+                    else
+                        files << dir + "/" + base + "." + ext;
+                }
             }
         }
 
-        QDir dir(dirs_.first());
+         QDir dir(dirs_.first());
 
         if (files.isEmpty()) return args.appendError("dir_merge_files: no source files found");
         files.sort();

@@ -146,4 +146,12 @@ void CodeNode::loadDependencies(const QString& filePath)
     }
 }
 
+CodeNodeAddress CodeNode::address() const
+{
+    return CodeNodeAddress(
+        module_ ? module_->name() : QString(),
+        name_
+        );
+}
+
 /// @view:end

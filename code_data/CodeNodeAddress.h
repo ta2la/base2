@@ -19,25 +19,33 @@
  */
 #pragma once
 
-#include "CodeModule.h"
-#include "CodeModuleCol.h"
+#include <QString>
 
 /// @view:beg
 
-class  CodeData
-//=============================================================================
+struct CodeNodeAddress
 {
-public:
-    //! @section Construction
-    CodeData();
-    static CodeData& inst() { static CodeData i;  return i; }
-    //! @section Neighbours
-    CodeModuleCol& modules()       { return modules_; }
-    const CodeModuleCol& modules() const { return modules_; }
-    //! @section Methods
-//=============================================================================
-protected:
-    CodeModuleCol modules_;
+    QString module_;
+    QString node_;
+
+    CodeNodeAddress() = default;
+
+    CodeNodeAddress(const QString& module,
+                    const QString& node)
+        : module_(module)
+        , node_(node)
+    {}
+
+    bool isValid() const
+    {
+        return !module_.isEmpty() && !node_.isEmpty();
+    }
+
+    bool operator==(const CodeNodeAddress& other) const
+    {
+        return module_ == other.module_
+               && node_   == other.node_;
+    }
 };
 
 /// @view:end

@@ -20,6 +20,7 @@
 #pragma once
 
 #include "CodeModuleCol.h"
+#include "CodeNodeAddress.h"
 
 #include <QSet>
 
@@ -46,10 +47,14 @@ public:
     QString oo_to_string(EStringFormat format = SF_BASIC) const override;
     void loadDependencies(const QString& filePath);
 
+    CodeNodeAddress address() const;
+
 protected:
     QString     dir_;        // full file path
     QString     name_;       // base name (no suffix)
     CodeModule* module_ = nullptr;
+
+    double distToCenter_ = 0;
 
     QSet<QString> extensions_;
     QSet<QString> dependencies_;
@@ -58,6 +63,7 @@ protected:
 
     friend class AnalyzerNet;
     friend class CodeModuleCol;
+    friend class AnalyzerDistCalc;
 };
 
 

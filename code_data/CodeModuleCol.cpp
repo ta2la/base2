@@ -16,6 +16,8 @@
 
 #include "CodeModuleCol.h"
 
+#include <QFileInfo>
+
 /// @view:beg
 
 CodeModuleCol::CodeModuleCol()
@@ -118,6 +120,60 @@ QStringList CodeModuleCol::nodes() const
     }
 
     return result;
+}
+
+QStringList CodeModuleCol::filePathsForNode(const QString& nodeName) const
+{
+    QStringList result;
+
+    for (const auto& mit : modules_) {
+        const CodeModule* module = mit.second;
+        if (!module)
+            continue;
+
+        const CodeNode* node = module->nodes().get(nodeName);
+        if (!node)
+            continue;
+
+        const QString base = node->dir();   // full file path without suffix
+        const QString dir  = QFileInfo(base).absolutePath();
+        const QString name = node->name();
+
+        for (const QString& ext : node->extensions()) {
+            if (ext == "whole h")
+                result << dir + "/" + name + ".h";
+            else if (ext == "whole cpp")
+                result << dir + "/" + name + ".cpp";
+            else
+                result << dir + "/" + name + "." + ext;
+        }
+    }
+
+    return result;
+}
+
+CodeNode* CodeModuleCol::get(const CodeNodeAddress& addr)
+{
+    if (!addr.isValid())
+        return nullptr;
+
+    CodeModule* module = get(addr.module_);
+    if (!module)
+        return nullptr;
+
+    return module->nodes().get(addr.node_);
+}
+
+const CodeNode* CodeModuleCol::get(const CodeNodeAddress& addr) const
+{
+    if (!addr.isValid())
+        return nullptr;
+
+    const CodeModule* module = get(addr.module_);
+    if (!module)
+        return nullptr;
+
+    return module->nodes().get(addr.node_);
 }
 
 /// @view:end

@@ -19,7 +19,7 @@
  */
 #pragma once
 
-#include "CodeModule.h"
+#include "CodeNodeAddress.h"
 #include "CodeModuleCol.h"
 
 /// @view:beg
@@ -37,7 +37,11 @@ public:
     //! @section Methods
 //=============================================================================
 protected:
-    CodeModuleCol modules_;
+    CodeModuleCol   modules_;
+    CodeNodeAddress center_ = { "code_analyzer", "AnalyzerSys" };
+    double distToCenter_ = 1;
+
+    friend class AnalyzerDistCalc;
 };
 
 /// @view:end
