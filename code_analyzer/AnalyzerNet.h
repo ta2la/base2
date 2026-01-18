@@ -17,6 +17,7 @@
 
 #include "AnalyzerConnector.h"
 #include "AnalyzerCode.h"
+#include "CodeNode.h"
 
 /// @view:beg
 
@@ -57,7 +58,7 @@ public:
 
         log += from + " -> ";
 
-        const QStringList includes = AnalyzerCode::extractIncludes(filePath);
+        const QStringList includes = CodeNode::extractIncludes_(filePath);
 
         log += includes.join(" ");
 

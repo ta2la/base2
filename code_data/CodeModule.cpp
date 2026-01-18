@@ -24,8 +24,8 @@
 
 /// @view:beg
 
-CodeModule::CodeModule(const QString& path) :
-    filteredNodes_("CodeModuleContainer")
+CodeModule::CodeModule(const QString& path)
+    //filteredNodes_("CodeModuleContainer")
 {
     if (path.isEmpty()) {
         path_.clear();
@@ -45,9 +45,9 @@ CodeModule::CodeModule(const QString& path) :
 
     name_ = QFileInfo(path_).fileName();
 
-    filteredNodes_.oo_filterSet(
+    /*filteredNodes_.oo_filterSet(
         new CodeNodeModuleFilter(name_)
-        );
+        );*/
 }
 
 QString CodeModule::oo_to_string(EStringFormat format) const
@@ -88,6 +88,8 @@ void CodeModule::loadFiles()
         } else {
             node->addExtension(ext);
         }
+
+        node->loadDependencies(filePath);
     }
 }
 

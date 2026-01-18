@@ -36,103 +36,12 @@ public:
     Cmds_code_analyzer_test() = delete;
 //<METHODS>
     static void registerCmds_() {
-    CMD_SYS.add("dir_list",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-        if (Cmds_code_analyzer::dirs_.isEmpty())
-            return args.appendWarning("no dirs configured");
-
-        QStringList uniqueDirs;
-
-        //for (const QString& dirStr : Cmds_code_analyzer::dirs_) {
-        for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); i++) {
-            QString dirStr = Cmds_code_analyzer::dirs_.get(i).dirPath();
-            if (!uniqueDirs.contains(dirStr))
-                uniqueDirs.append(dirStr);
-        }
-
-        args.append(QString("<br/>"), "NL");
-
-        for (const QString& d : uniqueDirs) {
-            args.append(d + "<br/>", "DIR");
-        }
-
-        return 0;
-    });
     CMD_SYS.add("select_dir",
     [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
         Q_UNUSED(data) Q_UNUSED(context) Q_UNUSED(args)
 
         return 0;
     });
-    CMD_SYS.add("pass_dir",
-    [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
-        Q_UNUSED(data) Q_UNUSED(context)
-
-        int result = 0;
-
-        if (Cmds_code_analyzer::dirs_.isEmpty()) return args.appendError("no dir to solve");
-
-        QDir dir(Cmds_code_analyzer::dirs_.first());
-        QStringList files = AnalyzerCode::getFiles(dir, QStringList()<<"*.pro");
-
-        for (QString& file: files) {
-            result += args.append(file, "FILE");
-        }
-
-        return result;
-    });
-    CMD_SYS.add("dir_list_includes_test",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-
-        if (Cmds_code_analyzer::dirs_.isEmpty())
-            return args.appendError("no dir to analyze");
-
-        QStringList files;
-
-        // stejná logika jako dir_load_net
-        //for (const QString& dirStr : Cmds_code_analyzer::dirs_) {
-        for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); i++) {
-            QString dirStr = Cmds_code_analyzer::dirs_.get(i).dirPath();
-            QDir dir(dirStr);
-            if (!dir.exists()) {
-                args.appendError("directory does not exist: " + dirStr);
-                continue;
-            }
-
-            files << AnalyzerCode::getFiles(
-                dir,
-                QStringList() << "*.h" << "*.cpp" << "*.qml"
-                );
-        }
-
-        if (files.isEmpty())
-            return args.appendWarning("no source files found");
-
-        args.append("<br/>", "NL");
-
-        for (const QString& filePath : files) {
-
-            QStringList includes =
-                AnalyzerCode::extractIncludes(filePath);
-
-            if (includes.isEmpty())
-                continue;
-
-            QString out;
-            QTextStream s(&out);
-
-            s << QFileInfo(filePath).fileName() << " ->";
-
-            for (const QString& inc : includes)
-                s << inc << " ";
-
-            args.append(out.trimmed() + "<br/>", "FILE");
-        }
-
-        return 0;
-    });
-
-    }
-};
+    }};
 ///@view:end

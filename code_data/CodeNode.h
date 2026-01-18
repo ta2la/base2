@@ -44,6 +44,7 @@ public:
     void addExtension(const QString& ext);
 
     QString oo_to_string(EStringFormat format = SF_BASIC) const override;
+    void loadDependencies(const QString& filePath);
 
 protected:
     QString     dir_;        // full file path
@@ -51,6 +52,11 @@ protected:
     CodeModule* module_ = nullptr;
 
     QSet<QString> extensions_;
+    QSet<QString> dependencies_;
+
+    static QStringList extractIncludes_(const QString& filePath);
+
+    friend class AnalyzerNet;
 };
 
 

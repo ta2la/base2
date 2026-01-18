@@ -86,5 +86,64 @@ QString CodeNode::oo_to_string(EStringFormat format) const
     return OregObject::oo_to_string(format);
 }
 
+//=============================================================================
+QStringList CodeNode::extractIncludes_(const QString& filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return {};
+
+    const bool isQml = filePath.endsWith(".qml", Qt::CaseInsensitive);
+
+    QStringList result;
+    QTextStream in(&file);
+
+    while (!in.atEnd()) {
+        const QString line = in.readLine().trimmed();
+
+        if (isQml) {
+            // QML: include může být kdekoliv (typicky v komentáři)
+            if (!line.contains("#include"))
+                continue;
+        } else {
+            // C/C++: musí začínat na #include (po trimu)
+            if (!line.trimmed().startsWith("#include"))
+                continue;
+        }
+
+        int firstQuote = line.indexOf('"');
+        if (firstQuote < 0)
+            continue;
+
+        int secondQuote = line.indexOf('"', firstQuote + 1);
+        if (secondQuote < 0)
+            continue;
+
+        const QString includeFile = line.mid(firstQuote + 1, secondQuote - firstQuote - 1);
+
+        if (!includeFile.isEmpty()) result.append(includeFile);
+    }
+
+    return result;
+}
+
+void CodeNode::loadDependencies(const QString& filePath)
+{
+    const QStringList includes =
+        extractIncludes_(filePath);
+
+    for (const QString& inc : includes) {
+        const QString to =
+            QFileInfo(inc).completeBaseName();
+
+        if (to.isEmpty())
+            continue;
+
+        if (to == name_)
+            continue;
+
+        dependencies_.insert(to);
+    }
+}
 
 /// @view:end

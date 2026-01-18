@@ -55,9 +55,10 @@ public:
             dirs_.add("../../../APPS/PROMPT_ASSEMBLER");
         }
     }
+//@view:beg
     static void registerCmds_() {
 
-//@view:beg
+
     CMD_SYS.add("dir_merge_files",
     [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
         Q_UNUSED(data) Q_UNUSED(context) ///@view:exclude
@@ -152,30 +153,6 @@ public:
 
         if (dirs_.isEmpty())
             return args.appendError("no dir to analyze");
-
-        // stejný průchod jako dir_load_net / dir_merge_files
-        //for (const QString& dirStr : dirs_) {
-        /*for (int i = 0; i < dirs_.count(); i++) {
-            QString dirStr = dirs_.get(i).dirPath();
-            QDir moduleDir(dirStr);
-            if (!moduleDir.exists()) {
-                args.appendError("directory does not exist: " + dirStr);
-                continue;
-            }
-
-            QStringList moduleFiles =
-            AnalyzerCode::getFiles(
-                moduleDir,
-                QStringList() << "*.h" << "*.cpp" << "*.qml"
-                );
-
-            const QString moduleName = moduleDir.dirName();
-
-            // naplnění uzlů + hran
-            for (const QString& filePath : moduleFiles) {
-                sys_.add(filePath, moduleName);
-            }
-        }*/
 
         // výstupní soubor – stejný základ jako dir_merge_files, ale .dot
         QDir dir(dirs_.first());
