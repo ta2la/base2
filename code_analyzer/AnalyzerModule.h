@@ -85,7 +85,7 @@ public:
 
     bool used() const { return used_; }
     void setUsed(bool value) { used_ = value; }
-    bool subdirs() { return subdirs_; }
+    bool subdirs() const { return subdirs_; }
 
     AnalyzerModuleData data() const
     {

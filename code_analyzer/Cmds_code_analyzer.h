@@ -255,9 +255,12 @@ public:
         if (args.count() < 2)
             return args.appendError("usage: module_add <dirPath>");
 
+        const bool subdirs =
+            (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
+
         const QString dir = args.get(1).value();
 
-        Cmds_code_analyzer::dirs_.add(dir);
+        Cmds_code_analyzer::dirs_.add(dir, subdirs);
 
         args.append(dir, "MODULE_ADDED");
         return 0;

@@ -40,7 +40,7 @@ void AnalyzerCode::loadDot()
             AnalyzerCode::getFiles(
                 moduleDir,
                 QStringList() << "*.h" << "*.cpp" << "*.qml",
-                false
+                mod.subdirs()
                 );
 
         for (const QString& filePath : files) {

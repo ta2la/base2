@@ -37,19 +37,6 @@ public:
     //! @section Methods         /// @view:exclude
     //=========================================================================
     static QStringList getFiles(QDir& dir, QStringList filters, bool recursive) {
-        /*QDirIterator it(
-            dir.absolutePath(),
-            filters,
-            QDir::Files | QDir::NoSymLinks,
-            QDirIterator::Subdirectories
-            );
-
-        QStringList files;
-
-        while (it.hasNext()) files << it.next();
-
-        return files;*/
-
         QStringList files;
 
         if (recursive) {              // CHANGED
