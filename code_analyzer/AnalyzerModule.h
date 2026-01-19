@@ -32,6 +32,7 @@ struct AnalyzerModuleData
     Q_PROPERTY(QString dirPathModuleLess READ dirPathModuleLess CONSTANT)
     Q_PROPERTY(QString module  READ module  CONSTANT)
     Q_PROPERTY(bool    used    READ used    CONSTANT)
+    Q_PROPERTY(bool    subdirs    READ used    CONSTANT)
     Q_PROPERTY(QObject* files   READ files   CONSTANT)
 
 public:
@@ -40,16 +41,19 @@ public:
         , module_()
         , used_(false)
         , filesModel_(nullptr)
+        , subdirs_(true)
     {}
 
     explicit AnalyzerModuleData(
         const QString& dirPath,
         bool used,
-        AnalyzerModuleFilesModel* filesModel )
+        AnalyzerModuleFilesModel* filesModel,
+        bool subdirs)
         : dirPath_(dirPath)
         , module_(QDir(dirPath).dirName())
         , used_(used)
         , filesModel_(filesModel)
+        , subdirs_(subdirs)
     {}
 
     QString dirPath() const { return dirPath_; }
@@ -63,6 +67,7 @@ private:
     QString module_;
     bool    used_;
     QObject* filesModel_ = nullptr;
+    bool subdirs_ = true;
 };
 
 Q_DECLARE_METATYPE(AnalyzerModuleData)
@@ -72,7 +77,7 @@ class AnalyzerModule
 {
 public:
     /// @section Construction
-    explicit AnalyzerModule(const QString& dirPath, bool used = true);
+    explicit AnalyzerModule(const QString& dirPath, bool subdirs = false, bool used = true);
     void buildFilesModel();
 
     /// @section Accessors
@@ -80,10 +85,11 @@ public:
 
     bool used() const { return used_; }
     void setUsed(bool value) { used_ = value; }
+    bool subdirs() const { return subdirs_; }
 
     AnalyzerModuleData data() const
     {
-        return AnalyzerModuleData(dirPath_, used_, filesModel_);
+        return AnalyzerModuleData(dirPath_, used_, filesModel_, subdirs_);
     }
 
 //=============================================================================
@@ -91,6 +97,7 @@ protected:
     /// @section Data
     QString  dirPath_;
     bool     used_;
+    bool     subdirs_;
     AnalyzerModuleFilesModel* filesModel_ = nullptr;
 
     friend class AnalyzerModuleCol;

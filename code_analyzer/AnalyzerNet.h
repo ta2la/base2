@@ -52,15 +52,15 @@ public:
         if (base.startsWith("qrc"))
             return;
 
-        QString log("logcmd ");
+        //QString log("logcmd ");
 
         const QString from = AnalyzerNode::nameFromFilePath(filePath);
 
-        log += from + " -> ";
+        //log += from + " -> ";
 
         const QStringList includes = CodeNode::extractIncludes_(filePath);
 
-        log += includes.join(" ");
+        //log += includes.join(" ");
 
         for (const QString& inc : includes) {
             const QString to = QFileInfo(inc).completeBaseName();
@@ -68,8 +68,8 @@ public:
             if (!to.isEmpty()) add(from, to);
         }
 
-        log += " -> " + QString::number(connectors_.size());
-        CMD_SYS.execute(log);
+        //log += " -> " + QString::number(connectors_.size());
+        //CMD_SYS.execute(log);
     }
 
 //=============================================================================

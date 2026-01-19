@@ -77,13 +77,13 @@ public:
     }
 
     /// @section Methods
-    void add(const QString& dir)
+    void add(const QString& dir, bool subdirs = false)
     {
         const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
 
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
-        modules_.append(AnalyzerModule(norm));
+        modules_.append(AnalyzerModule(norm, subdirs));
         endInsertRows();
 
 

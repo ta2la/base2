@@ -30,7 +30,7 @@
 #include <QFileDialog>
 #include <QString>
 #include <AnalyzerModuleCol.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 ///@view:beg
 class  Cmds_code_analyzer {
@@ -44,21 +44,11 @@ public:
         static bool initialized = false;
         if (!initialized) {
             initialized = true;
-
-            dirs_.add("../../../base2/base/");
-            dirs_.add("../../../base2/cmd_sys");
-            dirs_.add("../../../base2/cmd_sys_display");
-            dirs_.add("../../../base2/object_registry");
-            dirs_.add("../../../base2/utility");
-            dirs_.add("../../../base2/code_data");
-            dirs_.add("../../../base2/code_analyzer");
-            dirs_.add("../../../APPS/PROMPT_ASSEMBLER");
         }
     }
-//@view:beg
     static void registerCmds_() {
 
-
+//@view:beg
     CMD_SYS.add("dir_merge_files",
     [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
         Q_UNUSED(data) Q_UNUSED(context) ///@view:exclude
@@ -72,50 +62,38 @@ public:
 
         QStringList files;
 
-        const CodeModuleCol& modules = CodeData::inst().modules();
+        for (int i = 0; i < dirs_.count(); i++) {
 
-        // iterujeme přímo přes moduly z code_data
-        const QStringList moduleNames = modules.names();
+            const AnalyzerModule& mod = dirs_.get(i);
+            if (!mod.used())
+                continue;   // ← VYPNUTÝ MODUL
 
-        for (const QString& moduleName : moduleNames) {
-
-            const CodeModule* module = modules.get(moduleName);
-            if (!module)
+            const QString dirStr = mod.dirPath();
+            QDir dir(dirStr);
+            if (!dir.exists()) {
+                result += args.appendError("directory does not exist");
                 continue;
+            }
 
-            const CodeNodeCol& nodes = module->nodes();
+            QStringList allFiles = AnalyzerCode::getFiles(
+                dir,
+                QStringList() << "*.cpp" << "*.h" << "*.qml",
+                true
+            );
 
-            // iterace přes uzly modulu
-            for (const QString& nodeName : nodes.names()) {
-
+            for (const QString& path : allFiles) {
                 if (byDist) {
-                    if (!Cmds_code_analyzer::sys_.isNodeExportableByDist(nodeName))
+                    const QString node =
+                        AnalyzerNode::nameFromFilePath(path);
+
+                    if (!Cmds_code_analyzer::sys_.isNodeExportableByDist(node))
                         continue;
                 }
-
-                const CodeNode* node = nodes.get(nodeName);
-                if (!node)
-                    continue;
-
-                // CodeNode::dir() = původní filePath
-                const QString filePath = node->dir();
-                const QString dir  = QFileInfo(filePath).absolutePath();
-                const QString base = node->name();
-
-                const QStringList exts = node->extensions();
-
-                for (const QString& ext : exts) {
-                    if (ext == "whole h")
-                        files << dir + "/" + base + ".h";
-                    else if (ext == "whole cpp")
-                        files << dir + "/" + base + ".cpp";
-                    else
-                        files << dir + "/" + base + "." + ext;
-                }
+                files << path;
             }
         }
 
-         QDir dir(dirs_.first());
+        QDir dir(dirs_.first());
 
         if (files.isEmpty()) return args.appendError("dir_merge_files: no source files found");
         files.sort();
@@ -254,18 +232,46 @@ public:
         return 0;
     });
 
+    CMD_SYS.add("analyzer_bootstrap",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        Q_UNUSED(args)
+
+        Cmds_code_analyzer::createModel();
+
+        AnalyzerCode::loadDot();
+
+        Cmds_code_analyzer::dirs_.loadFilesModels();
+
+        AnalyzerDistCalc(Cmds_code_analyzer::sys_).calculate();
+        AnalyzerDistCalc(Cmds_code_analyzer::sys_).addObservers();
+
+        return 0;
+    });
+
+    CMD_SYS.add("module_add",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        if (args.count() < 2)
+            return args.appendError("usage: module_add <dirPath>");
+
+        const bool subdirs =
+            (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
+
+        const QString dir = args.get(1).value();
+
+        Cmds_code_analyzer::dirs_.add(dir, subdirs);
+
+        args.append(dir, "MODULE_ADDED");
+        return 0;
+    });
+
     }
 //=============================================================================
 protected:
     /// @section Data
     inline static AnalyzerSys sys_;
     inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol();
-        /*<< AnalyzerModule( "../../../base2/base/")
-        << AnalyzerModule( "../../../base2/cmd_sys")
-        << AnalyzerModule("../../../base2/cmd_sys_display")
-        << AnalyzerModule("../../../base2/code_analyzer")
-        << AnalyzerModule("../../../apky/PROMPT_ASSEMBLER")
-        << AnalyzerModule("../../../base2/utility");*/
 
     friend class Cmds_code_analyzer_test;
     friend int main(int, char**);
