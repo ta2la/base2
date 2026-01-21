@@ -41,6 +41,7 @@ public:
     CodeModule*    module() const { return module_; }
 
     QStringList extensions() const;
+    QStringList dependencies() const;
 
     void addExtension(const QString& ext);
 
@@ -48,6 +49,9 @@ public:
     void loadDependencies(const QString& filePath);
 
     CodeNodeAddress address() const;
+
+    void setDistToCenter(double value) { distToCenter_ = value; }
+    double distToCenter() const { return distToCenter_; }
 
 protected:
     QString     dir_;        // full file path

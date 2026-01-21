@@ -15,6 +15,10 @@
 //=============================================================================
 
 #include "AnalyzerDistCalc.h"
+#include "AnalyzerSys.h"
+#include "AnalyzerModule.h"
+#include "AnalyzerNode.h"
+#include "Cmds_code_analyzer.h"
 
 #include <queue>
 #include <vector>
@@ -27,29 +31,17 @@ void AnalyzerDistCalc::buildGraph()
 {
     graph_.clear();
 
-    // zajistíme existenci všech uzlů
-    /*for (auto it = sys_->nodes_.cbegin(); it != sys_->nodes_.cend(); ++it) {
-        graph_[it->first];   // vytvoří prázdný seznam hran
-    }*/
+    const CodeModuleCol& modules = data_->modules();
+        //CodeData::inst().modules().nodes();
 
-    const QStringList nodes =
-        CodeData::inst().modules().nodes();
-
+    const QStringList nodes = modules.nodes();
     for (const QString& name : nodes) {
         graph_[name];   // vytvoří prázdný seznam hran
     }
 
-    // zkopírujeme všechny konektory do adjacency listu
-    /*for (auto it = sys_->net_.connectors_.cbegin();
-         it != sys_->net_.connectors_.cend(); ++it)
-    {
-        const AnalyzerConnector& c = it.value();
-        graph_[c.node1()].append({ c.node2(), c.length() });
-    }*/
-
     // NEW: get connectors from code_data (stack-local)
     const QList<CodeConnector> connectors =
-        CodeData::inst().modules().connectors();
+        modules.connectors();
 
     // zkopírujeme všechny konektory do adjacency listu
     for (const CodeConnector& c : connectors) {
@@ -60,7 +52,7 @@ void AnalyzerDistCalc::buildGraph()
 //=============================================================================
 void AnalyzerDistCalc::calculate()
 {
-    const QString center = sys_->center_;
+    const QString center = data_->center_.node;//const QString center = sys_->center_;
     if (center.isEmpty())
         return;
 
@@ -97,8 +89,26 @@ void AnalyzerDistCalc::calculate()
     }
 
     // výsledek zapíšeme zpět do AnalyzerNode
-    for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
+    /*for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
         AnalyzerNode* n = sys_->node(it.key());
+        if (n)
+            n->setDistToCenter(it.value());
+    }*/
+
+    CodeModuleCol& modules = data_->modules();
+
+    for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
+        CodeNode* n =
+            modules.get(CodeNodeAddress(
+                QString(),       // node name is globally unique
+                it.key()
+                ));
+
+        if (n) n->setDistToCenter(it.value());
+    }
+
+    for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
+        AnalyzerNode* n = Cmds_code_analyzer::sys_.node(it.key());
         if (n)
             n->setDistToCenter(it.value());
     }
@@ -107,7 +117,7 @@ void AnalyzerDistCalc::calculate()
 //=============================================================================
 void AnalyzerDistCalc::addObservers()
 {
-    const QString& center = sys_->center_;
+    /*const QString& center = sys_->center_;
     const auto& connectors = sys_->net_.connectors_;
     const AnalyzerNode* centerNode = sys_->node(sys_->center_);
     const QString centerModule = centerNode ? centerNode->module() : QString();
@@ -140,6 +150,39 @@ void AnalyzerDistCalc::addObservers()
 
         if (!std::isfinite(n->distToCenter())) {
             n->setDistToCenter(-100);
+        }
+    }*/
+
+    // BEGIN CHANGE
+    const QString center = data_->center_.node;
+    // END CHANGE
+
+    if (center.isEmpty())
+        return;
+
+    // BEGIN CHANGE
+    CodeModuleCol& modules = data_->modules();
+    const QList<CodeConnector> connectors = modules.connectors();
+    // END CHANGE
+
+    for (const CodeConnector& c : connectors) {
+
+        if (c.node2() == center && c.node1() != center) {
+
+            // BEGIN CHANGE
+            CodeNode* n =
+                modules.get(CodeNodeAddress(
+                    QString(),
+                    c.node1()
+                    ));
+            // END CHANGE
+
+            if (!n)
+                continue;
+
+            if (!std::isfinite(n->distToCenter())) {
+                n->setDistToCenter(-1);
+            }
         }
     }
 }

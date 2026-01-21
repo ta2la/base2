@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2025 Petr Talla. [petr.talla@gmail.com]
+// Copyright (C) 2026 Petr Talla. [petr.talla@gmail.com]
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,39 +19,45 @@
  */
 #pragma once
 
+#include "CodeNodeAddress.h"
+
 #include <QString>
 
 /// @view:beg
-
 class CodeConnector
 {
 public:
     CodeConnector(
-        const QString& node1,
-        const QString& node2)
-        : node1_(node1)
-        , node2_(node2)
+        const CodeNodeAddress& node1,
+        const CodeNodeAddress& node2)
+        : node1Address_(node1)
+        , node2Address_(node2)
     {}
 
-    const QString& node1() const { return node1_; }
-    const QString& node2() const { return node2_; }
+    // existing API (AnalyzerDistCalc-compatible)
+    const QString& node1() const { return node1Address_.node; }
+    const QString& node2() const { return node2Address_.node; }
 
-    // node1-node2
+    // address-level access (new, additive)
+    const CodeNodeAddress& node1Address() const { return node1Address_; }
+    const CodeNodeAddress& node2Address() const { return node2Address_; }
+
+    // node1-node2 (node name is globally unique)
     static QString signature(
-        const QString& node1,
-        const QString& node2)
+        const CodeNodeAddress& node1,
+        const CodeNodeAddress& node2)
     {
-        return node1 + "-" + node2;
+        return node1.node + "-" + node2.node;
     }
 
     QString signature() const
     {
-        return signature(node1_, node2_);
+        return signature(node1Address_, node2Address_);
     }
 
 protected:
-    QString node1_;
-    QString node2_;
+    CodeNodeAddress node1Address_;
+    CodeNodeAddress node2Address_;
 };
 
 /// @view:end

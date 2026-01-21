@@ -16,10 +16,59 @@
 
 #include "CodeData.h"
 
+#include <QTextStream>
+
 /// @view:beg
 
 CodeData::CodeData()
 {
+}
+
+QString CodeData::toDot() const
+{
+    QString out;
+    QTextStream s(&out);
+
+    s << "digraph Analyzer {\n";
+
+    // === modules as clusters ===
+    for (const QString& moduleName : modules_.names()) {
+
+        const CodeModule* module = modules_.get(moduleName);
+        if (!module)
+            continue;
+
+        s << "  subgraph cluster_" << moduleName << " {\n";
+        s << "    label=\"" << moduleName << "\";\n";
+
+        const CodeNodeCol& nodes = module->nodes();
+
+        for (const QString& nodeName : nodes.names()) {
+            const CodeNode* n = nodes.get(nodeName);
+            if (!n)
+                continue;
+
+            QString label = n->name();
+            QStringList exts = n->extensions();
+            if (!exts.isEmpty())
+                label += "\\n[" + exts.join(" ") + "]";
+
+            s << "    \"" << n->name() << "\" [label=\""
+              << label << "\"];\n";
+        }
+
+        s << "  }\n";
+    }
+
+    // === edges ===
+    const QList<CodeConnector> conns = modules_.connectors();
+    for (const CodeConnector& c : conns) {
+        s << "  \"" << c.node1() << "\" -> \""
+          << c.node2() << "\";\n";
+    }
+
+    s << "}\n";
+    return out;
 }
 
 /// @view:end

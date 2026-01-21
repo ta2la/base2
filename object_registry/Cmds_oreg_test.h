@@ -23,6 +23,8 @@
 #include "OregContainer.h"
 #include "OregPool.h"
 
+#include <QTextStream>
+
 class OregObject;
 class DebugRecordItem;
 

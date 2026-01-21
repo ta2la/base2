@@ -91,7 +91,8 @@ QList<CodeConnector> CodeModuleCol::connectors() const
             // CodeNode = first
             // QSet<QString> dependencies_ = second
             for (const QString& to : node->dependencies_) {
-                result.append(CodeConnector(from, to));
+                result.append(CodeConnector(CodeNodeAddress(mit.second->name(), from),
+                                            CodeNodeAddress(nit.second->name(), to)));
             }
         }
     }
@@ -140,9 +141,9 @@ QStringList CodeModuleCol::filePathsForNode(const QString& nodeName) const
         const QString name = node->name();
 
         for (const QString& ext : node->extensions()) {
-            if (ext == "whole h")
+            if (ext == "h")
                 result << dir + "/" + name + ".h";
-            else if (ext == "whole cpp")
+            else if (ext == "cpp")
                 result << dir + "/" + name + ".cpp";
             else
                 result << dir + "/" + name + "." + ext;
@@ -154,26 +155,50 @@ QStringList CodeModuleCol::filePathsForNode(const QString& nodeName) const
 
 CodeNode* CodeModuleCol::get(const CodeNodeAddress& addr)
 {
-    if (!addr.isValid())
-        return nullptr;
+    //if (!addr.isValid())
+    //    return nullptr;
 
-    CodeModule* module = get(addr.module_);
+    if (addr.module.isEmpty()) {
+        for (auto& it : modules_) {
+            CodeModule* module = it.second;
+            if (!module)
+                continue;
+
+            CodeNode* node = module->nodes().get(addr.node);
+            if (node)
+                return node;
+        }
+    }
+
+    CodeModule* module = get(addr.module);
     if (!module)
         return nullptr;
 
-    return module->nodes().get(addr.node_);
+    return module->nodes().get(addr.node);
 }
 
 const CodeNode* CodeModuleCol::get(const CodeNodeAddress& addr) const
 {
-    if (!addr.isValid())
-        return nullptr;
+    //if (!addr.isValid())
+    //    return nullptr;
 
-    const CodeModule* module = get(addr.module_);
+    if (addr.module.isEmpty()) {
+        for (auto& it : modules_) {
+            CodeModule* module = it.second;
+            if (!module)
+                continue;
+
+            CodeNode* node = module->nodes().get(addr.node);
+            if (node)
+                return node;
+        }
+    }
+
+    const CodeModule* module = get(addr.module);
     if (!module)
         return nullptr;
 
-    return module->nodes().get(addr.node_);
+    return module->nodes().get(addr.node);
 }
 
 /// @view:end

@@ -24,6 +24,7 @@
 #include "AnalyzerSys.h"
 #include "AnalyzerModuleFileData.h"
 #include "AnalyzerDistCalc.h"
+#include "CodeData.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -212,7 +213,7 @@ public:
 
         const QString name = args.get(1).value();
 
-        AnalyzerSys& sys = Cmds_code_analyzer::sys_;
+        /*AnalyzerSys& sys = Cmds_code_analyzer::sys_;
 
         if (!sys.node(name))
             return args.appendError("unknown node: " + name);
@@ -223,7 +224,31 @@ public:
         // přepočítáme vzdálenosti
         AnalyzerDistCalc calc(sys);
         calc.calculate();
+        calc.addObservers();*/
+
+        // BEGIN CHANGE
+        CodeData& data = CodeData::inst();
+        // END CHANGE
+
+        // BEGIN CHANGE
+        // validate node existence via code_data
+        if (!data.modules().get(
+                CodeNodeAddress(QString(), name)))
+            return args.appendError("unknown node: " + name);
+        // END CHANGE
+
+        // BEGIN CHANGE
+        // set new center (address-level, conservative)
+        data.center_ = CodeNodeAddress(QString(), name);
+        Cmds_code_analyzer::sys_.center_ = name;
+        // END CHANGE
+
+        // BEGIN CHANGE
+        // recompute distances using code_data
+        AnalyzerDistCalc calc(data);
+        calc.calculate();
         calc.addObservers();
+        // END CHANGE
 
         Cmds_code_analyzer::dirs_.resetAllFilesModels();
 
@@ -243,8 +268,12 @@ public:
 
         Cmds_code_analyzer::dirs_.loadFilesModels();
 
-        AnalyzerDistCalc(Cmds_code_analyzer::sys_).calculate();
-        AnalyzerDistCalc(Cmds_code_analyzer::sys_).addObservers();
+        //AnalyzerDistCalc(Cmds_code_analyzer::sys_).calculate();
+        //AnalyzerDistCalc(Cmds_code_analyzer::sys_).addObservers();
+
+        AnalyzerDistCalc dataCalc(CodeData::inst());
+        dataCalc.calculate();
+        dataCalc.addObservers();
 
         return 0;
     });
@@ -279,5 +308,6 @@ protected:
     friend struct AnalyzerModuleFileData;
     friend class AnalyzerModule;
     friend class Cmds_code_analyzer;
+    friend class AnalyzerDistCalc;
 };
 ///@view:end

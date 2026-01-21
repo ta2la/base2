@@ -15,6 +15,7 @@
 //=============================================================================
 
 #include "CodeData.h"
+#include <QTextStream>
 
 /// @view:beg
 
@@ -60,8 +61,8 @@ void CodeNode::addExtension(const QString& ext)
 
     // h + cpp are treated as whole code units
     if (e == "h" || e == "cpp") {
-        extensions_.insert("whole h");
-        extensions_.insert("whole cpp");
+        extensions_.insert("h");
+        extensions_.insert("cpp");
         return;
     }
 
@@ -152,6 +153,13 @@ CodeNodeAddress CodeNode::address() const
         module_ ? module_->name() : QString(),
         name_
         );
+}
+
+QStringList CodeNode::dependencies() const
+{
+    QStringList list = dependencies_.values();
+    list.sort();          // deterministic, conservative
+    return list;
 }
 
 /// @view:end

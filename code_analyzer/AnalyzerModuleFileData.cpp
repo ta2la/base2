@@ -14,14 +14,16 @@
 // limitations under the License.
 //=============================================================================
 
-#include "AnalyzerModuleFileData.h"
+#include "CodeNode.h"
 #include "Cmds_code_analyzer.h"
 
 /// @view:beg
 
 //=============================================================================
 AnalyzerModuleFileData::AnalyzerModuleFileData(const QString& name) :
-    node_(Cmds_code_analyzer::sys_.node(name))
+    //node_(Cmds_code_analyzer::sys_.node(name))
+    node_(CodeData::inst().modules().get(
+        CodeNodeAddress(QString(), name)))
 {
 
 }
@@ -55,7 +57,7 @@ QStringList AnalyzerModuleFileData::types() const
     if (!node_)
         return {};
 
-    QStringList list = node_->extensions().values();
+    QStringList list = node_->extensions();
     list.sort();
     return list;
 }

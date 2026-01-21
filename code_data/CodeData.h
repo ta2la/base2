@@ -35,6 +35,7 @@ public:
     CodeModuleCol& modules()       { return modules_; }
     const CodeModuleCol& modules() const { return modules_; }
     //! @section Methods
+    QString toDot() const;
 //=============================================================================
 protected:
     CodeModuleCol   modules_;
@@ -42,6 +43,7 @@ protected:
     double distToCenter_ = 1;
 
     friend class AnalyzerDistCalc;
+    friend class Cmds_code_analyzer;
 };
 
 /// @view:end

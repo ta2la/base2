@@ -25,26 +25,26 @@
 
 struct CodeNodeAddress
 {
-    QString module_;
-    QString node_;
+    QString module;
+    QString node;
 
     CodeNodeAddress() = default;
 
     CodeNodeAddress(const QString& module,
                     const QString& node)
-        : module_(module)
-        , node_(node)
+        : module(module)
+        , node(node)
     {}
 
     bool isValid() const
     {
-        return !module_.isEmpty() && !node_.isEmpty();
+        return !module.isEmpty() && !node.isEmpty();
     }
 
     bool operator==(const CodeNodeAddress& other) const
     {
-        return module_ == other.module_
-               && node_   == other.node_;
+        return module == other.module
+               && node   == other.node;
     }
 };
 

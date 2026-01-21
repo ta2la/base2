@@ -20,7 +20,7 @@
 
 /// @view:beg
 
-class AnalyzerNode;
+class CodeNode;
 
 struct AnalyzerModuleFileData
 {
@@ -41,7 +41,8 @@ public:
     QStringList types() const;
 
 private:
-    const AnalyzerNode* node_ = nullptr;
+    //const AnalyzerNode* node_ = nullptr;
+    const CodeNode* node_ = nullptr;
 };
 
 Q_DECLARE_METATYPE(AnalyzerModuleFileData)

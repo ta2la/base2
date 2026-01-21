@@ -15,7 +15,7 @@
 //=============================================================================
 #pragma once
 
-#include "AnalyzerSys.h"
+#include "CodeData.h"
 
 #include <QAbstractListModel>
 #include <QStringList>
@@ -27,8 +27,8 @@ class AnalyzerNode;
 class AnalyzerDistCalc
 {
 public:
-    AnalyzerDistCalc(AnalyzerSys& sys)
-        : sys_(&sys)
+    AnalyzerDistCalc(CodeData& data)
+        : data_(&data)
     {
         buildGraph();
     }
@@ -44,7 +44,8 @@ public:
 
 protected:
     QMap<QString, QList<Edge>> graph_;
-    AnalyzerSys*               sys_;
+    //AnalyzerSys*               sys_;
+    CodeData*                  data_;
 };
 
 /// @view:end
