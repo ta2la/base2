@@ -10,12 +10,15 @@ HEADERS += \
     $$PWD/CodeNodeModuleFilter.h \
     $$PWD/CodeConnector.h \
     $$PWD/CodeNodeAddress.h \
-    $$PWD/CodeConnector.h
+    $$PWD/CodeConnector.h \
+    $$PWD/AnalyzerDistCalc.h \
+    $$PWD/Cmds_code_data.h
 
 SOURCES += \
     $$PWD/CodeData.cpp \
     $$PWD/CodeModule.cpp \
     $$PWD/CodeModuleCol.cpp \
     $$PWD/CodeNode.cpp \
-    $$PWD/CodeNodeCol.cpp
+    $$PWD/CodeNodeCol.cpp \
+    $$PWD/AnalyzerDistCalc.h
 

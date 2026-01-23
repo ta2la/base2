@@ -31,7 +31,6 @@
 #include <QFileDialog>
 #include <QString>
 #include <AnalyzerModuleCol.h>
-//#include <unistd.h>
 
 ///@view:beg
 class  Cmds_code_analyzer {
@@ -84,10 +83,17 @@ public:
 
             for (const QString& path : allFiles) {
                 if (byDist) {
-                    const QString node =
-                        AnalyzerNode::nameFromFilePath(path);
+                    const QString nodeName =
+                        QFileInfo(path).completeBaseName();
 
-                    if (!Cmds_code_analyzer::sys_.isNodeExportableByDist(node))
+                    const CodeNode* node =
+                        CodeData::inst().modules().get(
+                            CodeNodeAddress(QString(), nodeName));
+
+                    if (!node)
+                        continue;
+
+                    if (!std::isfinite(node->distToCenter()))
                         continue;
                 }
                 files << path;
@@ -134,47 +140,6 @@ public:
 
         return result;
     });
-    CMD_SYS.add("dir_load_net_debug",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-        const QString debugStr = sys_.toStringDebug();
-        args.append(debugStr, "DEBUG");
-        return 0;
-    });
-    CMD_SYS.add("dir_export_dot",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-
-        if (dirs_.isEmpty())
-            return args.appendError("no dir to analyze");
-
-        // výstupní soubor – stejný základ jako dir_merge_files, ale .dot
-        QDir dir(dirs_.first());
-        if (dir.isRoot())
-            return args.appendError("dir_export_dot: root not possible");
-
-        QString base = QDir::cleanPath(dirs_.first());
-        QString dotFileName = base + ".dot";
-
-        QFile outFile(dotFileName);
-        if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-            return args.appendError("dir_export_dot: cannot open output file");
-
-        QByteArray dot =  CodeData::inst().toDot().toUtf8();
-        outFile.write(dot);
-        outFile.close();
-
-        args.append(dotFileName, "RESULT_DOT");
-
-        // otevření adresáře s výsledným .dot souborem
-        dir.cdUp();
-        args.append("<a href='system_open_path " +
-                    dir.absolutePath() +
-                    "'>[OPEN DIR]</a>");
-        args.append("<a href='system_dot_to_svg " +
-                    dotFileName +
-                    "'>[DOT-&gtSVG]</a>");
-
-        return 0;
-    });
     CMD_SYS.add("set_module_used",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -213,42 +178,19 @@ public:
 
         const QString name = args.get(1).value();
 
-        /*AnalyzerSys& sys = Cmds_code_analyzer::sys_;
-
-        if (!sys.node(name))
-            return args.appendError("unknown node: " + name);
-
-        // nastav nový střed
-        sys.center_ = name;
-
-        // přepočítáme vzdálenosti
-        AnalyzerDistCalc calc(sys);
-        calc.calculate();
-        calc.addObservers();*/
-
-        // BEGIN CHANGE
         CodeData& data = CodeData::inst();
-        // END CHANGE
 
-        // BEGIN CHANGE
-        // validate node existence via code_data
         if (!data.modules().get(
                 CodeNodeAddress(QString(), name)))
             return args.appendError("unknown node: " + name);
-        // END CHANGE
 
-        // BEGIN CHANGE
-        // set new center (address-level, conservative)
         data.center_ = CodeNodeAddress(QString(), name);
         Cmds_code_analyzer::sys_.center_ = name;
-        // END CHANGE
 
-        // BEGIN CHANGE
         // recompute distances using code_data
         AnalyzerDistCalc calc(data);
         calc.calculate();
         calc.addObservers();
-        // END CHANGE
 
         Cmds_code_analyzer::dirs_.resetAllFilesModels();
 
@@ -271,9 +213,6 @@ public:
         AnalyzerCode::loadDot(subdirs, strict);
 
         Cmds_code_analyzer::dirs_.loadFilesModels();
-
-        //AnalyzerDistCalc(Cmds_code_analyzer::sys_).calculate();
-        //AnalyzerDistCalc(Cmds_code_analyzer::sys_).addObservers();
 
         AnalyzerDistCalc dataCalc(CodeData::inst());
         dataCalc.calculate();

@@ -99,11 +99,11 @@ void AnalyzerDistCalc::calculate()
         if (n) n->setDistToCenter(it.value());
     }
 
-    for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
+   /*for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
         AnalyzerNode* n = Cmds_code_analyzer::sys_.node(it.key());
         if (n)
             n->setDistToCenter(it.value());
-    }
+    }*/
 }
 
 //=============================================================================
