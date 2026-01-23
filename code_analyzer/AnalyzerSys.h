@@ -16,8 +16,6 @@
 #pragma once
 
 #include "AnalyzerNode.h"
-#include "AnalyzerNet.h"
-#include "AnalyzerCalc_dot.h"
 
 #include "CodeData.h"
 #include "Cmds_oreg_test.h"
@@ -31,7 +29,7 @@ public:
 /// @section Construction
     AnalyzerSys() = default;
 /// @section Neighbours
-    AnalyzerNet& net() { return net_; }
+    //AnalyzerNet& net() { return net_; }
 
 /// @section Methods
     //=================================
@@ -55,7 +53,7 @@ public:
             it->second->insertSuffix(filePath);
         }
 
-        net_.addIncludesFromFile(filePath);
+        //net_.addIncludesFromFile(filePath);
     }
 
     //=================================
@@ -75,20 +73,6 @@ public:
         }
 
         return parts.join(" ");
-    }
-
-    //=================================
-    QString toDot() const
-    {
-        QString out;
-        QTextStream s(&out);
-
-        s << "digraph Analyzer {\n";
-        s << AnalyzerCalc_dot::toDot_();
-        s << net_.toDot_();
-        s << "}\n";
-
-        return out;
     }
 
 //=============================================================================
@@ -139,7 +123,7 @@ protected:
 
 /// @section Data
     std::map<QString, std::unique_ptr<AnalyzerNode>> nodes_;
-    AnalyzerNet                                      net_;
+    //AnalyzerNet                                      net_;
     QString                                          center_ = "AnalyzerSys";
 
     friend class AnalyzerModule;

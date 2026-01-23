@@ -50,7 +50,7 @@ public:
 
     QStringList names() const;
 
-    void add(const QString& path);
+    void add(const QString& path, bool subdirs, bool strict);
 
     QList<CodeConnector> connectors() const;
     QStringList nodes() const;
@@ -59,6 +59,8 @@ public:
 //=============================================================================
 protected:
     std::map<QString, CodeModule*> modules_;
+
+    friend class AnalyzerDistCalc;
 };
 
 /// @view:end

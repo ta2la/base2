@@ -54,32 +54,6 @@ public:
         endResetModel();
     }
 
-    void resetFromDir(const QString& dirPath)
-    {
-        beginResetModel();
-        files_.clear();
-
-        QDir dir(dirPath);
-        if (dir.exists()) {
-            const QStringList paths =
-                AnalyzerCode::getFiles(
-                    dir,
-                    QStringList() << "*.h" << "*.cpp" << "*.qml",
-                    true
-                    );
-
-            for (const QString& path : paths) {
-                files_.append(
-                    AnalyzerModuleFileData(
-                         QFileInfo(path).completeBaseName()
-                        )
-                    );
-            }
-        }
-
-        endResetModel();
-    }
-
     int rowCount(const QModelIndex& parent = QModelIndex()) const override
     {
         Q_UNUSED(parent)

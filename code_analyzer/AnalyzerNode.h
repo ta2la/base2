@@ -183,7 +183,7 @@ private:
 
     QSet<QString> extensions_;
 
-friend class AnalyzerNet;
+//friend class AnalyzerNet;
 };
 
 /// @view:end

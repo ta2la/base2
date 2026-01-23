@@ -77,7 +77,7 @@ public:
     }
 
     /// @section Methods
-    void add(const QString& dir, bool subdirs = false)
+    void add(const QString& dir, bool subdirs, bool strict)
     {
         const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
 
@@ -88,7 +88,7 @@ public:
 
 
         OregUpdateLock l;
-        CodeData::inst().modules().add(norm);
+        CodeData::inst().modules().add(norm, subdirs, strict);
 
     }
 

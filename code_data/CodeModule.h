@@ -32,7 +32,7 @@ class  CodeModule : public OregObject
 public:
     //!` @section Construction
     CodeModule(const QString& path);
-    void loadFiles();
+    void loadFiles(bool subdirs, bool strict);
     //! @section Methods
     const QString& name() const { return name_; }
     const QString& path() const { return path_; }

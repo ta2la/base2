@@ -158,7 +158,7 @@ public:
         if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
             return args.appendError("dir_export_dot: cannot open output file");
 
-        QByteArray dot = sys_.toDot().toUtf8();
+        QByteArray dot =  CodeData::inst().toDot().toUtf8();
         outFile.write(dot);
         outFile.close();
 
@@ -260,11 +260,15 @@ public:
     CMD_SYS.add("analyzer_bootstrap",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-        Q_UNUSED(args)
+        const bool subdirs =
+            (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
+
+        const bool strict =
+            (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
 
         Cmds_code_analyzer::createModel();
 
-        AnalyzerCode::loadDot();
+        AnalyzerCode::loadDot(subdirs, strict);
 
         Cmds_code_analyzer::dirs_.loadFilesModels();
 
@@ -287,9 +291,12 @@ public:
         const bool subdirs =
             (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
 
+        const bool strict =
+            (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
+
         const QString dir = args.get(1).value();
 
-        Cmds_code_analyzer::dirs_.add(dir, subdirs);
+        Cmds_code_analyzer::dirs_.add(dir, subdirs, strict);
 
         args.append(dir, "MODULE_ADDED");
         return 0;

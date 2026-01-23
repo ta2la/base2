@@ -88,13 +88,6 @@ void AnalyzerDistCalc::calculate()
         }
     }
 
-    // výsledek zapíšeme zpět do AnalyzerNode
-    /*for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
-        AnalyzerNode* n = sys_->node(it.key());
-        if (n)
-            n->setDistToCenter(it.value());
-    }*/
-
     CodeModuleCol& modules = data_->modules();
 
     for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
@@ -117,21 +110,26 @@ void AnalyzerDistCalc::calculate()
 //=============================================================================
 void AnalyzerDistCalc::addObservers()
 {
-    /*const QString& center = sys_->center_;
-    const auto& connectors = sys_->net_.connectors_;
-    const AnalyzerNode* centerNode = sys_->node(sys_->center_);
-    const QString centerModule = centerNode ? centerNode->module() : QString();
+    const QString center = data_->center_.node;
 
     if (center.isEmpty())
         return;
 
-    for (auto it = connectors.cbegin(); it != connectors.cend(); ++it) {
-        const AnalyzerConnector& c = it.value();
+    CodeModuleCol& modules = data_->modules();
+    const QList<CodeConnector> connectors = modules.connectors();
 
-        // X -> center  ==> observer
+    for (const CodeConnector& c : connectors) {
+
         if (c.node2() == center && c.node1() != center) {
-            AnalyzerNode* n = sys_->node(c.node1());
-            if(!n) continue;
+
+            CodeNode* n =
+                modules.get(CodeNodeAddress(
+                    QString(),
+                    c.node1()
+                    ));
+
+            if (!n)
+                continue;
 
             if (!std::isfinite(n->distToCenter())) {
                 n->setDistToCenter(-1);
@@ -139,49 +137,24 @@ void AnalyzerDistCalc::addObservers()
         }
     }
 
-    for (auto it = sys_->nodes_.cbegin(); it != sys_->nodes_.cend(); ++it) {
-        AnalyzerNode* n = it->second.get();
-
-        if (n->name() == center)
+    for (const auto& mit : modules.modules_) {
+        CodeModule* mod = mit.second;
+        if (!mod)
             continue;
 
-        if (n->module() != centerModule)
+        // fast reject
+        if (mod->name() != data_->center_.module)
             continue;
 
-        if (!std::isfinite(n->distToCenter())) {
-            n->setDistToCenter(-100);
-        }
-    }*/
+        CodeNodeCol& nodes = mod->nodes();
 
-    // BEGIN CHANGE
-    const QString center = data_->center_.node;
-    // END CHANGE
-
-    if (center.isEmpty())
-        return;
-
-    // BEGIN CHANGE
-    CodeModuleCol& modules = data_->modules();
-    const QList<CodeConnector> connectors = modules.connectors();
-    // END CHANGE
-
-    for (const CodeConnector& c : connectors) {
-
-        if (c.node2() == center && c.node1() != center) {
-
-            // BEGIN CHANGE
-            CodeNode* n =
-                modules.get(CodeNodeAddress(
-                    QString(),
-                    c.node1()
-                    ));
-            // END CHANGE
-
+        for (const auto& nit : nodes.nodes_) {
+            CodeNode* n = nit.second;
             if (!n)
                 continue;
 
             if (!std::isfinite(n->distToCenter())) {
-                n->setDistToCenter(-1);
+                n->setDistToCenter(-100);
             }
         }
     }

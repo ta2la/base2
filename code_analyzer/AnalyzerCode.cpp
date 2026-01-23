@@ -19,12 +19,61 @@
 
 /// @view:beg
 
-void AnalyzerCode::loadDot()
+void AnalyzerCode::loadDot(bool subdirs, bool strict)
 {
+
+    for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); ++i) {
+
+        const AnalyzerModule& mod = Cmds_code_analyzer::dirs_.get(i);
+        if (!mod.used())
+            continue;
+
+        QDir moduleDir(mod.dirPath());
+        if (!moduleDir.exists())
+            continue;
+
+        const QString moduleName = moduleDir.dirName();
+
+        // --- BEGIN CHANGE ---
+        const QStringList files =
+            AnalyzerCode::getFiles(
+                moduleDir,
+                QStringList() << "*.h" << "*.cpp" << "*.qml",
+                subdirs
+                );
+        // --- END CHANGE ---
+
+        for (const QString& filePath : files) {
+            const QString base = QFileInfo(filePath).fileName();
+
+            // exclude generated files
+            if (base.startsWith("moc_"))
+                continue;
+            if (base.startsWith("qrc"))
+                continue;
+
+            // --- BEGIN CHANGE ---
+            if (strict) {
+                QFile f(filePath);
+                if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+                    continue;
+
+                const QString content =
+                    QString::fromUtf8(f.readAll());
+
+                if (!content.contains("@view:beg"))
+                    continue;
+            }
+            // --- END CHANGE ---
+
+            Cmds_code_analyzer::sys_.add(filePath, moduleName);
+        }
+    }
+
     // singleton
     //Cmds_code_analyzer::sys_.clear();
 
-    for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); ++i) {
+ /*   for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); ++i) {
 
         const AnalyzerModule& mod = Cmds_code_analyzer::dirs_.get(i);
         if (!mod.used())
@@ -54,7 +103,7 @@ void AnalyzerCode::loadDot()
 
             Cmds_code_analyzer::sys_.add(filePath, moduleName);
         }
-    }
+    }*/
 }
 
 /// @view:end

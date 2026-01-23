@@ -58,7 +58,7 @@ QString CodeModule::oo_to_string(EStringFormat format) const
     return OregObject::oo_to_string(format);
 }
 
-void CodeModule::loadFiles()
+void CodeModule::loadFiles(bool subdirs, bool strict)
 {
     if (path_.isEmpty())
         return;
@@ -67,15 +67,32 @@ void CodeModule::loadFiles()
     if (!root.exists())
         return;
 
+    const QDirIterator::IteratorFlags flags =
+        subdirs ? QDirIterator::Subdirectories
+                : QDirIterator::NoIteratorFlags;
+
     QDirIterator it(
         root.absolutePath(),
         QStringList() << "*.h" << "*.cpp" << "*.qml",
         QDir::Files | QDir::NoSymLinks,
-        QDirIterator::Subdirectories
+        flags
         );
 
     while (it.hasNext()) {
         const QString filePath = it.next();
+
+        if (strict) {
+            QFile f(filePath);
+            if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+                continue;
+
+            const QString content =
+                QString::fromUtf8(f.readAll());
+
+            if (!content.contains("@view:beg"))
+                continue;
+        }
+
         QFileInfo fi(filePath);
 
         const QString base = fi.completeBaseName();

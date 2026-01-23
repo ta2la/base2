@@ -36,6 +36,8 @@ public:
     const CodeModuleCol& modules() const { return modules_; }
     //! @section Methods
     QString toDot() const;
+
+    CodeNodeAddress center() {return center_; }
 //=============================================================================
 protected:
     CodeModuleCol   modules_;

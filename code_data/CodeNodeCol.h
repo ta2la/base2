@@ -47,6 +47,7 @@ protected:
     std::map<QString, CodeNode*> nodes_;
 
     friend class CodeModuleCol;
+    friend class AnalyzerDistCalc;
 };
 
 /// @view:end
