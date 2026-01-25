@@ -4,7 +4,6 @@ DEPENDPATH += $$PWD
 HEADERS += \
     $$PWD/Cmds_code_analyzer.h \
     $$PWD/Cmds_code_analyzer_test.h \
-    $$PWD/AnalyzerCode.h \
     $$PWD/AnalyzerModule.h \
     $$PWD/AnalyzerModuleData.h \
     $$PWD/AnalyzerModuleCol.h \

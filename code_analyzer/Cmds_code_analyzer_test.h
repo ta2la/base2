@@ -20,8 +20,8 @@
 #pragma once
 
 #include "CmdSys.h"
-#include "AnalyzerCode.h"
-#include "Cmds_code_analyzer.h"
+//#include "AnalyzerCode.h"
+//#include "Cmds_code_analyzer.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>

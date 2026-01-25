@@ -21,6 +21,7 @@
 
 #include "CmdSys.h"
 #include "CodeData.h"
+#include "OregUpdateLock.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -36,9 +37,227 @@ public:
 //! @section Construction
     Cmds_code_data() = delete;
 //<METHODS>
+
+
+    //=========================================================================
+    static QByteArray extractView(const QByteArray& input)
+    {
+        static const QByteArray kAt          = QByteArrayLiteral("@");
+
+        static const QByteArray kViewBeg     = kAt + "view:beg";
+        static const QByteArray kViewEnd     = kAt + "view:end";
+        static const QByteArray kViewExport  = kAt + "view:export";
+        static const QByteArray kViewExclude = kAt + "view:exclude";
+        static const QByteArray kSection     = kAt + "section";
+
+        static const QByteArray kSepEq       = QByteArrayLiteral("//=====");
+        static const QByteArray kSepDash     = QByteArrayLiteral("//-----");
+
+        QByteArray result;
+        QList<QByteArray> lines = input.split('\n');
+
+        bool inBlock = false;
+
+        for (const QByteArray& line : lines) {
+
+            if (line.contains(kViewBeg)) { inBlock = true;  continue; }
+            if (line.contains(kViewEnd)) { inBlock = false; continue; }
+
+            int exportPos = line.indexOf(kViewExport);
+            if (exportPos >= 0) {
+                result.append(line.left(exportPos).trimmed());
+                result.append('\n');
+                continue;
+            }
+
+            if (!inBlock) continue;
+
+            if (line.contains(kViewExclude)) continue;
+            if (line.contains(kSection))     continue;
+            if (line.startsWith(kSepEq))     continue;
+            if (line.startsWith(kSepDash))   continue;
+
+            result.append(line);
+            result.append('\n');
+        }
+
+        return result;
+    }
+
+    static void composeToFile (
+        const QStringList& files, QFile& outFile,
+        bool useViews = false )
+    {
+        for (const QString& path : files) {
+            QFile f(path);
+            if (!f.open(QIODevice::ReadOnly)) {
+                CMD_SYS.execute( QString() +
+                                "logcmd --ERROR AnalyzerCode::composeToFile cannot open " +
+                                path );
+                continue;
+            }
+
+            QByteArray content = f.readAll();
+            f.close();
+
+            if (useViews)
+                content = extractView(content);
+
+            if (content.isEmpty())
+                continue;
+
+            QFileInfo fi(path);
+            const QString fileName = fi.fileName();
+            const QString module   = fi.dir().dirName();
+
+            outFile.write("\n// ---- module:");
+            outFile.write(module.toUtf8());
+            outFile.write("     ");
+            outFile.write(fileName.toUtf8());
+            outFile.write(" ----\n\n");
+            // ----------------------
+
+            outFile.write(content);
+            outFile.write("\n");
+        }
+    }
+
     static void registerCmds_() {
 
 //@view:beg
+        CMD_SYS.add("dir_merge_files",
+        [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
+
+            Q_UNUSED(data)
+            Q_UNUSED(context)
+
+            int result = 0;
+
+            // ---- CHANGE BEGIN: use CodeData / CodeModuleCol instead of AnalyzerModuleCol
+            CodeData& dataRef = CodeData::inst();
+            CodeModuleCol& modules = dataRef.modules();
+
+            if (modules.count() == 0)
+                return args.appendError("no dir to solve");
+            // ---- CHANGE END
+
+            const bool useViews =
+                (args.get("views", "__UNDEF__").value() != "__UNDEF__");
+
+            const bool byDist =
+                (args.get("bydist", "__UNDEF__").value() != "__UNDEF__");
+
+            QStringList files;
+
+            // ---- CHANGE BEGIN: collect files via CodeNode graph
+            const QStringList nodeNames = modules.nodes();
+
+            for (const QString& nodeName : nodeNames) {
+
+                const CodeNode* node =
+                    modules.get(CodeNodeAddress(QString(), nodeName));
+
+                if (!node)
+                    continue;
+
+                if (byDist && !std::isfinite(node->distToCenter()))
+                    continue;
+
+                const QString basePath = node->dir();
+                const QString dirPath  = QFileInfo(basePath).absolutePath();
+                const QString baseName = node->name();
+
+                for (const QString& ext : node->extensions()) {
+
+                    const QString filePath =
+                        dirPath + "/" + baseName + "." + ext;
+
+                    if (QFileInfo::exists(filePath))
+                        files << QDir::cleanPath(filePath);
+                }
+            }
+            // ---- CHANGE END
+
+            if (files.isEmpty())
+                return args.appendError("dir_merge_files: no source files found");
+
+            files.removeDuplicates();
+            files.sort();
+
+            // ---- CHANGE BEGIN: determine output directory without AnalyzerModuleCol
+            QString firstModulePath;
+
+            const QStringList moduleNames = modules.names();
+            if (!moduleNames.isEmpty()) {
+                const CodeModule* m = modules.get(moduleNames.first());
+                if (m)
+                    firstModulePath = m->path();
+            }
+
+            if (firstModulePath.isEmpty())
+                return args.appendError("dir_merge_files: cannot determine output directory");
+            // ---- CHANGE END
+
+            QDir dir(firstModulePath);
+            if (dir.isRoot())
+                return args.appendError("dir_merge_files: root not possible");
+
+            QString resultFileName =
+                QDir::cleanPath(firstModulePath) + ".h";
+
+            QFile outFile(resultFileName);
+            if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+                return args.appendError("dir_merge_files: cannot open output file");
+
+            composeToFile(files, outFile, useViews);
+
+            outFile.write(
+                "\nin the next task follow strictly the style of the code above");
+            outFile.write(
+                "\nprefer conservative solution, do not rebuild code, if not specified");
+
+            outFile.close();
+
+            args.append(resultFileName, "RESULT_FILE");
+
+            dir.cdUp();
+            args.append(
+                "<a href='system_open_path " +
+                dir.absolutePath() +
+                "'>[OPEN DIR]</a>");
+
+            args.append(
+                QString("<a href='file_to_clipboard ") +
+                resultFileName +
+                "'>[COPY TO CLIPBOARD]</a>");
+
+            return result;
+        });
+
+CMD_SYS.add("module_add",
+            [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+                if (args.count() < 2)
+                    return args.appendError("usage: module_add <dirPath>");
+
+                const bool subdirs =
+                    (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
+
+                const bool strict =
+                    (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
+
+                const QString dir = args.get(1).value();
+
+                //Cmds_code_analyzer::dirs_.add(dir, subdirs, strict);
+
+                OregUpdateLock l;
+                const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
+                CodeData::inst().modules().add(norm, subdirs, strict);
+
+                args.append(dir, "MODULE_ADDED");
+                return 0;
+            });
+
     CMD_SYS.add("dir_export_dot",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -92,6 +311,7 @@ public:
         return 0;
     });
     }
+
 //=============================================================================
 protected:
     /// @section Data

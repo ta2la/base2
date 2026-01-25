@@ -16,7 +16,7 @@
 #pragma once
 
 #include "AnalyzerModuleFileData.h"
-#include "AnalyzerCode.h"
+//#include "AnalyzerCode.h"
 
 #include <QAbstractListModel>
 #include <QStringList>

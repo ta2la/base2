@@ -20,7 +20,7 @@
 #pragma once
 
 #include "CmdSys.h"
-#include "AnalyzerCode.h"
+//#include "AnalyzerCode.h"
 //#include "AnalyzerSys.h"
 #include "AnalyzerModuleFileData.h"
 #include "AnalyzerDistCalc.h"
@@ -43,91 +43,6 @@ public:
     static void registerCmds_() {
 
 //@view:beg
-    CMD_SYS.add("dir_merge_files",
-    [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
-        Q_UNUSED(data) Q_UNUSED(context) ///@view:exclude
-
-        int result = 0;
-
-        if (AnalyzerModuleCol::inst().isEmpty()) return args.appendError("no dir to solve");
-
-        bool useViews = (args.get("views", "__UNDEF__").value() != "__UNDEF__");
-        bool byDist   = (args.get("bydist", "__UNDEF__").value() != "__UNDEF__");
-
-        QStringList files;
-
-        for (int i = 0; i < AnalyzerModuleCol::inst().count(); i++) {
-
-            const AnalyzerModule& mod = AnalyzerModuleCol::inst().get(i);
-            if (!mod.used())
-                continue;   // ← VYPNUTÝ MODUL
-
-            const QString dirStr = mod.dirPath();
-            QDir dir(dirStr);
-            if (!dir.exists()) {
-                result += args.appendError("directory does not exist");
-                continue;
-            }
-
-            QStringList allFiles = AnalyzerCode::getFiles(
-                dir,
-                QStringList() << "*.cpp" << "*.h" << "*.qml",
-                true
-            );
-
-            for (const QString& path : allFiles) {
-                if (byDist) {
-                    const QString nodeName =
-                        QFileInfo(path).completeBaseName();
-
-                    const CodeNode* node =
-                        CodeData::inst().modules().get(
-                            CodeNodeAddress(QString(), nodeName));
-
-                    if (!node)
-                        continue;
-
-                    if (!std::isfinite(node->distToCenter()))
-                        continue;
-                }
-                files << path;
-            }
-        }
-
-        QDir dir(AnalyzerModuleCol::inst().first());
-
-        if (files.isEmpty()) return args.appendError("dir_merge_files: no source files found");
-        files.sort();
-
-        if (dir.isRoot()) return args.appendError("dir_merge_files: root not possible");
-
-        QString resultFileName = QDir::cleanPath(AnalyzerModuleCol::inst().first()) + ".h";
-        QFile outFile(resultFileName);
-
-        if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
-            return args.appendError("dir_merge_files: cannot open output file");
-
-        AnalyzerCode::composeToFile(files, outFile, useViews);
-
-        outFile.write("\nin the next task follow strictly the style of the code above");
-        outFile.write("\nprefer conservative solution, do not rebuild code, if not specified");
-
-        outFile.close();
-
-        args.append(resultFileName, "RESULT_FILE");
-
-
-        dir.cdUp();
-        args.append("<a href='system_open_path " +
-                    dir.absolutePath() +
-                    "'>[OPEN DIR]</a>");
-
-        args.append(
-            QString("<a href='file_to_clipboard ") + resultFileName +
-            "'>[COPY TO CLIPBOARD]</a>");
-
-        return result;
-    });
     CMD_SYS.add("set_module_used",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -187,29 +102,6 @@ public:
         return 0;
     });
 
-    CMD_SYS.add("module_add",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-
-        if (args.count() < 2)
-            return args.appendError("usage: module_add <dirPath>");
-
-        const bool subdirs =
-            (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
-
-        const bool strict =
-            (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
-
-        const QString dir = args.get(1).value();
-
-        //Cmds_code_analyzer::dirs_.add(dir, subdirs, strict);
-
-        OregUpdateLock l;
-        const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
-        CodeData::inst().modules().add(norm, subdirs, strict);
-
-        args.append(dir, "MODULE_ADDED");
-        return 0;
-    });
 
     }
 //=============================================================================
