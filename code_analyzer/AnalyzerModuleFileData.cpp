@@ -37,6 +37,15 @@ QString AnalyzerModuleFileData::name() const
 }
 
 //=============================================================================
+QString AnalyzerModuleFileData::module() const
+{
+    if (!node_)
+        return "UNKNOWN";
+
+    return node_->address().module;
+}
+
+//=============================================================================
 double AnalyzerModuleFileData::dist() const
 {
     if (!node_) return 1;

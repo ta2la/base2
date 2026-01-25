@@ -22,8 +22,6 @@
 
 /// @view:beg
 
-class AnalyzerNode;
-
 class AnalyzerDistCalc
 {
 public:

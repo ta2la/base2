@@ -167,10 +167,11 @@ public:
     CMD_SYS.add("analyzer_set_center",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-        if (args.count() < 2)
-            return args.appendError("usage: analyzer_set_center <nodeName>");
+        if (args.count() < 3)
+            return args.appendError("usage: analyzer_set_center <nodeName> <moduleName>");
 
         const QString name = args.get(1).value();
+        const QString module = args.get(2).value();
 
         CodeData& data = CodeData::inst();
 
@@ -178,7 +179,7 @@ public:
                 CodeNodeAddress(QString(), name)))
             return args.appendError("unknown node: " + name);
 
-        data.center_ = CodeNodeAddress(QString(), name);
+        data.center_ = CodeNodeAddress(module, name);
 
         // recompute distances using code_data
         AnalyzerDistCalc calc(data);
@@ -242,7 +243,6 @@ public:
 //=============================================================================
 protected:
     /// @section Data
-    //inline static AnalyzerSys sys_;
     inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol();
 
     friend class Cmds_code_analyzer_test;

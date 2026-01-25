@@ -151,7 +151,7 @@ ScrollView {
 
                                         onClicked: {
                                             interactiveIface.callCmd(
-                                                "analyzer_set_center " + fileData.name
+                                                "analyzer_set_center " + fileData.name + " " + fileData.module
                                             )
                                         }
                                     }

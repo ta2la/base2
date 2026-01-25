@@ -15,9 +15,6 @@
 //=============================================================================
 
 #include "AnalyzerDistCalc.h"
-//#include "AnalyzerSys.h"
-//#include "AnalyzerNode.h"
-//#include "Cmds_code_analyzer.h"
 
 #include <queue>
 #include <vector>
