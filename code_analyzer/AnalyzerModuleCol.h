@@ -42,6 +42,8 @@ public:
         OregContainerList("testa")
     {}
 
+    static AnalyzerModuleCol& inst() { static AnalyzerModuleCol i; return i; }
+
     bool oo_solveContainment(OregObject* object, bool force) override
     {
         CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
@@ -52,11 +54,8 @@ public:
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
         modules_.append(AnalyzerModule(codeModule->path(), true));
-        //loadFilesModels();
-        //modules_.last().buildFilesModel();
         endInsertRows();
 
-        //modules_.append(AnalyzerModule(codeModule->path()));
         return true;
     }
 
@@ -157,14 +156,6 @@ public:
 
         const QModelIndex modelIndex = createIndex(index, 0);
         emit dataChanged(modelIndex, modelIndex, { DataRole });
-    }
-
-    void loadFilesModels()
-    {
-        const int n = modules_.count();
-        for (int i = 0; i < n; ++i) {
-            modules_[i].buildFilesModel();
-        }
     }
 
     void resetAllFilesModels()

@@ -30,7 +30,7 @@ class AnalyzerModule
 public:
     /// @section Construction
     explicit AnalyzerModule(const QString& dirPath, bool subdirs = false, bool used = true);
-    void buildFilesModel();
+
 
     /// @section Accessors
     const QString& dirPath() const { return dirPath_; }
@@ -53,6 +53,8 @@ protected:
     AnalyzerModuleFilesModel* filesModel_ = nullptr;
 
     friend class AnalyzerModuleCol;
+
+    void buildFilesModel_();
 };
 
 /// @view:end

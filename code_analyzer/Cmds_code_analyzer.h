@@ -49,16 +49,16 @@ public:
 
         int result = 0;
 
-        if (dirs_.isEmpty()) return args.appendError("no dir to solve");
+        if (AnalyzerModuleCol::inst().isEmpty()) return args.appendError("no dir to solve");
 
         bool useViews = (args.get("views", "__UNDEF__").value() != "__UNDEF__");
         bool byDist   = (args.get("bydist", "__UNDEF__").value() != "__UNDEF__");
 
         QStringList files;
 
-        for (int i = 0; i < dirs_.count(); i++) {
+        for (int i = 0; i < AnalyzerModuleCol::inst().count(); i++) {
 
-            const AnalyzerModule& mod = dirs_.get(i);
+            const AnalyzerModule& mod = AnalyzerModuleCol::inst().get(i);
             if (!mod.used())
                 continue;   // ← VYPNUTÝ MODUL
 
@@ -94,14 +94,14 @@ public:
             }
         }
 
-        QDir dir(dirs_.first());
+        QDir dir(AnalyzerModuleCol::inst().first());
 
         if (files.isEmpty()) return args.appendError("dir_merge_files: no source files found");
         files.sort();
 
         if (dir.isRoot()) return args.appendError("dir_merge_files: root not possible");
 
-        QString resultFileName = QDir::cleanPath(dirs_.first()) + ".h";
+        QString resultFileName = QDir::cleanPath(AnalyzerModuleCol::inst().first()) + ".h";
         QFile outFile(resultFileName);
 
         if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
@@ -148,7 +148,7 @@ public:
 
         const bool used = (usedInt != 0);
 
-        Cmds_code_analyzer::dirs_.setModuleUsed(index, used);
+        AnalyzerModuleCol::inst().setModuleUsed(index, used);
 
         args.append(
             QString("module[%1] -> %2")
@@ -180,21 +180,9 @@ public:
         calc.calculate();
         calc.addObservers();
 
-        Cmds_code_analyzer::dirs_.resetAllFilesModels();
+        AnalyzerModuleCol::inst().resetAllFilesModels();
 
         args.append("center -> " + name, "OK");
-
-        return 0;
-    });
-
-    CMD_SYS.add("analyzer_bootstrap",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-
-        Cmds_code_analyzer::dirs_.loadFilesModels();
-
-        AnalyzerDistCalc dataCalc(CodeData::inst());
-        dataCalc.calculate();
-        dataCalc.addObservers();
 
         return 0;
     });
@@ -227,8 +215,6 @@ public:
 //=============================================================================
 protected:
     /// @section Data
-    inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol();
-
     friend class Cmds_code_analyzer_test;
     friend int main(int, char**);
     friend class AnalyzerCode;
