@@ -36,12 +36,6 @@ public:
 //! @section Construction
     Cmds_code_data() = delete;
 //<METHODS>
-    static void createModel() {
-        static bool initialized = false;
-        if (!initialized) {
-            initialized = true;
-        }
-    }
     static void registerCmds_() {
 
 //@view:beg

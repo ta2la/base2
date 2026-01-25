@@ -40,12 +40,6 @@ public:
 //! @section Construction
     Cmds_code_analyzer() = delete;
 //<METHODS>
-    static void createModel() {
-        static bool initialized = false;
-        if (!initialized) {
-            initialized = true;
-        }
-    }
     static void registerCmds_() {
 
 //@view:beg
@@ -195,16 +189,6 @@ public:
 
     CMD_SYS.add("analyzer_bootstrap",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-
-        const bool subdirs =
-            (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
-
-        const bool strict =
-            (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
-
-        Cmds_code_analyzer::createModel();
-
-        AnalyzerCode::loadDot(subdirs, strict);
 
         Cmds_code_analyzer::dirs_.loadFilesModels();
 

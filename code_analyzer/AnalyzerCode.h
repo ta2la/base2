@@ -60,17 +60,6 @@ public:
     }
 
     //=========================================================================
-    static QString resultFile(const QString& dirPath)
-    {
-        QDir dir(dirPath);
-
-        QString dirName = dir.dirName();
-        if (dirName.isEmpty()) dirName = "mismatched.h";
-
-        return dir.absoluteFilePath(dirName + ".h");
-    }
-
-    //=========================================================================
     static QByteArray extractView(const QByteArray& input)
     {
         static const QByteArray kAt          = QByteArrayLiteral("@");
@@ -155,7 +144,7 @@ public:
     }
 
     //=============================================================================
-    static void loadDot(bool subdirs, bool strict);
+    //static void loadDot(bool subdirs, bool strict);
 
     //=============================================================================
 protected:

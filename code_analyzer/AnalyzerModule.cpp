@@ -30,9 +30,7 @@ AnalyzerModule::AnalyzerModule(const QString& dirPath, bool subdirs, bool used)
 void AnalyzerModule::buildFilesModel()
     {
     const QString moduleName = QDir(dirPath_).dirName();
-
     CodeModule* module = CodeData::inst().modules().get(moduleName);
-
     QStringList nodes = module->nodes().names();
     filesModel_->resetFromNames(nodes);
     }
