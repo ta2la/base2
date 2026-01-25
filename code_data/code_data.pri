@@ -20,5 +20,5 @@ SOURCES += \
     $$PWD/CodeModuleCol.cpp \
     $$PWD/CodeNode.cpp \
     $$PWD/CodeNodeCol.cpp \
-    $$PWD/AnalyzerDistCalc.h
+    $$PWD/AnalyzerDistCalc.cpp
 

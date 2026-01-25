@@ -41,7 +41,6 @@ public:
     QStringList types() const;
 
 private:
-    //const AnalyzerNode* node_ = nullptr;
     const CodeNode* node_ = nullptr;
 };
 

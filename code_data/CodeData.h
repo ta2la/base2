@@ -41,7 +41,7 @@ public:
 //=============================================================================
 protected:
     CodeModuleCol   modules_;
-    CodeNodeAddress center_ = { "code_analyzer", "AnalyzerSys" };
+    CodeNodeAddress center_ = { "code_analyzer", "Cmds_code_analyzer" };
     double distToCenter_ = 1;
 
     friend class AnalyzerDistCalc;

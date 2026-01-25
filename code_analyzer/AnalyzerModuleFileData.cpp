@@ -21,7 +21,6 @@
 
 //=============================================================================
 AnalyzerModuleFileData::AnalyzerModuleFileData(const QString& name) :
-    //node_(Cmds_code_analyzer::sys_.node(name))
     node_(CodeData::inst().modules().get(
         CodeNodeAddress(QString(), name)))
 {
@@ -48,7 +47,7 @@ double AnalyzerModuleFileData::dist() const
 bool AnalyzerModuleFileData::isCenter() const
 {
     if (!node_) return false;
-    return node_->name() == Cmds_code_analyzer::sys_.center_;
+    return node_->name() == CodeData::inst().center().node;
 }
 
 //=============================================================================

@@ -66,44 +66,9 @@ void AnalyzerCode::loadDot(bool subdirs, bool strict)
             }
             // --- END CHANGE ---
 
-            Cmds_code_analyzer::sys_.add(filePath, moduleName);
+            //Cmds_code_analyzer::sys_.add(filePath, moduleName);
         }
     }
-
-    // singleton
-    //Cmds_code_analyzer::sys_.clear();
-
- /*   for (int i = 0; i < Cmds_code_analyzer::dirs_.count(); ++i) {
-
-        const AnalyzerModule& mod = Cmds_code_analyzer::dirs_.get(i);
-        if (!mod.used())
-            continue;
-
-        QDir moduleDir(mod.dirPath());
-        if (!moduleDir.exists())
-            continue;
-
-        const QString moduleName = moduleDir.dirName();
-
-        const QStringList files =
-            AnalyzerCode::getFiles(
-                moduleDir,
-                QStringList() << "*.h" << "*.cpp" << "*.qml",
-                mod.subdirs()
-                );
-
-        for (const QString& filePath : files) {
-            const QString base = QFileInfo(filePath).fileName();
-
-            // exclude generated files
-            if (base.startsWith("moc_"))
-                continue;
-            if (base.startsWith("qrc"))
-                continue;
-
-            Cmds_code_analyzer::sys_.add(filePath, moduleName);
-        }
-    }*/
 }
 
 /// @view:end

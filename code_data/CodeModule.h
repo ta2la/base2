@@ -48,7 +48,6 @@ protected:
     QString path_;
 
     CodeNodeCol       nodes_;
-    //OregContainerList filteredNodes_;
 };
 
 /// @view:end

@@ -44,7 +44,6 @@ public:
 
 protected:
     QMap<QString, QList<Edge>> graph_;
-    //AnalyzerSys*               sys_;
     CodeData*                  data_;
 };
 

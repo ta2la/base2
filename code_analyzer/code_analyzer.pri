@@ -6,7 +6,6 @@ HEADERS += \
     $$PWD/Cmds_code_analyzer_test.h \
     $$PWD/AnalyzerCode.h \
     $$PWD/AnalyzerNode.h \
-    $$PWD/AnalyzerSys.h \
     $$PWD/AnalyzerModule.h \
     $$PWD/AnalyzerModuleCol.h \
     $$PWD/AnalyzerModuleFilesModel.h \

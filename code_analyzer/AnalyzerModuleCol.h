@@ -16,8 +16,10 @@
 #pragma once
 
 #include "AnalyzerModule.h"
-#include "AnalyzerSys.h"
 #include "OregUpdateLock.h"
+#include "OregContainerList.h"
+#include "CodeModule.h"
+#include "CodeData.h"
 
 #include <QAbstractListModel>
 
@@ -26,7 +28,7 @@
 /// @view:beg
 
 //=============================================================================
-class AnalyzerModuleCol : public QAbstractListModel
+class AnalyzerModuleCol : public QAbstractListModel, public OregContainerList
 //=============================================================================
 {
     Q_OBJECT
@@ -36,8 +38,33 @@ public:
     };
     /// @section Construction
     explicit AnalyzerModuleCol(QObject* parent = nullptr)
-        : QAbstractListModel(parent)
+        : QAbstractListModel(parent),
+        OregContainerList("testa")
     {}
+
+    bool oo_solveContainment(OregObject* object, bool force) override
+    {
+        CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
+        if (codeModule == nullptr) return false;
+
+        //const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
+
+        const int row = modules_.count();
+        beginInsertRows(QModelIndex(), row, row);
+        modules_.append(AnalyzerModule(codeModule->path(), true));
+        //loadFilesModels();
+        //modules_.last().buildFilesModel();
+        endInsertRows();
+
+        //modules_.append(AnalyzerModule(codeModule->path()));
+        return true;
+    }
+
+    void oo_onObserverChange(OregObserver* object) override
+    {
+        CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
+        if (codeModule == nullptr) return;
+    }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override
     {

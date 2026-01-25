@@ -21,7 +21,7 @@
 
 #include "CmdSys.h"
 #include "AnalyzerCode.h"
-#include "AnalyzerSys.h"
+//#include "AnalyzerSys.h"
 #include "AnalyzerModuleFileData.h"
 #include "AnalyzerDistCalc.h"
 #include "CodeData.h"
@@ -113,12 +113,6 @@ public:
         if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
             return args.appendError("dir_merge_files: cannot open output file");
 
-        if (byDist) {
-            const QString prompt = Cmds_code_analyzer::sys_.targetingPrompt();
-            outFile.write(prompt.toUtf8());
-            outFile.write("\n\n");
-        }
-
         AnalyzerCode::composeToFile(files, outFile, useViews);
 
         outFile.write("\nin the next task follow strictly the style of the code above");
@@ -185,7 +179,6 @@ public:
             return args.appendError("unknown node: " + name);
 
         data.center_ = CodeNodeAddress(QString(), name);
-        Cmds_code_analyzer::sys_.center_ = name;
 
         // recompute distances using code_data
         AnalyzerDistCalc calc(data);
@@ -235,7 +228,11 @@ public:
 
         const QString dir = args.get(1).value();
 
-        Cmds_code_analyzer::dirs_.add(dir, subdirs, strict);
+        //Cmds_code_analyzer::dirs_.add(dir, subdirs, strict);
+
+        OregUpdateLock l;
+        const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
+        CodeData::inst().modules().add(norm, subdirs, strict);
 
         args.append(dir, "MODULE_ADDED");
         return 0;
@@ -245,7 +242,7 @@ public:
 //=============================================================================
 protected:
     /// @section Data
-    inline static AnalyzerSys sys_;
+    //inline static AnalyzerSys sys_;
     inline static AnalyzerModuleCol dirs_ = AnalyzerModuleCol();
 
     friend class Cmds_code_analyzer_test;
