@@ -45,7 +45,7 @@ protected:
     double distToCenter_ = 1;
 
     friend class AnalyzerDistCalc;
-    friend class Cmds_code_analyzer;
+    friend class Cmds_code_data;
 };
 
 /// @view:end
