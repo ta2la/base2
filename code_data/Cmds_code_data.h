@@ -312,34 +312,7 @@ CMD_SYS.add("module_add",
         return 0;
     });
 
-    CMD_SYS.add("analyzer_set_center",
-    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-        if (args.count() < 3)
-            return args.appendError("usage: analyzer_set_center <nodeName> <moduleName>");
-
-        const QString name = args.get(1).value();
-        const QString module = args.get(2).value();
-
-        CodeData& data = CodeData::inst();
-
-        if (!data.modules().get(
-                CodeNodeAddress(QString(), name)))
-            return args.appendError("unknown node: " + name);
-
-        data.center_ = CodeNodeAddress(module, name);
-
-        // recompute distances using code_data
-        AnalyzerDistCalc calc(data);
-        calc.calculate();
-        calc.addObservers();
-
-        AnalyzerModuleCol::inst().resetAllFilesModels();
-
-        args.append("center -> " + name, "OK");
-
-        return 0;
-    });
     }
 
 //=============================================================================

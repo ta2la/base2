@@ -46,6 +46,7 @@ protected:
 
     friend class AnalyzerDistCalc;
     friend class Cmds_code_data;
+    friend class Cmds_code_analyzer;
 };
 
 /// @view:end
