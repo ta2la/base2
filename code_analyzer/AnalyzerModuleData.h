@@ -16,6 +16,8 @@
 #pragma once
 
 #include "AnalyzerModuleFilesModel.h"
+#include "CodeData.h"
+#include "CodeModule.h"
 
 #include <QString>
 #include <QFileInfo>
@@ -40,34 +42,48 @@ public:
         : dirPath_()
         , module_()
         , used_(false)
-        , filesModel_(nullptr)
+        //, filesModel_(nullptr)
         , subdirs_(true)
     {}
 
     explicit AnalyzerModuleData(
         const QString& dirPath,
-        bool used,
-        AnalyzerModuleFilesModel* filesModel,
-        bool subdirs)
+        bool used = true,
+        //AnalyzerModuleFilesModel* filesModel,
+        bool subdirs = true)
         : dirPath_(dirPath)
         , module_(QDir(dirPath).dirName())
         , used_(used)
-        , filesModel_(filesModel)
+        //, filesModel_(filesModel)
         , subdirs_(subdirs)
-    {}
+    {
+        filesModel_ = new AnalyzerModuleFilesModel();
+        buildFilesModel_();
+    }
 
+    void setUsed(bool val) { used_ = val; }
     QString dirPath() const { return dirPath_; }
     QString module()  const { return module_; }
     bool used() const { return used_; }
     QString dirPathModuleLess() const { return QFileInfo(dirPath_).dir().absolutePath(); }
     QObject* files() const { return filesModel_; }
 
+    void buildFilesModel_()
+    {
+        const QString moduleName = QDir(dirPath_).dirName();
+        CodeModule* module = CodeData::inst().modules().get(moduleName);
+        QStringList nodes = module->nodes().names();
+        filesModel_->resetFromNames(nodes);
+    }
+
 private:
     QString dirPath_;
     QString module_;
     bool    used_;
-    QObject* filesModel_ = nullptr;
+     AnalyzerModuleFilesModel* filesModel_ = nullptr;
     bool subdirs_ = true;
+
+     friend class AnalyzerModuleCol;
 };
 
 Q_DECLARE_METATYPE(AnalyzerModuleData)

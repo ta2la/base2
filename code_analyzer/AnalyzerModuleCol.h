@@ -53,7 +53,7 @@ public:
 
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
-        modules_.append(AnalyzerModule(codeModule->path(), true));
+        modules_.append(AnalyzerModuleData(codeModule->path(), true));
         endInsertRows();
 
         return true;
@@ -88,15 +88,17 @@ public:
         if (role != DataRole)
             return QVariant();
 
-        return QVariant::fromValue(
+        /*return QVariant::fromValue(
             modules_.at(index.row()).data()
-            );
+            );*/
+
+        return QVariant::fromValue(modules_.at(index.row()) );
     }
 
     operator QStringList() const
     {
         QStringList result;
-        for (const AnalyzerModule& m : modules_) {
+        for (const AnalyzerModuleData& m : modules_) {
             result.append(m.dirPath());
         }
         return result;
@@ -109,7 +111,7 @@ public:
 
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
-        modules_.append(AnalyzerModule(norm, subdirs));
+        modules_.append(AnalyzerModuleData(norm, subdirs));
         endInsertRows();
 
 
@@ -123,12 +125,12 @@ public:
         return modules_.count();
     }
 
-    const AnalyzerModule& get(int index) const
+    const AnalyzerModuleData& get(int index) const
     {
         return modules_.at(index);
     }
 
-    AnalyzerModuleCol& operator<<(const AnalyzerModule& module)
+    AnalyzerModuleCol& operator<<(const AnalyzerModuleData& module)
     {
         modules_.append(module);
         return *this;
@@ -149,7 +151,7 @@ public:
     {
         if (index < 0 || index >= modules_.count()) return;
 
-        AnalyzerModule& m = modules_[index];
+        AnalyzerModuleData& m = modules_[index];
         if (m.used() == used) return;
 
         m.setUsed(used);
@@ -160,7 +162,7 @@ public:
 
     void resetAllFilesModels()
     {
-        for (AnalyzerModule& m : modules_) {
+        for (AnalyzerModuleData& m : modules_) {
             if (m.filesModel_) {
                 auto* fm =
                     static_cast<AnalyzerModuleFilesModel*>(m.filesModel_);
@@ -174,6 +176,6 @@ public:
     //=============================================================================
 protected:
     /// @section Data
-    QList<AnalyzerModule> modules_;
+    QList<AnalyzerModuleData> modules_;
 };
 /// @view:beg
