@@ -22,6 +22,8 @@
 #include <OregPool.h>
 #include "OregFilter.h"
 
+/// @view:beg
+
 void OregContainer::oo_filterSet(OregFilter* filter)
 {
     if (filter_ != nullptr) {
@@ -52,3 +54,5 @@ OregContainer::~OregContainer()
 }
 
 //=============================================================================
+
+/// @view:end

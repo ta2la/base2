@@ -25,6 +25,8 @@ class OregFilter;
 
 #include <QString>
 
+/// @view:beg
+
 class OregContainer {
 public:
 //! Construction
@@ -54,3 +56,5 @@ protected:
     friend class OregPool;
     friend class OregObserver;
 };
+
+/// @view:end

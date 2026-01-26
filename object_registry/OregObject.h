@@ -24,6 +24,8 @@
 
 class OregObserver;
 
+/// @view:beg
+
 class OregObject {
 public:
 //! Enums
@@ -53,3 +55,5 @@ protected:
     friend class Cmds_oreg_test;
     friend class OregPool;
 };
+
+/// @view:end

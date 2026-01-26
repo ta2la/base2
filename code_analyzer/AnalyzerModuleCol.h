@@ -15,15 +15,18 @@
 //=============================================================================
 #pragma once
 
-#include "AnalyzerModule.h"
+//#include "AnalyzerModule.h"
 #include "OregUpdateLock.h"
 #include "OregContainerList.h"
 #include "CodeModule.h"
 #include "CodeData.h"
+#include "AnalyzerModuleFilesModel.h"
+#include "AnalyzerModuleData.h"
 
 #include <QAbstractListModel>
-
-
+#include <QString>
+#include <QFileInfo>
+#include <QDir>
 
 /// @view:beg
 
@@ -44,16 +47,24 @@ public:
 
     static AnalyzerModuleCol& inst() { static AnalyzerModuleCol i; return i; }
 
+    void updateRow_(int row)
+    {
+        if (row < 0 || row >= modules_.count()) return;
+
+        AnalyzerModuleData& m = modules_[row];
+
+        //TODO
+    }
+
     bool oo_solveContainment(OregObject* object, bool force) override
     {
         CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
         if (codeModule == nullptr) return false;
 
-        //const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
-
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
         modules_.append(AnalyzerModuleData(codeModule->path(), true));
+        updateRow_(row);
         endInsertRows();
 
         return true;
@@ -63,6 +74,13 @@ public:
     {
         CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
         if (codeModule == nullptr) return;
+
+        const int row = object->oo_container_index_;
+        updateRow_(row);
+
+        const QModelIndex modelIndex = createIndex(row, 0);
+        emit dataChanged(modelIndex, modelIndex, { DataRole });
+
     }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override
@@ -105,7 +123,7 @@ public:
     }
 
     /// @section Methods
-    void add(const QString& dir, bool subdirs, bool strict)
+    /*void add(const QString& dir, bool subdirs, bool strict)
     {
         const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
 
@@ -118,7 +136,7 @@ public:
         OregUpdateLock l;
         CodeData::inst().modules().add(norm, subdirs, strict);
 
-    }
+    }*/
 
     int count() const
     {
@@ -130,11 +148,11 @@ public:
         return modules_.at(index);
     }
 
-    AnalyzerModuleCol& operator<<(const AnalyzerModuleData& module)
+    /*AnalyzerModuleCol& operator<<(const AnalyzerModuleData& module)
     {
         modules_.append(module);
         return *this;
-    }
+    }*/
 
     QString first() const
     {

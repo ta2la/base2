@@ -22,6 +22,8 @@
 #include "OregObject.h"
 #include "OregContainer.h"
 
+/// @view:beg
+
 //=============================================================================
 OregObserver::OregObserver(OregObject* object, OregContainer* container) :
     oo_object_(object),
@@ -48,3 +50,5 @@ void OregObserver::oo_onChange()
 }
 
 //=============================================================================
+
+/// @view:end

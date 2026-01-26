@@ -21,6 +21,8 @@
 #include "OregUpdateLock.h"
 #include "OregPool.h"
 
+/// @view:beg
+
 //=============================================================================
 OregUpdateLock::OregUpdateLock()
 {
@@ -37,3 +39,5 @@ OregUpdateLock::~OregUpdateLock()
 }
 
 //=============================================================================
+
+/// @view:end

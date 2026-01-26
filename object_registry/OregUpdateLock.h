@@ -19,6 +19,8 @@
  */
 #pragma once
 
+/// @view:beg
+
 class OregUpdateLock {
 public:
 //! Construction
@@ -27,3 +29,5 @@ public:
 //=============================================================================
 protected:
 };
+
+/// @view:end

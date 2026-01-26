@@ -26,6 +26,8 @@
 class OregObject;
 class OregContainer;
 
+/// @view:beg
+
 class OregPool {
 public:
 //! Construction
@@ -58,3 +60,5 @@ protected:
 public:
     DebugListModel debugContainers;
 };
+
+/// @view:end

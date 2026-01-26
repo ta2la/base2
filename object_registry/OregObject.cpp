@@ -21,6 +21,8 @@
 #include "OregObject.h"
 #include "OregPool.h"
 
+/// @view:beg
+
 //=============================================================================
 OregObject::OregObject(bool outOfPool) :
     oo_id_(++OregPool::instance().maxId_),
@@ -60,3 +62,5 @@ QString OregObject::oo_state_to_string(EState state)
 }
 
 //=============================================================================
+
+/// @view:end

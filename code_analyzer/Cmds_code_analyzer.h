@@ -50,24 +50,30 @@ public:
             return args.appendError(
                 "usage: set_module_used <index> <0|1>");
 
-        bool okIndex = false;
+        //bool okIndex = false;
         bool okUsed  = false;
 
-        const int index =
-            args.get(1).value().toInt(&okIndex);
-        const int usedInt =
-            args.get(2).value().toInt(&okUsed);
+        const QString module = args.get(1).value();
+        const int usedInt    = args.get(2).value().toInt(&okUsed);
 
-        if (!okIndex || !okUsed)
-            return args.appendError("invalid arguments");
+        if (!okUsed) return args.appendError("invalid arguments");
 
         const bool used = (usedInt != 0);
 
-        AnalyzerModuleCol::inst().setModuleUsed(index, used);
+        //AnalyzerModuleCol::inst().setModuleUsed(index, used);
+
+        CodeModule* mod = CodeData::inst().modules().get(module);
+
+        if (!mod) return args.appendError("module not found");
+
+        OregUpdateLock l;
+
+        mod->setUsed(used);
+        mod->oo_changed();
 
         args.append(
             QString("module[%1] -> %2")
-                .arg(index)
+                .arg(module)
                 .arg(used ? "used" : "unused"),
             "OK");
 

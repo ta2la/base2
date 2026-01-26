@@ -29,6 +29,8 @@ OregPool::OregPool()
 {
 }
 
+/// @view:beg
+
 //=============================================================================
 void OregPool::solveChanges()
 {
@@ -81,6 +83,8 @@ void OregPool::solveChanges()
 
    // refreshDebug();
 }
+
+/// @view:end
 
 //=============================================================================
 void OregPool::refreshDebug()

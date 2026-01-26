@@ -24,6 +24,8 @@
 #include "OregObserver.h"
 #include "OregPool.h"
 
+/// @view:beg
+
 //=============================================================================
 OregContainerList::OregContainerList(const QString& name,
     std::function<OregObserver*(OregObject*)> creator) :
@@ -116,5 +118,7 @@ QString OregContainerList::oo_to_string() const
 
     return result;
 }
+
+/// @view:end
 
 //=============================================================================

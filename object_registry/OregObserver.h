@@ -22,6 +22,8 @@
 class OregObject;
 class OregContainer;
 
+/// @view:beg
+
 class OregObserver {
 public:
 //! Construction
@@ -43,4 +45,7 @@ protected:
 
     friend class Cmds_oreg_test;
     friend class OregContainerList;
+    friend class AnalyzerModuleCol;
 };
+
+/// @view:end

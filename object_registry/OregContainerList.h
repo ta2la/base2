@@ -28,6 +28,8 @@
 class OregObject;
 class OregObserver;
 
+/// @view:beg
+
 class OregContainerList : public OregContainer {
 public:
 //! Construction
@@ -56,3 +58,5 @@ protected:
 //! @section Friends
     friend class Cmds_oreg_test;
 };
+
+/// @view:end

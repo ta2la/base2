@@ -23,6 +23,8 @@ class OregObject;
 
 #include <QString>
 
+/// @view:beg
+
 class OregFilter {
 public:
 //! Construction
@@ -37,3 +39,5 @@ public:
 protected:
 //! Data
 };
+
+/// @view:end

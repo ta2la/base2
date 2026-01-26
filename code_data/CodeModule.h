@@ -37,6 +37,14 @@ public:
     const QString& name() const { return name_; }
     const QString& path() const { return path_; }
 
+    bool used() const { return used_; }
+    void setUsed(bool value)
+    {
+        if (used_ == value) return;
+        used_ = value;
+        oo_changed();
+    }
+
     CodeNodeCol& nodes()       { return nodes_; }
     const CodeNodeCol& nodes() const { return nodes_; }
 
@@ -48,6 +56,7 @@ protected:
     QString path_;
 
     CodeNodeCol       nodes_;
+    bool used_ = true;
 };
 
 /// @view:end

@@ -77,7 +77,7 @@ ScrollView {
 
                             onToggled: {
                                 interactiveIface.callCmd(
-                                    "set_module_used " + index + " " + (checked ? "1" : "0")
+                                    "set_module_used " + moduleData.module + " " + (checked ? "1" : "0")
                                 )
                             }
                         }
