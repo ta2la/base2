@@ -36,6 +36,7 @@ struct AnalyzerModuleData
     Q_PROPERTY(bool    used    READ used    CONSTANT)
     Q_PROPERTY(bool    subdirs    READ used    CONSTANT)
     Q_PROPERTY(QObject* files   READ files   CONSTANT)
+    Q_PROPERTY(int updateCount READ updateCount CONSTANT)
 
 public:
     AnalyzerModuleData()
@@ -64,6 +65,7 @@ public:
     void setUsed(bool val) { used_ = val; }
     QString dirPath() const { return dirPath_; }
     QString module()  const { return module_; }
+    int updateCount()  const { return updateCount_; }
     bool used() const { return used_; }
     QString dirPathModuleLess() const { return QFileInfo(dirPath_).dir().absolutePath(); }
     QObject* files() const { return filesModel_; }
@@ -82,6 +84,7 @@ private:
     bool    used_;
      AnalyzerModuleFilesModel* filesModel_ = nullptr;
     bool subdirs_ = true;
+    int updateCount_ = 0;
 
      friend class AnalyzerModuleCol;
 };

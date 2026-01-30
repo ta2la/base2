@@ -47,24 +47,27 @@ public:
 
     static AnalyzerModuleCol& inst() { static AnalyzerModuleCol i; return i; }
 
-    void updateRow_(int row)
+    void updateRow_(int row,  CodeModule* codeModule)
     {
         if (row < 0 || row >= modules_.count()) return;
-
         AnalyzerModuleData& m = modules_[row];
-
-        //TODO
+        m.used_ = codeModule->used();
+        m.updateCount_++;
     }
 
     bool oo_solveContainment(OregObject* object, bool force) override
     {
+        if (!OregContainerList::oo_solveContainment_prerequisities_(object, force)) return false;
+
         CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
         if (codeModule == nullptr) return false;
+
+        OregObserver* obs = OregContainerList::oo_solveContainment_(object);
 
         const int row = modules_.count();
         beginInsertRows(QModelIndex(), row, row);
         modules_.append(AnalyzerModuleData(codeModule->path(), true));
-        updateRow_(row);
+        updateRow_(row, codeModule);
         endInsertRows();
 
         return true;
@@ -72,11 +75,11 @@ public:
 
     void oo_onObserverChange(OregObserver* object) override
     {
-        CodeModule* codeModule = dynamic_cast<CodeModule*>(object);
+        CodeModule* codeModule = dynamic_cast<CodeModule*>(object->oo_object());
         if (codeModule == nullptr) return;
 
         const int row = object->oo_container_index_;
-        updateRow_(row);
+        updateRow_(row, codeModule);
 
         const QModelIndex modelIndex = createIndex(row, 0);
         emit dataChanged(modelIndex, modelIndex, { DataRole });

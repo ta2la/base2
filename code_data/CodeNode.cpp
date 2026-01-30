@@ -59,14 +59,9 @@ void CodeNode::addExtension(const QString& ext)
 
     const QString e = ext.toLower();
 
-    // h + cpp are treated as whole code units
-    if (e == "h" || e == "cpp") {
-        extensions_.insert("h");
-        extensions_.insert("cpp");
-        return;
-    }
-
     extensions_.insert(e);
+
+    loadContentForExt_(ext);
 }
 
 QStringList CodeNode::extensions() const
@@ -160,6 +155,67 @@ QStringList CodeNode::dependencies() const
     QStringList list = dependencies_.values();
     list.sort();          // deterministic, conservative
     return list;
+}
+
+QString CodeNode::filePathForExt(const QString& ext) const
+{
+    if (ext.isEmpty())
+        return QString();
+
+    const QString e = ext.toLower();
+
+    if (!extensions_.contains(e))
+        return QString();
+
+    QFileInfo fi(dir_);
+    const QString dir = fi.absolutePath();
+
+    return dir + "/" + name_ + "." + e;
+}
+
+void CodeNode::loadContentForExt_(const QString& ext)
+{
+    const QString filePath = filePathForExt(ext);
+    if (filePath.isEmpty())
+        return;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    const QString content =
+        QString::fromUtf8(file.readAll());
+
+    if (ext.toLower() == "cpp") {
+        content1_ = content;
+    }
+    else {
+        content0_ = content;
+    }
+}
+
+QString CodeNode::content(const QString& ext) const
+{
+    const QString e = ext.toLower();
+
+    QString out;
+
+    out += "\n// ---- module:";
+    out += module_ ? module_->name() : QString();
+    out += "     ";
+    out += name_;
+    out += ".";
+    out += e;
+    out += " ----\n\n";
+
+    if (e == "cpp") {
+        out += content1_;
+    }
+    else {
+        out += content0_;
+    }
+
+    return out;
 }
 
 /// @view:end

@@ -45,6 +45,8 @@ public:
 
     void addExtension(const QString& ext);
 
+    QString filePathForExt(const QString& ext) const;
+
     QString oo_to_string(EStringFormat format = SF_BASIC) const override;
     void loadDependencies(const QString& filePath);
 
@@ -53,10 +55,15 @@ public:
     void setDistToCenter(double value) { distToCenter_ = value; }
     double distToCenter() const { return distToCenter_; }
 
+    QString content(const QString& ext) const;
+
 protected:
     QString     dir_;        // full file path
     QString     name_;       // base name (no suffix)
     CodeModule* module_ = nullptr;
+
+    QString     content0_;
+    QString     content1_;
 
     double distToCenter_ = 0;
 
@@ -68,6 +75,8 @@ protected:
     //friend class AnalyzerNet;
     friend class CodeModuleCol;
     friend class AnalyzerDistCalc;
+
+    void loadContentForExt_(const QString& ext);
 };
 
 

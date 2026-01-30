@@ -1,6 +1,6 @@
 TARGET       = cmd_sys
 TEMPLATE     = lib
-CONFIG      += staticlib c++11
+CONFIG      += staticlib c++17
 #######################################################################################
 include($$PWD/cmd_sys.pri)
 

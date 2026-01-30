@@ -24,6 +24,8 @@
 #include "OregObject.h"
 #include "OregObserver.h"
 
+#include <QtGlobal>
+
 //=============================================================================
 OregPool::OregPool()
 {
@@ -55,10 +57,10 @@ void OregPool::solveChanges()
     }
 
     //! @update changes
-    for (OregObject* obj: oo_objects_) {
+    for (OregObject* obj: qAsConst(oo_objects_)) {
         if (obj->oo_state() != OregObject::OO_STATE_CHANGED) continue;
 
-        for (OregObserver* observer : obj->oo_observers_) {
+        for (OregObserver* observer : qAsConst(obj->oo_observers_)) {
             observer->oo_onChange();
         }
     }

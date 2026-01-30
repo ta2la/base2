@@ -91,6 +91,15 @@ ScrollView {
                             verticalAlignment: Text.AlignVCenter
                             height: parent.height
                         }
+
+                        // NEW – diagnostika refreshe
+                        Text {
+                            y: 8
+                            text: "updates: [" + moduleData.updateCount + "]"
+                            font.pointSize: 9
+                            color: "#909090"
+                            verticalAlignment: Text.AlignVCenter
+                        }
                     }
 
                     // ---- files list (NEW)

@@ -1,6 +1,6 @@
 TARGET       = cmd_sys_display
 TEMPLATE     = lib
-CONFIG      += staticlib c++11
+CONFIG      += staticlib c++17
 #######################################################################################
 include($$PWD/../build_target.pri)
 

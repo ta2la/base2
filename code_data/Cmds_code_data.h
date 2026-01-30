@@ -23,6 +23,7 @@
 #include "CodeData.h"
 #include "OregUpdateLock.h"
 #include "AnalyzerDistCalc.h"
+#include "CodeMethods.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -32,77 +33,18 @@
 
 ///@view:beg
 class  Cmds_code_data {
-///@view:end
 //=============================================================================
 public:
 //! @section Construction
     Cmds_code_data() = delete;
 //<METHODS>
-
-
     //=========================================================================
-    static QByteArray extractView(const QByteArray& input)
-    {
-        static const QByteArray kAt          = QByteArrayLiteral("@");
-
-        static const QByteArray kViewBeg     = kAt + "view:beg";
-        static const QByteArray kViewEnd     = kAt + "view:end";
-        static const QByteArray kViewExport  = kAt + "view:export";
-        static const QByteArray kViewExclude = kAt + "view:exclude";
-        static const QByteArray kSection     = kAt + "section";
-
-        static const QByteArray kSepEq       = QByteArrayLiteral("//=====");
-        static const QByteArray kSepDash     = QByteArrayLiteral("//-----");
-
-        QByteArray result;
-        QList<QByteArray> lines = input.split('\n');
-
-        bool inBlock = false;
-
-        for (const QByteArray& line : lines) {
-
-            if (line.contains(kViewBeg)) { inBlock = true;  continue; }
-            if (line.contains(kViewEnd)) { inBlock = false; continue; }
-
-            int exportPos = line.indexOf(kViewExport);
-            if (exportPos >= 0) {
-                result.append(line.left(exportPos).trimmed());
-                result.append('\n');
-                continue;
-            }
-
-            if (!inBlock) continue;
-
-            if (line.contains(kViewExclude)) continue;
-            if (line.contains(kSection))     continue;
-            if (line.startsWith(kSepEq))     continue;
-            if (line.startsWith(kSepDash))   continue;
-
-            result.append(line);
-            result.append('\n');
-        }
-
-        return result;
-    }
-
     static void composeToFile (
         const QStringList& files, QFile& outFile,
         bool useViews = false )
     {
         for (const QString& path : files) {
-            QFile f(path);
-            if (!f.open(QIODevice::ReadOnly)) {
-                CMD_SYS.execute( QString() +
-                                "logcmd --ERROR AnalyzerCode::composeToFile cannot open " +
-                                path );
-                continue;
-            }
-
-            QByteArray content = f.readAll();
-            f.close();
-
-            if (useViews)
-                content = extractView(content);
+            QByteArray content = CodeMethods::extractView(path, useViews);
 
             if (content.isEmpty())
                 continue;
@@ -125,7 +67,6 @@ public:
 
     static void registerCmds_() {
 
-//@view:beg
         CMD_SYS.add("dir_merge_files",
         [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
 

@@ -12,7 +12,8 @@ HEADERS += \
     $$PWD/CodeNodeAddress.h \
     $$PWD/CodeConnector.h \
     $$PWD/AnalyzerDistCalc.h \
-    $$PWD/Cmds_code_data.h
+    $$PWD/Cmds_code_data.h \
+    $$PWD/CodeMethods.h
 
 SOURCES += \
     $$PWD/CodeData.cpp \
