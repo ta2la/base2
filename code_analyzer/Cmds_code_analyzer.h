@@ -94,7 +94,8 @@ CMD_SYS.add("analyzer_set_center",
                 CodeNodeAddress(QString(), name)))
             return args.appendError("unknown node: " + name);
 
-        CodeData::inst().center_ = CodeNodeAddress(module, name);
+        //CodeData::inst().center_ = CodeNodeAddress(module, name);
+        CodeData::inst().setCenter( CodeNodeAddress(module, name) );
 
         // recompute distances using code_data
         AnalyzerDistCalc calc(data);

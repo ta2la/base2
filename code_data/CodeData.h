@@ -37,11 +37,13 @@ public:
     //! @section Methods
     QString toDot() const;
 
-    CodeNodeAddress center() {return center_; }
+    //CodeNodeAddress center();
+    CodeNodeAddress center() const;
+    void            setCenter(const CodeNodeAddress& addr);
 //=============================================================================
 protected:
     CodeModuleCol   modules_;
-    CodeNodeAddress center_ = { "code_analyzer", "Cmds_code_analyzer" };
+    QList<CodeNodeAddress>      center_ = {{ "code_analyzer", "Cmds_code_analyzer" }};
     double distToCenter_ = 1;
 
     friend class AnalyzerDistCalc;

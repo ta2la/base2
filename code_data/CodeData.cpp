@@ -24,58 +24,6 @@ CodeData::CodeData()
 {
 }
 
-/*static QString label3(const CodeNode* n, const QString& prefix = "    ")
-    {
-        if (!n)
-            return QString();
-
-        QString out;
-        QTextStream s(&out);
-
-        QString attrs;
-
-        // QML → gray box
-        if (n->extensions().contains("qml")) {
-            attrs =
-                " shape=box"
-                " style=filled"
-                " fillcolor=\"#DADADA\"";
-        }
-
-        // *Model* → blue box
-        if (n->name().contains("Model")) {
-            attrs += ", shape=box"
-                     ", style=filled"
-                     ", fillcolor=\"#6FA3D8\"";
-        }
-
-        // Cmds_* → violet box
-        if (n->name().startsWith("Cmds_")) {
-            attrs += ", shape=box"
-                     ", style=filled"
-                     ", fillcolor=\"#E6C1D8\"";
-        }
-
-        s << prefix << "\"" << n->name() << "\" ";
-
-        // label text
-        QString lbl;
-        {
-            QString base = n->name();
-
-            QStringList exts = n->extensions();
-            if (!exts.isEmpty()) {
-                lbl = base + "\\n[" + exts.join(" ") + "]";
-            } else {
-                lbl = base;
-            }
-        }
-
-        s << "[label=\"" << lbl << "\"" << attrs << "];\n";
-
-        return out;
-    }*/
-
 QString CodeData::toDot() const
 {
     QString out;
@@ -121,6 +69,18 @@ QString CodeData::toDot() const
 
     s << "}\n";
     return out;
+}
+
+CodeNodeAddress CodeData::center() const
+{
+    if (center_.isEmpty()) return CodeNodeAddress();
+    return center_.isEmpty() ? CodeNodeAddress() : center_.first();
+}
+
+void CodeData::setCenter(const CodeNodeAddress& addr)
+{
+    center_.clear();
+    center_.append(addr);
 }
 
 /// @view:end

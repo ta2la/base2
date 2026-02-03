@@ -48,7 +48,7 @@ void AnalyzerDistCalc::buildGraph()
 //=============================================================================
 void AnalyzerDistCalc::calculate()
 {
-    const QString center = data_->center_.node;
+    const QString center = data_->center().node;
     if (center.isEmpty())
         return;
 
@@ -100,10 +100,11 @@ void AnalyzerDistCalc::calculate()
 //=============================================================================
 void AnalyzerDistCalc::addObservers()
 {
-    const QString center = data_->center_.node;
+    //const QString center = data_->center_.node;
+    const CodeNodeAddress centerAddr = data_->center();
+    const QString center = centerAddr.node;
 
-    if (center.isEmpty())
-        return;
+    if (center.isEmpty()) return;
 
     CodeModuleCol& modules = data_->modules();
     const QList<CodeConnector> connectors = modules.connectors();
@@ -129,12 +130,11 @@ void AnalyzerDistCalc::addObservers()
 
     for (const auto& mit : modules.modules_) {
         CodeModule* mod = mit.second;
-        if (!mod)
-            continue;
+        if (!mod) continue;
 
         // fast reject
-        if (mod->name() != data_->center_.module)
-            continue;
+        //if (mod->name() != data_->center_.module) continue;
+        if (mod->name() != centerAddr.module) continue;
 
         CodeNodeCol& nodes = mod->nodes();
 
