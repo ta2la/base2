@@ -46,9 +46,10 @@ void AnalyzerDistCalc::buildGraph()
 }
 
 //=============================================================================
-void AnalyzerDistCalc::calculate()
+void AnalyzerDistCalc::calculate1(const CodeNodeAddress& centerAddr,
+                                 bool firstPass)
 {
-    const QString center = data_->center().node;
+    const QString center = centerAddr.node;
     if (center.isEmpty())
         return;
 
@@ -93,7 +94,34 @@ void AnalyzerDistCalc::calculate()
                 it.key()
                 ));
 
-        if (n) n->setDistToCenter(it.value());
+        if (!n) continue;
+
+        if (firstPass) {
+            // EXACTLY old behaviour
+            n->setDistToCenter(it.value());
+        }
+        else {
+            double oldVal = n->distToCenter();
+            double newVal = it.value();
+
+            if (mergeDist(oldVal, newVal)) n->setDistToCenter(oldVal);
+        }
+    }
+}
+
+//=============================================================================
+void AnalyzerDistCalc::calculate()
+{
+    const QList<CodeNodeAddress>& centers = data_->center_;
+
+    if (centers.isEmpty())
+        return;
+
+    bool first = true;
+
+    for (const CodeNodeAddress& c : centers) {
+        calculate1(c, first);
+        first = false;
     }
 }
 
@@ -148,6 +176,38 @@ void AnalyzerDistCalc::addObservers()
             }
         }
     }
+}
+
+//=============================================================================
+bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
+{
+    // nonexistent in this pass -> do nothing
+    if (!std::isfinite(newVal))
+        return false;
+
+    // first valid value wins
+    if (!std::isfinite(oldVal)) {
+        oldVal = newVal;
+        return true;
+    }
+
+    // never overwrite positive
+    if (oldVal >= 0)
+        return false;
+
+    // negative -> positive is allowed
+    if (newVal >= 0) {
+        oldVal = newVal;
+        return true;
+    }
+
+    // both negative: closer to zero wins
+    if (newVal > oldVal) {
+        oldVal = newVal;
+        return true;
+    }
+
+    return false;
 }
 
 //=============================================================================

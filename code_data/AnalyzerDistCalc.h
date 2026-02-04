@@ -33,6 +33,7 @@ public:
 
     void buildGraph();
     void calculate();
+    void calculate1(const CodeNodeAddress& centerAddr, bool firstPass);
     void addObservers();
 
     struct Edge {
@@ -43,6 +44,8 @@ public:
 protected:
     QMap<QString, QList<Edge>> graph_;
     CodeData*                  data_;
+
+    static bool mergeDist(double& oldVal, double newVal);
 };
 
 /// @view:end

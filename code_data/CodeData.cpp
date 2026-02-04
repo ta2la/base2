@@ -79,7 +79,11 @@ CodeNodeAddress CodeData::center() const
 
 void CodeData::setCenter(const CodeNodeAddress& addr)
 {
-    center_.clear();
+    if (center_.contains(addr) && center_.count() > 1) {
+        center_.removeOne(addr);
+        return;
+    }
+
     center_.append(addr);
 }
 

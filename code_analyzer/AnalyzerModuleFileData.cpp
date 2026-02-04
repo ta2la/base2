@@ -56,7 +56,7 @@ double AnalyzerModuleFileData::dist() const
 bool AnalyzerModuleFileData::isCenter() const
 {
     if (!node_) return false;
-    return node_->name() == CodeData::inst().center().node;
+    return CodeData::inst().isCenter(node_->address());
 }
 
 //=============================================================================

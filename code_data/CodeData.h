@@ -40,6 +40,9 @@ public:
     //CodeNodeAddress center();
     CodeNodeAddress center() const;
     void            setCenter(const CodeNodeAddress& addr);
+
+    bool isCenter(const CodeNodeAddress& addr) const {
+        return center_.contains(addr); }
 //=============================================================================
 protected:
     CodeModuleCol   modules_;
