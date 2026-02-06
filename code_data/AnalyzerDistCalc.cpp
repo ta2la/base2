@@ -179,7 +179,7 @@ void AnalyzerDistCalc::addObservers()
 }
 
 //=============================================================================
-bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
+/*bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
 {
     // nonexistent in this pass -> do nothing
     if (!std::isfinite(newVal))
@@ -203,6 +203,34 @@ bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
 
     // both negative: closer to zero wins
     if (newVal > oldVal) {
+        oldVal = newVal;
+        return true;
+    }
+
+    return false;
+}*/
+
+bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
+{
+    // nonexistent in this pass -> do nothing
+    if (!std::isfinite(newVal)) return false;
+
+    // first valid value wins
+    if (!std::isfinite(oldVal)) {
+        oldVal = newVal;
+        return true;
+    }
+
+    // záporná nikdy neporazí 0 ani kladnou
+    if (oldVal>=0 && newVal<0) return false;
+
+    if (oldVal>=0 && newVal>=0 && oldVal>newVal) {
+        oldVal = newVal;
+        return true;
+    }
+
+    // obě záporné: blíže k nule vyhrává
+    if (std::abs(newVal) < std::abs(oldVal)) {
         oldVal = newVal;
         return true;
     }
