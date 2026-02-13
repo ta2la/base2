@@ -88,23 +88,18 @@ void AnalyzerDistCalc::calculate1(const CodeNodeAddress& centerAddr,
     CodeModuleCol& modules = data_->modules();
 
     for (auto it = dist.cbegin(); it != dist.cend(); ++it) {
-        CodeNode* n =
-            modules.get(CodeNodeAddress(
-                QString(),       // node name is globally unique
-                it.key()
-                ));
+        CodeNode* n = modules.get(CodeNodeAddress( QString(), it.key()));
 
         if (!n) continue;
 
         if (firstPass) {
-            // EXACTLY old behaviour
             n->setDistToCenter(it.value());
         }
         else {
             double oldVal = n->distToCenter();
             double newVal = it.value();
 
-            if (mergeDist(oldVal, newVal)) n->setDistToCenter(oldVal);
+            if (mergeDist(oldVal, newVal)) n->setDistToCenter(newVal);
         }
     }
 }
@@ -129,111 +124,75 @@ void AnalyzerDistCalc::calculate()
 void AnalyzerDistCalc::addObservers()
 {
     //const QString center = data_->center_.node;
-    const CodeNodeAddress centerAddr = data_->center();
-    const QString center = centerAddr.node;
+    //const CodeNodeAddress centerAddr = data_->center();
+    //const QString center = centerAddr.node;
 
-    if (center.isEmpty()) return;
+    //if (center.isEmpty()) return;
+
+    const QList<CodeNodeAddress>& centers = data_->center_;
+    if (centers.isEmpty()) return;
 
     CodeModuleCol& modules = data_->modules();
     const QList<CodeConnector> connectors = modules.connectors();
 
-    for (const CodeConnector& c : connectors) {
+    for (const CodeNodeAddress& centerAddr : centers) {
 
-        if (c.node2() == center && c.node1() != center) {
+        const QString center = centerAddr.node;
 
-            CodeNode* n =
-                modules.get(CodeNodeAddress(
-                    QString(),
-                    c.node1()
-                    ));
+        if (center.isEmpty()) continue;
 
-            if (!n)
-                continue;
+        for (const CodeConnector& c : connectors) {
 
-            if (!std::isfinite(n->distToCenter())) {
-                n->setDistToCenter(-1);
+            if (c.node2() == center && c.node1() != center) {
+
+                CodeNode* n =
+                    modules.get(CodeNodeAddress(
+                        QString(),
+                        c.node1()
+                        ));
+
+                if (!n)
+                    continue;
+
+                if (!std::isfinite(n->distToCenter())) {
+                    n->setDistToCenter(-1);
+                }
             }
         }
     }
 
-    for (const auto& mit : modules.modules_) {
-        CodeModule* mod = mit.second;
-        if (!mod) continue;
+    for (const CodeNodeAddress& centerAddr : centers) {
 
-        // fast reject
-        //if (mod->name() != data_->center_.module) continue;
-        if (mod->name() != centerAddr.module) continue;
+        for (const auto& mit : modules.modules_) {
+            CodeModule* mod = mit.second;
+            if (!mod) continue;
 
-        CodeNodeCol& nodes = mod->nodes();
+            // fast reject
+            //if (mod->name() != data_->center_.module) continue;
+            if (mod->name() != centerAddr.module) continue;
 
-        for (const auto& nit : nodes.nodes_) {
-            CodeNode* n = nit.second;
-            if (!n)
-                continue;
+            CodeNodeCol& nodes = mod->nodes();
 
-            if (!std::isfinite(n->distToCenter())) {
-                n->setDistToCenter(-100);
+            for (const auto& nit : nodes.nodes_) {
+                CodeNode* n = nit.second;
+                if (!n)
+                    continue;
+
+                if (!std::isfinite(n->distToCenter())) {
+                    n->setDistToCenter(-100);
+                }
             }
         }
     }
 }
 
-//=============================================================================
-/*bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
+bool AnalyzerDistCalc::mergeDist(double oldVal, double newVal)
 {
-    // nonexistent in this pass -> do nothing
-    if (!std::isfinite(newVal))
-        return false;
-
-    // first valid value wins
-    if (!std::isfinite(oldVal)) {
-        oldVal = newVal;
-        return true;
-    }
-
-    // never overwrite positive
-    if (oldVal >= 0)
-        return false;
-
-    // negative -> positive is allowed
-    if (newVal >= 0) {
-        oldVal = newVal;
-        return true;
-    }
-
-    // both negative: closer to zero wins
-    if (newVal > oldVal) {
-        oldVal = newVal;
-        return true;
-    }
-
-    return false;
-}*/
-
-bool AnalyzerDistCalc::mergeDist(double& oldVal, double newVal)
-{
-    // nonexistent in this pass -> do nothing
-    if (!std::isfinite(newVal)) return false;
-
-    // first valid value wins
-    if (!std::isfinite(oldVal)) {
-        oldVal = newVal;
-        return true;
-    }
-
-    // záporná nikdy neporazí 0 ani kladnou
-    if (oldVal>=0 && newVal<0) return false;
-
-    if (oldVal>=0 && newVal>=0 && oldVal>newVal) {
-        oldVal = newVal;
-        return true;
-    }
-
-    // obě záporné: blíže k nule vyhrává
-    if (std::abs(newVal) < std::abs(oldVal)) {
-        oldVal = newVal;
-        return true;
-    }
+    if (!std::isfinite(newVal))                return false;
+    if (!std::isfinite(oldVal))                return true;
+    if (oldVal<0 && newVal>0)                  return true;
+    if (oldVal>0 && newVal>0 && newVal<oldVal) return true;
+    if (oldVal<0 && newVal<0 && newVal>oldVal) return true;
 
     return false;
 }

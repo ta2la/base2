@@ -50,11 +50,27 @@ QString CodeData::toDot() const
 
             QString label = n->name();
             QStringList exts = n->extensions();
-            if (!exts.isEmpty())
-                label += "\\n[" + exts.join(" ") + "]";
+            if (!exts.isEmpty()) label += "\<BR/>[" + exts.join(" ") + "]";
 
-            s << "    \"" << n->name() << "\" [label=\""
-              << label << "\"];\n";
+            const double d = n->distToCenter();
+
+            if (std::isfinite(d)) {
+                label = n->name() + " <B>[" +
+                        QString::number(d, 'f', 0) +
+                        "]</B>";
+            }
+
+            CodeNodeAddress addr(moduleName, n->name());
+            const bool isCenterNode = isCenter(addr);
+
+            s << "    \"" << n->name() << "\" [label=<"
+              << label << ">";
+
+            if (isCenterNode) {
+                s << ", style=filled, fillcolor=\"#E6C1D8\"";
+            }
+
+            s << "];\n";
         }
 
         s << "  }\n";
@@ -69,12 +85,6 @@ QString CodeData::toDot() const
 
     s << "}\n";
     return out;
-}
-
-CodeNodeAddress CodeData::center() const
-{
-    if (center_.isEmpty()) return CodeNodeAddress();
-    return center_.isEmpty() ? CodeNodeAddress() : center_.first();
 }
 
 void CodeData::setCenter(const CodeNodeAddress& addr)
