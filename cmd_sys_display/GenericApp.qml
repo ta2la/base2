@@ -27,7 +27,7 @@ Rectangle  {
         x: 0; y: 0; width: root.width; height: 40
 
         Image {x:2; y:2; width:32; height:32; source:"images/icon.svg"}
-        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler" }
+        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assemblera" }
 
         Row {
             x: 250

@@ -46,6 +46,7 @@ protected:
     friend class Cmds_oreg_test;
     friend class OregContainerList;
     friend class AnalyzerModuleCol;
+    friend class PromptCompModel;
 };
 
 /// @view:end

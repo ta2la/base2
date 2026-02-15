@@ -109,10 +109,6 @@ public:
         if (role != DataRole)
             return QVariant();
 
-        /*return QVariant::fromValue(
-            modules_.at(index.row()).data()
-            );*/
-
         return QVariant::fromValue(modules_.at(index.row()) );
     }
 
@@ -125,22 +121,6 @@ public:
         return result;
     }
 
-    /// @section Methods
-    /*void add(const QString& dir, bool subdirs, bool strict)
-    {
-        const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
-
-        const int row = modules_.count();
-        beginInsertRows(QModelIndex(), row, row);
-        modules_.append(AnalyzerModuleData(norm, subdirs));
-        endInsertRows();
-
-
-        OregUpdateLock l;
-        CodeData::inst().modules().add(norm, subdirs, strict);
-
-    }*/
-
     int count() const
     {
         return modules_.count();
@@ -150,12 +130,6 @@ public:
     {
         return modules_.at(index);
     }
-
-    /*AnalyzerModuleCol& operator<<(const AnalyzerModuleData& module)
-    {
-        modules_.append(module);
-        return *this;
-    }*/
 
     QString first() const
     {

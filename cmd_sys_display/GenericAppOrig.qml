@@ -28,13 +28,14 @@ Rectangle  {
         tabInteractive.visible = (tabInteractive.objectName    === tabName) ? true : false;
         tabAbout.visible       = (tabAbout.objectName   === tabName) ? true : false;
         tabAnalyzer.visible    = (tabAnalyzer.objectName === tabName) ? true : false;
+        tabPrompts.visible     = (tabPrompts.objectName      === tabName) ? true : false;
     }
 
     Rectangle { id: mainSpace; color: "#4cc4bc"
         x: 0; y: 0; width: root.width; height: 40
 
         Image {x:2; y:2; width:32; height:32; source:"images/icon.svg"}
-        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler" }
+        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assemblera" }
 
         Button { id: buttonCmdlineEx;   x:260;       y:10; width: 110; height: 30;
                  text: "Executed"; onClicked: activateTab("tabCmdlineEx") }
@@ -48,8 +49,17 @@ Rectangle  {
             y: 10
             width: 110
             height: 30
-            text: "Analyzer"
+            text: "Analyzera"
             onClicked: activateTab("tabAnalyzer")
+        }
+        Button {                                    //## NEW
+                    id: buttonPrompts
+                    x: 260 + 120*4
+                    y: 10
+                    width: 110
+                    height: 30
+                    text: "Prompts"
+                    onClicked: activateTab("tabPrompts")
         }
     }
 
@@ -114,6 +124,21 @@ Rectangle  {
                     font.pointSize: 12
                 }
             }
+        }
+    }
+
+    Rectangle {
+        objectName: "tabPrompts"
+        id: tabPrompts
+
+        visible: false
+        x: 10; y: 50
+        width: root.width - 20
+        height: root.height - 60
+        color: "#F0F0F0"
+
+        TabPrompts {
+            anchors.fill: parent
         }
     }
 }

@@ -26,6 +26,8 @@
 
 #include <QtGlobal>
 
+#include <utility>
+
 //=============================================================================
 OregPool::OregPool()
 {
@@ -39,16 +41,16 @@ void OregPool::solveChanges()
     solvingChangesInProgress_ = true;
 
     //! @step check for containment
-    for (OregContainer* container: containers_) {
+    for (OregContainer* container: std::as_const(containers_)) {
         if (container->oo_fresh_) {
-            for ( OregObject* object: OregPool::instance().oo_objects_) {
+            for ( OregObject* object: std::as_const(OregPool::instance().oo_objects_)) {
                 container->oo_solveContainment(object, true);
             }
         }
         else {
             assert(container->mutableContainment_ == false);
 
-            for (OregObject* obj: oo_objects_) {
+            for (OregObject* obj: std::as_const(oo_objects_)) {
                 if (obj->oo_state() != OregObject::OO_STATE_NEW) continue;
                 //! true for non-mutable containment
                 container->oo_solveContainment(obj, false);
@@ -57,33 +59,31 @@ void OregPool::solveChanges()
     }
 
     //! @update changes
-    for (OregObject* obj: qAsConst(oo_objects_)) {
+    for (OregObject* obj: std::as_const(oo_objects_)) {
         if (obj->oo_state() != OregObject::OO_STATE_CHANGED) continue;
 
-        for (OregObserver* observer : qAsConst(obj->oo_observers_)) {
+        for (OregObserver* observer : std::as_const(obj->oo_observers_)) {
             observer->oo_onChange();
         }
     }
 
     //! reset flags
-    for (OregObject* obj: oo_objects_) {
+    for (OregObject* obj: std::as_const(oo_objects_)) {
         if (obj->oo_state() == OregObject::OO_STATE_UPTODATE) continue;
         obj->oo_state_ = OregObject::OO_STATE_UPTODATE;
     }
 
-    for (OregContainer* container: containers_) {
+    for (OregContainer* container: std::as_const(containers_)) {
         container->oo_fresh_ = false;
     }
 
     //! solve recurent containers
-    for (OregContainer* container: containersNew_) {
+    for (OregContainer* container: std::as_const(containersNew_)) {
         containers_.append(container);
     }
     containersNew_.clear();
 
     solvingChangesInProgress_ = false;
-
-   // refreshDebug();
 }
 
 /// @view:end

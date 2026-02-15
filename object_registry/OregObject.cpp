@@ -28,9 +28,12 @@ OregObject::OregObject(bool outOfPool) :
     oo_id_(++OregPool::instance().maxId_),
     oo_state_(OO_STATE_NEW)
 {
+    OregPool& pool = OregPool::instance();
+    QList<OregObject*> debugList = pool.oo_objects_.values();
     if (outOfPool) return;
-    assert(OregPool::instance().solvingChangesInProgress_ == false);
-    OregPool::instance().oo_objects_.insert(oo_id_, this);
+    assert(pool.solvingChangesInProgress_ == false);
+    pool.oo_objects_.insert(oo_id_, this);
+    qDebug("pool");
 }
 
 //=============================================================================

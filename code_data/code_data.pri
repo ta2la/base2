@@ -13,7 +13,9 @@ HEADERS += \
     $$PWD/CodeConnector.h \
     $$PWD/AnalyzerDistCalc.h \
     $$PWD/Cmds_code_data.h \
-    $$PWD/CodeMethods.h
+    $$PWD/CodeMethods.h \
+    $$PWD/PromptComp.h \
+    $$PWD/PromptCompCol.h
 
 SOURCES += \
     $$PWD/CodeData.cpp \
@@ -21,5 +23,6 @@ SOURCES += \
     $$PWD/CodeModuleCol.cpp \
     $$PWD/CodeNode.cpp \
     $$PWD/CodeNodeCol.cpp \
-    $$PWD/AnalyzerDistCalc.cpp
-
+    $$PWD/AnalyzerDistCalc.cpp \
+    $$PWD/PromptComp.cpp \
+    $$PWD/PromptCompCol.cpp

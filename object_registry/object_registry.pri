@@ -10,6 +10,7 @@ HEADERS += \
     $$PWD/OregObjectTest.h \
     $$PWD/OregUpdateLock.h \
     $$PWD/OregFilter.h \
+    $$PWD/OregFilterType.h \
     $$PWD/Cmds_oreg_test.h
 
 SOURCES += \

@@ -7,7 +7,11 @@ HEADERS += \
     $$PWD/AnalyzerModuleData.h \
     $$PWD/AnalyzerModuleCol.h \
     $$PWD/AnalyzerModuleFilesModel.h \
-    $$PWD/AnalyzerModuleFileData.h
+    $$PWD/AnalyzerModuleFileData.h \
+    $$PWD/PromptCompItem.h \
+    $$PWD/PromptCompModel.h
 
 SOURCES += \
-    $$PWD/AnalyzerModuleFileData.cpp
+    $$PWD/AnalyzerModuleFileData.cpp \
+    $$PWD/PromptCompItem.cpp \
+    $$PWD/PromptCompModel.cpp
