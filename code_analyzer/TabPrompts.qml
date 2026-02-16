@@ -39,7 +39,7 @@ ScrollView {
 
                 delegate: Rectangle {
                     width: parent.width
-                    height: 28
+                    height: promptText.implicitHeight + 16
                     color: "transparent"
 
                     Row {
@@ -57,11 +57,13 @@ ScrollView {
                         }
 
                         Text {
+                            id: promptText
                             text: promptComp.text
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 11
                             color: "#404040"
                             elide: Text.ElideRight
+                            wrapMode: Text.WordWrap
                             width: parent.width - 60
                         }
                     }
