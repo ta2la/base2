@@ -51,14 +51,13 @@ Rectangle  {
     }
 
     Loader {
-            id: contentLoader
-            x: 10
-            y: 50
-            width: root.width - 20
-            height: root.height - 60
+        id: contentLoader
+        anchors.fill: parent
+        anchors.margins: 10
+        anchors.topMargin: 50
 
-            // výchozí pohled
-            source: "qrc:/Interactive.qml"
+        // výchozí pohled
+        source: "qrc:/Interactive.qml"
     }
 }
 
