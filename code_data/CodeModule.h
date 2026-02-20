@@ -33,6 +33,7 @@ public:
     //!` @section Construction
     CodeModule(const QString& path);
     void loadFiles(bool subdirs, bool strict);
+
     //! @section Methods
     const QString& name() const { return name_; }
     const QString& path() const { return path_; }
@@ -48,6 +49,7 @@ public:
     CodeNodeCol& nodes()       { return nodes_; }
     const CodeNodeCol& nodes() const { return nodes_; }
 
+    void loadFile_(const QString& filePath);
 //=============================================================================
     //! @section Overrides
     QString oo_to_string(EStringFormat format = SF_BASIC) const override;

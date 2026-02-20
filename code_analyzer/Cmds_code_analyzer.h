@@ -50,7 +50,6 @@ public:
             return args.appendError(
                 "usage: set_module_used <index> <0|1>");
 
-        //bool okIndex = false;
         bool okUsed  = false;
 
         const QString module = args.get(1).value();
@@ -59,8 +58,6 @@ public:
         if (!okUsed) return args.appendError("invalid arguments");
 
         const bool used = (usedInt != 0);
-
-        //AnalyzerModuleCol::inst().setModuleUsed(index, used);
 
         CodeModule* mod = CodeData::inst().modules().get(module);
 

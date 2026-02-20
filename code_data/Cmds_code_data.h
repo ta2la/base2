@@ -177,28 +177,51 @@ public:
         });
 
 CMD_SYS.add("module_add",
-            [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-                if (args.count() < 2)
-                    return args.appendError("usage: module_add <dirPath>");
+            if (args.count() < 2)
+                return args.appendError("usage: module_add <dirPath>");
 
-                const bool subdirs =
-                    (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
+            const bool subdirs = (args.get("subdirs", "__UNDEF__").value() != "__UNDEF__");
+            const bool strict  = (args.get("strict",  "__UNDEF__").value() != "__UNDEF__");
+            const bool notload = (args.get("notload", "__UNDEF__").value() != "__UNDEF__");
 
-                const bool strict =
-                    (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
+            const QString dir = args.get(1).value();
 
-                const QString dir = args.get(1).value();
+            OregUpdateLock l;
+            const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
+            CodeData::inst().modules().add(norm, subdirs, strict, notload);
 
-                //Cmds_code_analyzer::dirs_.add(dir, subdirs, strict);
+            args.append(dir, "MODULE_ADDED");
+            return 0;
+        });
 
-                OregUpdateLock l;
-                const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
-                CodeData::inst().modules().add(norm, subdirs, strict);
+        CMD_SYS.add("file_add",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-                args.append(dir, "MODULE_ADDED");
-                return 0;
-            });
+            if (args.count() < 2)
+                return args.appendError("usage: file_add <filePath>");
+
+            const bool strict = (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
+
+            const QString filePath = args.get(1).value();
+
+            const QString norm = QDir::cleanPath(QDir(filePath).absolutePath());
+
+            // najdeme modul podle adresare
+            const QString dirName = QFileInfo(norm).dir().dirName();
+            CodeModule* mod = CodeData::inst().modules().get(dirName);
+
+            if (!mod)
+                return args.appendError("module not found for: " + filePath);
+
+            OregUpdateLock l;
+            mod->loadFile_(norm);
+            mod->oo_changed();
+
+            args.append(norm, "FILE_ADDED");
+            return 0;
+        });
 
     CMD_SYS.add("dir_export_dot",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {

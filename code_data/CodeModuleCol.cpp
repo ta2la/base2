@@ -61,11 +61,11 @@ QStringList CodeModuleCol::names() const
     return result;
 }
 
-void CodeModuleCol::add(const QString& path, bool subdirs, bool strict)
+void CodeModuleCol::add(const QString& path, bool subdirs, bool strict, bool notload)
 {
     CodeModule* module = new CodeModule(path);
     modules_.insert({module->name(), module});
-    module->loadFiles(subdirs, strict);
+    if (!notload) module->loadFiles(subdirs, strict);
 }
 
 QList<CodeConnector> CodeModuleCol::connectors() const

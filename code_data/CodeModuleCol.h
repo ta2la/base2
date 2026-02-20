@@ -50,7 +50,7 @@ public:
 
     QStringList names() const;
 
-    void add(const QString& path, bool subdirs, bool strict);
+    void add(const QString& path, bool subdirs, bool strict, bool notload);
 
     QList<CodeConnector> connectors() const;
     QStringList nodes() const;

@@ -58,6 +58,24 @@ QString CodeModule::oo_to_string(EStringFormat format) const
     return OregObject::oo_to_string(format);
 }
 
+void CodeModule::loadFile_(const QString& filePath)
+{
+    QFileInfo fi(filePath);
+
+    const QString base = fi.completeBaseName();
+    const QString ext  = fi.suffix().toLower();
+
+    CodeNode* node = nodes_.get(base);
+    if (!node) {
+        node = new CodeNode(filePath, this);
+        nodes_.add(node);
+    } else {
+        node->addExtension(ext);
+    }
+
+    node->loadDependencies(filePath);
+}
+
 void CodeModule::loadFiles(bool subdirs, bool strict)
 {
     if (path_.isEmpty())
@@ -93,7 +111,9 @@ void CodeModule::loadFiles(bool subdirs, bool strict)
                 continue;
         }
 
-        QFileInfo fi(filePath);
+        loadFile_(filePath);
+
+        /*QFileInfo fi(filePath);
 
         const QString base = fi.completeBaseName();
         const QString ext  = fi.suffix().toLower();
@@ -106,7 +126,7 @@ void CodeModule::loadFiles(bool subdirs, bool strict)
             node->addExtension(ext);
         }
 
-        node->loadDependencies(filePath);
+        node->loadDependencies(filePath);*/
     }
 }
 
