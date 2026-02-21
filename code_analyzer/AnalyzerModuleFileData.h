@@ -36,11 +36,11 @@ public:
     AnalyzerModuleFileData() = default;
     explicit AnalyzerModuleFileData(const QString& name);
 
-    QString name() const;
-    QString module() const;
-    double  dist() const;
-    bool    isCenter() const;
-    QStringList types() const;
+    QString     name()     const;
+    QString     module()   const;
+    double      dist()     const;
+    bool        isCenter() const;
+    QStringList types()    const;
 
 private:
     const CodeNode* node_ = nullptr;

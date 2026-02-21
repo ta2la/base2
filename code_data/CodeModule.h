@@ -49,7 +49,7 @@ public:
     CodeNodeCol& nodes()       { return nodes_; }
     const CodeNodeCol& nodes() const { return nodes_; }
 
-    void loadFile_(const QString& filePath);
+    void loadFile_(const QString& filePath, const QList<QPair<int,int>>& ranges);
 //=============================================================================
     //! @section Overrides
     QString oo_to_string(EStringFormat format = SF_BASIC) const override;

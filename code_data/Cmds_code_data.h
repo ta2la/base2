@@ -176,7 +176,7 @@ public:
             return result;
         });
 
-CMD_SYS.add("module_add",
+        CMD_SYS.add("module_add",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
             if (args.count() < 2)
@@ -199,13 +199,21 @@ CMD_SYS.add("module_add",
         CMD_SYS.add("file_add",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
-            if (args.count() < 2)
-                return args.appendError("usage: file_add <filePath>");
+            QList<QPair<int,int>> ranges;
+            for (size_t i = 0; ; i++) {
+                CmdArg arg = args.get("lines", "__UNDEF__", i);
+                if (arg.value() == "__UNDEF__") break;
 
+                QStringList parts = arg.value().split(' ');
+                if (parts.count() < 2) continue;
+                int from = parts[0].toInt();
+                int to   = parts[1].toInt();
+                ranges.append({from, to});
+            }
+
+            if (args.count() < 2) return args.appendError("usage: file_add <filePath>");
             const bool strict = (args.get("strict", "__UNDEF__").value() != "__UNDEF__");
-
             const QString filePath = args.get(1).value();
-
             const QString norm = QDir::cleanPath(QDir(filePath).absolutePath());
 
             // najdeme modul podle adresare
@@ -215,7 +223,7 @@ CMD_SYS.add("module_add",
             if (!mod) return args.appendError("module not found for: " + filePath);
 
             OregUpdateLock l;
-            mod->loadFile_(norm);
+            mod->loadFile_(norm, ranges);
             mod->oo_changed();
 
             args.append(norm, "FILE_ADDED");

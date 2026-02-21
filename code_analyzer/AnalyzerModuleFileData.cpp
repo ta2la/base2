@@ -65,7 +65,20 @@ QStringList AnalyzerModuleFileData::types() const
     if (!node_)
         return {};
 
-    QStringList list = node_->extensions();
+    QStringList list;
+    for (const QString& ext : node_->extensions()) {
+        const QList<QPair<int,int>>& ranges =
+            (ext == "cpp") ? node_->ranges1_ : node_->ranges0_; //##
+
+        if (ranges.isEmpty()) {
+            list.append(ext);
+        } else {
+            QStringList parts;
+            for (const auto& r : ranges)
+                parts.append(QString::number(r.first) + "-" + QString::number(r.second));
+            list.append(ext + "[" + parts.join(", ") + "]"); //##
+        }
+    }
     list.sort();
     return list;
 }

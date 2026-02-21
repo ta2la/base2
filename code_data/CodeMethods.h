@@ -19,7 +19,10 @@
  */
 #pragma once
 
+#include "CmdSys.h"
+
 #include <QString>
+#include <QFile>
 
 /// @view:beg
 class CodeMethods

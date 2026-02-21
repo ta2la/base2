@@ -27,10 +27,11 @@
 #include <QDir>
 #include <QFileInfo>
 
+//=============================================================================
 CodeNode::CodeNode(
     const QString& filePath,
-    CodeModule* module
-    )
+    CodeModule* module,
+    const QList<QPair<int,int>>& ranges )
     : module_(module)
 {
     QFileInfo fi(filePath);
@@ -48,22 +49,20 @@ CodeNode::CodeNode(
 
     const QString ext = fi.suffix().toLower();
     if (!ext.isEmpty()) {
-        addExtension(ext);
+        addExtension(ext, ranges);
     }
 }
 
-void CodeNode::addExtension(const QString& ext)
+//=============================================================================
+void CodeNode::addExtension(const QString& ext, const QList<QPair<int,int>>& ranges)
 {
-    if (ext.isEmpty())
-        return;
-
+    if (ext.isEmpty()) return;
     const QString e = ext.toLower();
-
     extensions_.insert(e);
-
-    loadContentForExt_(ext);
+    loadContentForExt_(ext, ranges);
 }
 
+//=============================================================================
 QStringList CodeNode::extensions() const
 {
     QStringList list = extensions_.values();
@@ -71,14 +70,10 @@ QStringList CodeNode::extensions() const
     return list;
 }
 
+//=============================================================================
 QString CodeNode::oo_to_string(EStringFormat format) const
 {
-    if (format == SF_BASIC) {
-        return QString() +
-               "CodeNode: " +
-               name_;
-    }
-
+    if (format == SF_BASIC) return QString() + "CodeNode: " +  name_;
     return OregObject::oo_to_string(format);
 }
 
@@ -173,24 +168,24 @@ QString CodeNode::filePathForExt(const QString& ext) const
     return dir + "/" + name_ + "." + e;
 }
 
-void CodeNode::loadContentForExt_(const QString& ext)
+void CodeNode::loadContentForExt_(const QString& ext, const QList<QPair<int,int>>& ranges)
 {
     const QString filePath = filePathForExt(ext);
     if (filePath.isEmpty())
         return;
 
     QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;
 
-    const QString content =
-        QString::fromUtf8(file.readAll());
+    const QString content = QString::fromUtf8(file.readAll());
 
     if (ext.toLower() == "cpp") {
         content1_ = content;
+        ranges1_  = ranges;
     }
     else {
         content0_ = content;
+        ranges0_  = ranges;
     }
 }
 

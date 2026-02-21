@@ -58,7 +58,8 @@ QString CodeModule::oo_to_string(EStringFormat format) const
     return OregObject::oo_to_string(format);
 }
 
-void CodeModule::loadFile_(const QString& filePath)
+//=============================================================================
+void CodeModule::loadFile_(const QString& filePath, const QList<QPair<int,int>>& ranges)
 {
     QFileInfo fi(filePath);
 
@@ -67,15 +68,16 @@ void CodeModule::loadFile_(const QString& filePath)
 
     CodeNode* node = nodes_.get(base);
     if (!node) {
-        node = new CodeNode(filePath, this);
+        node = new CodeNode(filePath, this, ranges);
         nodes_.add(node);
     } else {
-        node->addExtension(ext);
+        node->addExtension(ext, ranges);
     }
 
     node->loadDependencies(filePath);
 }
 
+//=============================================================================
 void CodeModule::loadFiles(bool subdirs, bool strict)
 {
     if (path_.isEmpty())
@@ -111,22 +113,7 @@ void CodeModule::loadFiles(bool subdirs, bool strict)
                 continue;
         }
 
-        loadFile_(filePath);
-
-        /*QFileInfo fi(filePath);
-
-        const QString base = fi.completeBaseName();
-        const QString ext  = fi.suffix().toLower();
-
-        CodeNode* node = nodes_.get(base);
-        if (!node) {
-            node = new CodeNode(filePath, this);
-            nodes_.add(node);
-        } else {
-            node->addExtension(ext);
-        }
-
-        node->loadDependencies(filePath);*/
+        loadFile_(filePath, {});
     }
 }
 

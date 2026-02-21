@@ -33,8 +33,8 @@ class CodeNode : public OregObject
 public:
     CodeNode(
         const QString& filePath,
-        CodeModule* module
-        );
+        CodeModule* module,
+        const QList<QPair<int,int>>& ranges );
 
     const QString& dir() const    { return dir_; }
     const QString& name() const   { return name_; }
@@ -43,7 +43,7 @@ public:
     QStringList extensions() const;
     QStringList dependencies() const;
 
-    void addExtension(const QString& ext);
+    void addExtension(const QString& ext, const QList<QPair<int,int>>& ranges = {});
 
     QString filePathForExt(const QString& ext) const;
 
@@ -65,6 +65,9 @@ protected:
     QString     content0_;
     QString     content1_;
 
+    QList<QPair<int,int>> ranges0_;
+    QList<QPair<int,int>> ranges1_;
+
     double distToCenter_ = 0;
 
     QSet<QString> extensions_;
@@ -75,8 +78,9 @@ protected:
     //friend class AnalyzerNet;
     friend class CodeModuleCol;
     friend class AnalyzerDistCalc;
+    friend class AnalyzerModuleFileData;
 
-    void loadContentForExt_(const QString& ext);
+    void loadContentForExt_(const QString& ext, const QList<QPair<int,int>>& ranges = {});
 };
 
 
