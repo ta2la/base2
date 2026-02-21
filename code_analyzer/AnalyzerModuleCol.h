@@ -42,7 +42,7 @@ public:
     /// @section Construction
     explicit AnalyzerModuleCol(QObject* parent = nullptr)
         : QAbstractListModel(parent),
-        OregContainerList("testa")
+        OregContainerList("AnalyzerModuleCol")
     {}
 
     static AnalyzerModuleCol& inst() { static AnalyzerModuleCol i; return i; }
@@ -155,7 +155,7 @@ public:
         emit dataChanged(modelIndex, modelIndex, { DataRole });
     }
 
-    void resetAllFilesModels()
+    /*void resetAllFilesModels()
     {
         for (AnalyzerModuleData& m : modules_) {
             if (m.filesModel_) {
@@ -166,7 +166,7 @@ public:
                 fm->endResetModel();
             }
         }
-    }
+    }*/
 
     //=============================================================================
 protected:

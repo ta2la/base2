@@ -16,7 +16,9 @@
 #pragma once
 
 #include "AnalyzerModuleFileData.h"
-//#include "AnalyzerCode.h"
+#include "OregContainerList.h"
+#include "CodeModule.h"
+#include "CodeNodeModuleFilter.h"
 
 #include <QAbstractListModel>
 #include <QStringList>
@@ -24,7 +26,7 @@
 
 /// @view:beg
 
-class AnalyzerModuleFilesModel : public QAbstractListModel
+class AnalyzerModuleFilesModel : public QAbstractListModel, public OregContainerList
 {
     Q_OBJECT
 public:
@@ -33,13 +35,15 @@ public:
     };
 
     explicit AnalyzerModuleFilesModel(QObject* parent = nullptr)
-        : QAbstractListModel(parent)
+        : QAbstractListModel(parent),
+          OregContainerList("AnalyzerModuleFilesModel")
     {}
 
     explicit AnalyzerModuleFilesModel(
         const QStringList& names,
         QObject* parent = nullptr)
-        : QAbstractListModel(parent)
+        : QAbstractListModel(parent),
+        OregContainerList("AnalyzerModuleFilesModel")
     {
         for (const QString& n : names)
             files_.append(AnalyzerModuleFileData(n));
@@ -52,6 +56,53 @@ public:
         for (const QString& n : names)
             files_.append(AnalyzerModuleFileData(n));
         endResetModel();
+    }
+
+    //## new: mirrors AnalyzerModuleCol::oo_solveContainment
+    bool oo_solveContainment(OregObject* object, bool force) override
+    {
+        if (!OregContainerList::oo_solveContainment_prerequisities_(object, force)) return false;
+
+        CodeNode* node = dynamic_cast<CodeNode*>(object);
+        if (node == nullptr) return false;
+
+        // only accept nodes that belong to our module
+        if (!module_ || !node->module()) return false;
+        if (node->module()->name() != module_->name()) return false; //##
+
+        OregContainerList::oo_solveContainment_(object);
+
+        const int row = files_.count();
+        beginInsertRows(QModelIndex(), row, row);
+        files_.append(AnalyzerModuleFileData(node->name()));
+        endInsertRows();
+
+        return true;
+    }
+
+    //## new: mirrors AnalyzerModuleCol::oo_onObserverChange
+    void oo_onObserverChange(OregObserver* observer) override
+    {
+        CodeNode* node = dynamic_cast<CodeNode*>(observer->oo_object());
+        if (node == nullptr) return;
+
+        const int row = observer->oo_container_index_;
+
+        if (row < 0 || row >= files_.count()) return;
+
+        // rebuild the data entry for this row
+        files_[row] = AnalyzerModuleFileData(node->name()); //##
+
+        const QModelIndex modelIndex = createIndex(row, 0);
+        emit dataChanged(modelIndex, modelIndex, { FileDataRole });
+    }
+
+    //## new: set the owning module so oo_solveContainment can filter
+    void setModule(CodeModule* module)
+    {
+        module_ = module;
+        if (module_)
+            oo_filterSet(new CodeNodeModuleFilter(module_->name()));
     }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override
@@ -76,6 +127,7 @@ public:
     }
 
 private:
+    CodeModule* module_ = nullptr; //## new: needed for containment filter
     QList<AnalyzerModuleFileData> files_;
 
     friend class AnalyzerModuleCol;

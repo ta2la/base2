@@ -101,7 +101,7 @@ CMD_SYS.add("analyzer_set_center",
         calc.calculate();
         calc.addObservers();
 
-        AnalyzerModuleCol::inst().resetAllFilesModels();
+        //AnalyzerModuleCol::inst().resetAllFilesModels();
 
         args.append("center -> " + name, "OK");
 

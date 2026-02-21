@@ -212,8 +212,7 @@ CMD_SYS.add("module_add",
             const QString dirName = QFileInfo(norm).dir().dirName();
             CodeModule* mod = CodeData::inst().modules().get(dirName);
 
-            if (!mod)
-                return args.appendError("module not found for: " + filePath);
+            if (!mod) return args.appendError("module not found for: " + filePath);
 
             OregUpdateLock l;
             mod->loadFile_(norm);

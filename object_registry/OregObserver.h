@@ -47,6 +47,7 @@ protected:
     friend class OregContainerList;
     friend class AnalyzerModuleCol;
     friend class PromptCompModel;
+    friend class AnalyzerModuleFilesModel;
 };
 
 /// @view:end
