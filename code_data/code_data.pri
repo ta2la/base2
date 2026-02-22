@@ -15,7 +15,8 @@ HEADERS += \
     $$PWD/Cmds_code_data.h \
     $$PWD/CodeMethods.h \
     $$PWD/PromptComp.h \
-    $$PWD/PromptCompCol.h
+    $$PWD/PromptCompCol.h \
+    $$PWD/CodeSettings.h
 
 SOURCES += \
     $$PWD/CodeData.cpp \

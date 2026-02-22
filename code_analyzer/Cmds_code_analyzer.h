@@ -25,6 +25,7 @@
 #include "AnalyzerModuleFileData.h"
 #include "AnalyzerDistCalc.h"
 #include "CodeData.h"
+#include "CodeSettings.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -104,6 +105,71 @@ CMD_SYS.add("analyzer_set_center",
         //AnalyzerModuleCol::inst().resetAllFilesModels();
 
         args.append("center -> " + name, "OK");
+
+        return 0;
+    });
+    CMD_SYS.add("update_claude_md",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+
+        if (args.count() < 2)
+            return args.appendError("usage: update_claude_md <moduleName>");
+
+        const QString moduleName = args.get(1).value();
+
+        AnalyzerModuleCol& analyzer = AnalyzerModuleCol::inst();
+
+        // Najdi modul podle jména
+        const AnalyzerModuleData* foundModule = nullptr;
+        for (int i = 0; i < analyzer.count(); i++) {
+            const AnalyzerModuleData& moduleData = analyzer.get(i);
+            // moduleData.dirPath() vrací cestu, potřebujeme jméno
+            // Jméno je poslední část cesty
+            QString dirName = QFileInfo(moduleData.dirPath()).fileName();
+            if (dirName == moduleName) {
+                foundModule = &moduleData;
+                break;
+            }
+        }
+
+        if (!foundModule)
+            return args.appendError(QString("module not found: %1").arg(moduleName));
+
+        const QString exeModulePath = foundModule->dirPath();
+
+        // Postav obsah CLAUDE.md
+        QString content = "## Source Modules\n";
+
+        // Cyklus po všech modulech
+        for (int i = 0; i < analyzer.count(); i++) {
+            const AnalyzerModuleData& moduleData = analyzer.get(i);
+            const QString modulePath = moduleData.dirPath();
+
+            // Extrahuj relativní cestu vůči exeModulePath
+            QString relPath;
+            if (modulePath == exeModulePath) {
+                relPath = "./";
+            } else {
+                QDir baseDir(exeModulePath);
+                relPath = baseDir.relativeFilePath(modulePath);
+            }
+
+            // Typ je executable jen pro cílový modul, ostatní jsou lib
+            QString moduleType = (modulePath == exeModulePath) ? "executable" : "static lib";
+
+            // Přidej relativní cestu a typ modulu
+            content += QString("- %1 (%2)\n").arg(relPath, moduleType);
+        }
+
+        // Zapiš do CLAUDE.md
+        const QString claudeMdPath = QDir::cleanPath(exeModulePath + "/CLAUDE.md");
+        QFile claudeFile(claudeMdPath);
+        if (!claudeFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+            return args.appendError("cannot write CLAUDE.md: " + claudeMdPath);
+
+        claudeFile.write(content.toUtf8());
+        claudeFile.close();
+
+        args.append(claudeMdPath, "CLAUDE_MD_UPDATED");
 
         return 0;
     });

@@ -22,8 +22,8 @@
 #include "CmdSys.h"
 #include "CodeData.h"
 #include "OregUpdateLock.h"
-#include "AnalyzerDistCalc.h"
 #include "CodeMethods.h"
+#include "CodeSettings.h"
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -75,13 +75,8 @@ public:
 
             int result = 0;
 
-            // ---- CHANGE BEGIN: use CodeData / CodeModuleCol instead of AnalyzerModuleCol
             CodeData& dataRef = CodeData::inst();
             CodeModuleCol& modules = dataRef.modules();
-
-            if (modules.count() == 0)
-                return args.appendError("no dir to solve");
-            // ---- CHANGE END
 
             const bool useViews =
                 (args.get("views", "__UNDEF__").value() != "__UNDEF__");
@@ -91,7 +86,6 @@ public:
 
             QStringList files;
 
-            // ---- CHANGE BEGIN: collect files via CodeNode graph
             const QStringList nodeNames = modules.nodes();
 
             for (const QString& nodeName : nodeNames) {
@@ -118,7 +112,6 @@ public:
                         files << QDir::cleanPath(filePath);
                 }
             }
-            // ---- CHANGE END
 
             if (files.isEmpty())
                 return args.appendError("dir_merge_files: no source files found");
@@ -126,26 +119,13 @@ public:
             files.removeDuplicates();
             files.sort();
 
-            // ---- CHANGE BEGIN: determine output directory without AnalyzerModuleCol
-            QString firstModulePath;
-
-            const QStringList moduleNames = modules.names();
-            if (!moduleNames.isEmpty()) {
-                const CodeModule* m = modules.get(moduleNames.first());
-                if (m)
-                    firstModulePath = m->path();
-            }
-
-            if (firstModulePath.isEmpty())
-                return args.appendError("dir_merge_files: cannot determine output directory");
-            // ---- CHANGE END
-
-            QDir dir(firstModulePath);
-            if (dir.isRoot())
-                return args.appendError("dir_merge_files: root not possible");
+            const QString outDir = CodeSettings::inst().outputDir();
+            if (outDir.isEmpty())
+                return args.appendError("output dir not set, use: set_output_dir <path>");
 
             QString resultFileName =
-                QDir::cleanPath(firstModulePath) + ".h";
+                QDir::cleanPath(outDir + "/" +
+                                QFileInfo(outDir).fileName()) + ".h";
 
             QFile outFile(resultFileName);
             if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
@@ -162,10 +142,9 @@ public:
 
             args.append(resultFileName, "RESULT_FILE");
 
-            dir.cdUp();
             args.append(
                 "<a href='system_open_path " +
-                dir.absolutePath() +
+                QDir(outDir).absolutePath() +
                 "'>[OPEN DIR]</a>");
 
             args.append(
@@ -239,8 +218,17 @@ public:
         if (modules.count() == 0)
             return args.appendError("no module to analyze");
 
+        //## beg
+        const QString outDir = CodeSettings::inst().outputDir();
+        if (outDir.isEmpty())
+            return args.appendError("output dir not set, use: set_output_dir <path>");
+
+        QString dotFileName = QDir::cleanPath(outDir + "/" +
+                                              QFileInfo(outDir).fileName()) + ".dot";
+        //## end
+
         // vezmeme první modul deterministicky
-        const QString moduleName = modules.names().first();
+        /*const QString moduleName = modules.names().first();
         CodeModule* module = modules.get(moduleName);
 
         if (!module)
@@ -256,7 +244,7 @@ public:
 
         // výstupní .dot soubor vedle modulu
         QString base = QDir::cleanPath(module->path());
-        QString dotFileName = base + ".dot";
+        QString dotFileName = base + ".dot";*/
 
         // ✅ FS
         QFile outFile(dotFileName);
@@ -272,9 +260,9 @@ public:
         args.append(dotFileName, "RESULT_DOT");
 
         // UI/system akce (zůstávají)
-        dir.cdUp();
+        //dir.cdUp();
         args.append("<a href='system_open_path " +
-                    dir.absolutePath() +
+                    QDir(outDir).absolutePath() +
                     "'>[OPEN DIR]</a>");
         args.append("<a href='system_dot_to_svg " +
                     dotFileName +
@@ -282,8 +270,22 @@ public:
 
         return 0;
     });
+    CMD_SYS.add("set_output_dir",
+    [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+        if (args.count() < 2)
+            return args.appendError("usage: set_output_dir <path>");
 
+        const QString path = QDir::cleanPath(
+            QDir(args.get(1).value()).absolutePath());
 
+        QDir d(path);
+        if (!d.exists() && !d.mkpath("."))
+            return args.appendError("cannot create dir: " + path);
+
+        CodeSettings::inst().setOutputDir(path);
+        args.append(path, "OUTPUT_DIR_SET");
+        return 0;
+    });
     }
 
 //=============================================================================
