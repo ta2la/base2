@@ -167,9 +167,14 @@ public:
 
             const QString dir = args.get(1).value();
 
+            {
             OregUpdateLock l;
             const QString norm = QDir::cleanPath(QDir(dir).absolutePath());
             CodeData::inst().modules().add(norm, subdirs, strict, notload);
+            }
+            {
+            OregUpdateLock l2; //hack to update last module
+            }
 
             args.append(dir, "MODULE_ADDED");
             return 0;
