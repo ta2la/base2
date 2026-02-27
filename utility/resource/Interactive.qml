@@ -30,6 +30,8 @@ Rectangle {
                           onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls test");}}
                 Button { text: "Disable Cmd"; height: parent.selb===text? 32:18;
                           onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls disabled");}}
+                Button { text: "Oreg Test";   height: parent.selb===text? 32:18;
+                          onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls oreg_test");}}
             }
         }
 

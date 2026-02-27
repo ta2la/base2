@@ -10,8 +10,10 @@ $$PWD/CmdSys.h \
 $$PWD/Cmds_cmd_sys.h \
 $$PWD/CmdContextDataIface.h \
 $$PWD/MonitorSocketCmd.h \
-$$PWD/CmdUtils.h
+$$PWD/CmdUtils.h \
+$$PWD/CmdChannelStd.h
 
 SOURCES += \
 $$PWD/CmdSys.cpp \
-$$PWD/Cmds_cmd_sys.cpp
+$$PWD/Cmds_cmd_sys.cpp \
+$$PWD/CmdChannelStd.cpp

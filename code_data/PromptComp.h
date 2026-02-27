@@ -17,6 +17,7 @@ public:
     QString text() const { return text_; }
 //! @section Methods
 //! @section Overrides
+    QString oo_to_string(EStringFormat format = SF_BASIC) const override;
 //=============================================================================
 protected:
 //! @section Data

@@ -25,8 +25,6 @@
 
 #include <QTextStream>
 
-//QStringList Cmds_exerec::filteroutCommands_ = {};
-
 ///@view:beg
 
 //=============================================================================
@@ -36,9 +34,6 @@ int Cmds_exerec::exerec_remove_filterout_command(CmdArgCol& args, QByteArray* da
     if (arg1.value().isEmpty()) return 0;
 
     Model_filteroutCmds::inst().cmdRemove(arg1.value());
-
-    //QString comp = filteroutCommands_codeSegment();
-    //ExerecCodeSegments::inst().qmlExcludedCommandsSet(comp);
 
     ExerecModelProxy::inst().invalidateFilterOverride();
 
@@ -52,9 +47,6 @@ int Cmds_exerec::exerec_add_filterout_command(CmdArgCol& args, QByteArray* data,
     if (arg1.value().isEmpty()) return 0;
 
     Model_filteroutCmds::inst().cmdAdd(arg1.value());
-
-    /*QString comp = filteroutCommands_codeSegment();
-    ExerecCodeSegments::inst().qmlExcludedCommandsSet(comp);*/
 
     ExerecModelProxy::inst().invalidateFilterOverride();
 
