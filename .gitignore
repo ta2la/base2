@@ -3,6 +3,7 @@
 !.gitignore
 !/base
 !/object_registry
+!/object_registry_test
 !/utility
 !/cmd_sys
 !/cmd_sys_display
