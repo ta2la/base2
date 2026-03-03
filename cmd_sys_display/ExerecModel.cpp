@@ -65,7 +65,8 @@ QVariant ExerecModel::data(const QModelIndex &modelIndex, int role) const
     }
     if (role == exerecData) {
         ExerecData data;
-        data.args = "";
+        data.args  = "";
+        data.index = exeRec.index;
         if (!exeRec.sourceName.isEmpty()) {
             data.args += QString() + "source: " + exeRec.sourceName +
                          " [" + QString::number(exeRec.index) + "]<br/>";

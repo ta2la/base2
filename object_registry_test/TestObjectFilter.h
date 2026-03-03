@@ -27,6 +27,9 @@ public:
 //! Construction
     TestObjectFilter(long from, long to) : from_(from), to_(to) {}
 //! @section Overrides
+    QString toString() const override {
+        return QString("Interval filter: %1-%2").arg(from_).arg(to_);
+    }
     bool pass(OregObject* object) override {
         TestObject* to = dynamic_cast<TestObject*>(object);
         if (!to) return false;

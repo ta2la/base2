@@ -35,6 +35,7 @@ public:
     virtual QString saveJson() const { return R"({"type":"void","data":{"null":"null"}})"; }
 //! Methods
     virtual bool pass(OregObject* object) { return true; };
+    virtual QString toString() const { return "UNDEFINED"; }
 //=============================================================================
 protected:
 //! Data

@@ -68,10 +68,15 @@ Rectangle {
             }
 
             MouseArea { anchors.fill: parent; z: 1;
-                onClicked:  {
-                    popupCmd.jsonData = model.exerecData.args
-                    popupCmd.cmdName  = model.cmdName
-                    popupCmd.visible = true;
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onClicked: (mouse) => {
+                    if (mouse.button === Qt.RightButton) {
+                        qmlInterface.callCmd("copy_cmd_log_item " + model.exerecData.index)
+                    } else {
+                        popupCmd.jsonData = model.exerecData.args
+                        popupCmd.cmdName  = model.cmdName
+                        popupCmd.visible = true;
+                    }
                 }
             }
         }

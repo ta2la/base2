@@ -4,6 +4,7 @@
 !/*.h
 !*.pro
 !*.pri
+!/resource/
 !/resource/*.qml
 !/resource/*.qrc
 moc_*.*

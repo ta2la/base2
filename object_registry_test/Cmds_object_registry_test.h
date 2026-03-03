@@ -21,6 +21,11 @@
 
 #include "CmdSys.h"
 #include "TestObject.h"
+#include "TestModel.h"
+#include "TestModelCol_Model.h"
+#include "TestModelItem.h"
+#include "OregUpdateLock.h"
+#include "OregFilter.h"
 
 //=============================================================================
 class Cmds_object_registry_test {
@@ -35,8 +40,39 @@ public:
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
             if (args.count() < 2) return args.appendWarning("one numeric arg expected");
             int value = args.get(1).value().toInt();
+            OregUpdateLock lock;
             new TestObject(value);
             return 0;
+        });
+        CMD_SYS.add(
+        "create_model_test",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            if (args.count() < 3) return args.appendWarning("two numeric args expected: from to");
+            long from = args.get(1).value().toLong();
+            long to   = args.get(2).value().toLong();
+            OregUpdateLock lock;
+            new TestModel(from, to);
+            return 0;
+        });
+        CMD_SYS.add(
+        "display_model_col_test",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            TestModelCol_Model& col = TestModelCol_Model::inst();
+            QString di;
+            di += QString("<br/>TestModelCol_Model: %1 models").arg(col.rowCount());
+            for (int i = 0; i < col.rowCount(); i++) {
+                TestModel* m = static_cast<TestModel*>(col.data(col.index(i), TestModelCol_Model::DataRole).value<QObject*>());
+                if (!m) continue;
+                QString filterStr = m->oo_filter() ? m->oo_filter()->toString() : "";
+                di += QString("<br/> [%1] %2 items: %3").arg(i).arg(filterStr).arg(m->rowCount());
+                for (int j = 0; j < m->rowCount(); j++) {
+                    QVariant v = m->data(m->index(j), TestModel::DataRole);
+                    TestModelItem item = v.value<TestModelItem>();
+                    di += QString(" %1").arg(item.value());
+                }
+            }
+            args.append(di, "RESULT");
+            return 1;
         });
     }
 //=============================================================================

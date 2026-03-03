@@ -27,16 +27,21 @@
 class  ExerecData
 {
     Q_GADGET
-    Q_PROPERTY(QString cmd  MEMBER cmd )
-    Q_PROPERTY(QString args MEMBER args )
+    Q_PROPERTY(QString cmd   MEMBER cmd )
+    Q_PROPERTY(QString args  MEMBER args )
+    Q_PROPERTY(int     index MEMBER index )
 
 public:
     ExerecData() {}
 
-    QString cmd  = "__UNDEFINED__";
-    QString args = "__UNDEFINED__";
+    QString cmd   = "__UNDEFINED__";
+    QString args  = "__UNDEFINED__";
+    int     index = -1;
 };
 
 Q_DECLARE_METATYPE(ExerecData)
 
 ///@view:end
+
+
+

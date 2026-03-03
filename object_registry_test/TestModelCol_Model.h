@@ -32,7 +32,7 @@ class TestModelCol_Model : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    enum Roles { DataRole = Qt::UserRole + 1 };
+    enum Roles { DataRole = Qt::UserRole + 1, DescrRole };
 
     static TestModelCol_Model& inst();
 

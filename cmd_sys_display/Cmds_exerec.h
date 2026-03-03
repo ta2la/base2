@@ -20,9 +20,12 @@
 #pragma once
 
 #include <CmdSys.h>
+#include <CmdExeRecCol.h>
 
 //#include <TcCmdEngine.h>
 #include <QString>
+#include <QGuiApplication>
+#include <QClipboard>
 
 ///@view:beg
 
@@ -36,6 +39,23 @@ public:
         CMD_SYS.add("exerec_add_filterout_command",     exerec_add_filterout_command );
         CMD_SYS.add("exerec_remove_filterout_command",  exerec_remove_filterout_command );
         CMD_SYS.add("cmds_stop_record",  cmds_stop_record );
+        CMD_SYS.add("copy_cmd_log_item",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            if (args.count() < 2) return args.appendWarning("one numeric arg expected: id");
+            int id = args.get(1).value().toInt();
+            CmdExeRecCol& col = CmdExeRecCol::inst();
+            for (int i = 0; i < col.count(); i++) {
+                CmdExeRec& rec = col.get(i);
+                if (rec.index == id) {
+                    QClipboard* cb = QGuiApplication::clipboard();
+                    if (!cb) return args.appendWarning("clipboard not available");
+                    cb->setText("[" + QString::number(rec.index) + "] " + rec.argsIn + rec.argsOut);
+                    args.append(QString("id:%1 len:%2").arg(id).arg(rec.argsIn.length() + rec.argsOut.length()));
+                    return 0;
+                }
+            }
+            return args.appendWarning("id not found");
+        });
 
         return true;
     }

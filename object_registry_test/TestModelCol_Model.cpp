@@ -18,6 +18,7 @@
 #include "TestObject.h"
 #include "OregUpdateLock.h"
 #include "OregPool.h"
+#include "OregFilter.h"
 
 //=============================================================================
 TestModelCol_Model& TestModelCol_Model::inst()
@@ -29,13 +30,16 @@ TestModelCol_Model& TestModelCol_Model::inst()
 //=============================================================================
 TestModelCol_Model::TestModelCol_Model()
 {
-    new TestModel(0,  10, this);
+    new TestModel(-1000000, 1000000, this);
+    new TestModel(0, 10, this);
     new TestModel(11, 30, this);
+    new TestModel(40, 100, this);
 
     OregUpdateLock lock;
     new TestObject(5);
     new TestObject(15);
     new TestObject(25);
+    new TestObject(50);
 }
 
 //=============================================================================
@@ -49,12 +53,18 @@ int TestModelCol_Model::rowCount(const QModelIndex& parent) const
 QVariant TestModelCol_Model::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid()) return QVariant();
-    if (role != DataRole)  return QVariant();
-    return QVariant::fromValue(static_cast<QObject*>(items_.at(index.row())));
+    TestModel* m = items_.at(index.row());
+    if (role == DataRole)  return QVariant::fromValue(static_cast<QObject*>(m));
+    if (role == DescrRole) {
+        QString descr = m->name();
+        if (m->oo_filter()) descr += " - " + m->oo_filter()->toString();
+        return descr;
+    }
+    return QVariant();
 }
 
 //=============================================================================
 QHash<int, QByteArray> TestModelCol_Model::roleNames() const
 {
-    return { { DataRole, "subModel" } };
+    return { { DataRole, "subModel" }, { DescrRole, "descr" } };
 }

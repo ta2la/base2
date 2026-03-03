@@ -63,7 +63,7 @@ Rectangle {
 
                     onLoaded: {
                         item.content = content;
-                        if (rowType === 2) // ButtonType
+                        if (rowType === 1 || rowType === 2)
                                 item.command = model.command
                     }
                 }
@@ -84,7 +84,12 @@ Rectangle {
                 TextField {
                     height: 26
                     property string content: ""
+                    property string command: ""
                     text: content
+                    onAccepted: {
+                        interactiveIface.callCmd(command.replace("$text", text))
+                        text = content
+                    }
                 }
             }
 

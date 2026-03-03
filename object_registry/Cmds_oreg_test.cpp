@@ -23,6 +23,7 @@
 #include "OregObserver.h"
 #include "OregPool.h"
 #include "OregContainerList.h"
+#include "OregFilter.h"
 #include "OregUpdateLock.h"
 
 #include <QTextStream>
@@ -89,9 +90,9 @@ int Cmds_oreg_test::oreg_test_container_display(CmdArgCol& args, QByteArray* dat
     if ( index >= OregPool::instance().containers_.count() ) return 0;
 
     QString di;
-    di += QString() + "<br/>CONTAINER" + QString::number(index) + ":";
-
     OregContainer* cont = OregPool::instance().containers_.at(index);
+    QString filterStr = cont->oo_filter() ? cont->oo_filter()->toString() : "";
+    di += QString() + "<br/>CONTAINER" + QString::number(index) + " Filter: " + filterStr + ":";
     OregContainerList* listCont = dynamic_cast<OregContainerList*>(cont);
 
     if (listCont != nullptr) {
