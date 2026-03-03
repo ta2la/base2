@@ -14,10 +14,11 @@ Rectangle {
         color: "white"
         radius: 3
 
-        Row {
+        Flow {
             anchors.verticalCenter: parent.verticalCenter
             x: 8
             spacing: 8
+            width: parent.width - 16
 
             Text {
                 text: "Create cont.:"
@@ -25,12 +26,28 @@ Rectangle {
             }
 
             TextField {
-                width: 100
+                width: 80
                 height: 24
                 font.pixelSize: 12
                 placeholderText: "from to"
                 onAccepted: {
                     qmlInterface.callCmd("create_model_test " + text)
+                    text = ""
+                }
+            }
+
+            Text {
+                text: "Create item:"
+                font.pixelSize: 12
+            }
+
+            TextField {
+                width: 100
+                height: 24
+                font.pixelSize: 12
+                placeholderText: "num num ..."
+                onAccepted: {
+                    qmlInterface.callCmd("create_object_test " + text)
                     text = ""
                 }
             }

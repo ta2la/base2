@@ -38,10 +38,11 @@ public:
         CMD_SYS.add(
         "create_object_test",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
-            if (args.count() < 2) return args.appendWarning("one numeric arg expected");
-            int value = args.get(1).value().toInt();
+            if (args.count() < 2) return args.appendWarning("at least one numeric arg expected");
             OregUpdateLock lock;
-            new TestObject(value);
+            for (int i = 1; i < args.count(); i++) {
+                new TestObject(args.get(i).value().toInt());
+            }
             return 0;
         });
         CMD_SYS.add(
