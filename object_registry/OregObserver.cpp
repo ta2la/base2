@@ -52,5 +52,13 @@ void OregObserver::oo_onChange()
 }
 
 //=============================================================================
+void OregObserver::oo_onRemove()
+{
+    if (oo_container_ != nullptr) {
+        oo_container_->oo_onObserverRemove(this);
+    }
+}
+
+//=============================================================================
 
 /// @view:end

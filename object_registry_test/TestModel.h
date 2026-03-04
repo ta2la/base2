@@ -40,6 +40,7 @@ public:
     ~TestModel();
 //! @section Overrides - OregContainerList
     bool oo_solveContainment(OregObject* object, bool force) override;
+    void oo_onObserverRemove(OregObserver* observer) override;
     void oo_onObserverChange(OregObserver* object) override;
 //! @section Overrides - QAbstractListModel
     int     rowCount(const QModelIndex& parent = QModelIndex()) const override;

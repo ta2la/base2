@@ -31,6 +31,7 @@ public:
     virtual ~OregObserver();
 //! Methods
     virtual void oo_onChange();
+    virtual void oo_onRemove();
     OregObject*  oo_object() { return oo_object_; }
     const OregObject*  oo_object() const { return oo_object_; }
     int          oo_container_index() { return oo_container_index_; }

@@ -62,6 +62,15 @@ bool TestModel::oo_solveContainment(OregObject* object, bool force)
 }
 
 //=============================================================================
+void TestModel::oo_onObserverRemove(OregObserver* observer)
+{
+    int row = observer->oo_container_index();
+    beginRemoveRows(QModelIndex(), row, row);
+    items_.removeAt(row);
+    endRemoveRows();
+}
+
+//=============================================================================
 void TestModel::oo_onObserverChange(OregObserver* object)
 {
     TestObject* testObj = dynamic_cast<TestObject*>(object->oo_object());

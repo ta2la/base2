@@ -40,6 +40,7 @@ public:
 
     virtual bool oo_solveContainment(OregObject* object, bool force) = 0;
     virtual void oo_onObserverChange(OregObserver* object) = 0;
+    virtual void oo_onObserverRemove(OregObserver* observer) {}
     virtual void oo_removeObserver(OregObserver* observer) = 0;
     virtual void oo_clean() {};
 
