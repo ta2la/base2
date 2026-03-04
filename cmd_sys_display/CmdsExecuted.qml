@@ -71,7 +71,7 @@ Rectangle {
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: (mouse) => {
                     if (mouse.button === Qt.RightButton) {
-                        qmlInterface.callCmd("copy_cmd_log_item " + model.exerecData.index)
+                        qmlInterface.callCmd("clipboard_copy_cmd_log_item " + model.exerecData.index)
                     } else {
                         popupCmd.jsonData = model.exerecData.args
                         popupCmd.cmdName  = model.cmdName

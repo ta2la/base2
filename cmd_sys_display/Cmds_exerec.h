@@ -39,7 +39,7 @@ public:
         CMD_SYS.add("exerec_add_filterout_command",     exerec_add_filterout_command );
         CMD_SYS.add("exerec_remove_filterout_command",  exerec_remove_filterout_command );
         CMD_SYS.add("cmds_stop_record",  cmds_stop_record );
-        CMD_SYS.add("copy_cmd_log_item",
+        CMD_SYS.add("clipboard_copy_cmd_log_item",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
             if (args.count() < 2) return args.appendWarning("one numeric arg expected: id");
             int id = args.get(1).value().toInt();
@@ -49,12 +49,22 @@ public:
                 if (rec.index == id) {
                     QClipboard* cb = QGuiApplication::clipboard();
                     if (!cb) return args.appendWarning("clipboard not available");
-                    cb->setText("[" + QString::number(rec.index) + "] " + rec.argsIn + rec.argsOut);
+                    QString line = "[" + QString::number(rec.index) + "] " + rec.argsIn + rec.argsOut;
+                    QString current = cb->text();
+                    cb->setText(current.isEmpty() ? line : current + "\n" + line);
                     args.append(QString("id:%1 len:%2").arg(id).arg(rec.argsIn.length() + rec.argsOut.length()));
                     return 0;
                 }
             }
             return args.appendWarning("id not found");
+        });
+
+        CMD_SYS.add("clipboard_clean",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            QClipboard* cb = QGuiApplication::clipboard();
+            if (!cb) return args.appendWarning("clipboard not available");
+            cb->clear();
+            return 0;
         });
 
         return true;

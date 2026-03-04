@@ -19,6 +19,7 @@
  */
 
 #include "OregObject.h"
+#include "OregObserver.h"
 #include "OregPool.h"
 
 /// @view:beg
@@ -39,7 +40,21 @@ OregObject::OregObject(bool outOfPool) :
 //=============================================================================
 OregObject::~OregObject()
 {
+    assert(OregPool::instance().solvingChangesInProgress_);
+    oo_destroying_ = true;
+    for (OregObserver* obs : oo_observers_) {
+        delete obs;
+    }
     OregPool::instance().oo_objects_.remove(oo_id_);
+}
+
+//=============================================================================
+void OregObject::oo_delete()
+{
+    assert(!OregPool::instance().solvingChangesInProgress_);
+    OregPool& pool = OregPool::instance();
+    pool.oo_objects_.remove(oo_id_);
+    pool.oo_pending_delete_.append(this);
 }
 
 //=============================================================================

@@ -51,6 +51,22 @@ Rectangle {
                     text = ""
                 }
             }
+
+            Text {
+                text: "Delete:"
+                font.pixelSize: 12
+            }
+
+            TextField {
+                width: 80
+                height: 24
+                font.pixelSize: 12
+                placeholderText: "id id ..."
+                onAccepted: {
+                    qmlInterface.callCmd("delete_object_test " + text)
+                    text = ""
+                }
+            }
         }
     }
 
@@ -83,10 +99,18 @@ Rectangle {
                     Repeater {
                         model: subModel
 
-                        delegate: Text {
-                            text: "" + testItem.value
-                            font.pixelSize: 12
+                        delegate: Row {
+                            spacing: 2
                             y: 2
+                            Text {
+                                text: "" + testItem.value
+                                font.pixelSize: 12
+                            }
+                            Text {
+                                text: "[" + testItem.ooId + "]"
+                                font.pixelSize: 10
+                                color: "#999999"
+                            }
                         }
                     }
                 }

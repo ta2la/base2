@@ -36,10 +36,12 @@ public:
 //! Methods
     void solveChanges();
     void refreshDebug();
+    OregObject* findObject(int id) const { return oo_objects_.value(id, nullptr); }
 //=============================================================================
 protected:
 //! Data
     QMap<int, OregObject*> oo_objects_;
+    QList<OregObject*>     oo_pending_delete_;
 
     int maxId_   = 0;
     int lock_    = 0;

@@ -35,7 +35,9 @@ OregObserver::OregObserver(OregObject* object, OregContainer* container) :
 //=============================================================================
 OregObserver::~OregObserver()
 {
-    oo_object_->oo_observers_.removeOne(this);
+    if (!oo_object_->oo_destroying_) {
+        oo_object_->oo_observers_.removeOne(this);
+    }
     if (oo_container_ != nullptr) {
         oo_container_->oo_removeObserver(this);
     }

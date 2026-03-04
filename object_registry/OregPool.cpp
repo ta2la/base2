@@ -40,6 +40,12 @@ void OregPool::solveChanges()
 {
     solvingChangesInProgress_ = true;
 
+    //! @step delete pending objects
+    for (OregObject* obj : std::as_const(oo_pending_delete_)) {
+        delete obj;
+    }
+    oo_pending_delete_.clear();
+
     //! @step check for containment
     for (OregContainer* container: std::as_const(containers_)) {
         if (container->oo_fresh_) {

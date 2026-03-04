@@ -26,6 +26,7 @@
 #include "TestModelItem.h"
 #include "OregUpdateLock.h"
 #include "OregFilter.h"
+#include "OregPool.h"
 
 //=============================================================================
 class Cmds_object_registry_test {
@@ -74,6 +75,19 @@ public:
             }
             args.append(di, "RESULT");
             return 1;
+        });
+        CMD_SYS.add(
+        "delete_object_test",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            if (args.count() < 2) return args.appendWarning("at least one id arg expected");
+            OregUpdateLock lock;
+            for (int i = 1; i < args.count(); i++) {
+                int id = args.get(i).value().toInt();
+                OregObject* obj = OregPool::instance().findObject(id);
+                if (!obj) { args.appendWarning(QString("id %1 not found").arg(id)); continue; }
+                obj->oo_delete();
+            }
+            return 0;
         });
     }
 //=============================================================================

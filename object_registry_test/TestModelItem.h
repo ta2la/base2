@@ -29,19 +29,22 @@ struct TestModelItem
     Q_GADGET
 
     Q_PROPERTY(long value READ value CONSTANT)
+    Q_PROPERTY(int  ooId  READ ooId  CONSTANT)
 
 public:
     TestModelItem()
-        : value_(0) {}
+        : value_(0), ooId_(0) {}
 
     explicit TestModelItem(TestObject* object)
-        : value_(object->value()) {}
+        : value_(object->value()), ooId_(object->oo_id()) {}
 
     long value() const { return value_; }
+    int  ooId()  const { return ooId_; }
 
 //=============================================================================
 private:
     long value_;
+    int  ooId_;
 };
 
 Q_DECLARE_METATYPE(TestModelItem)

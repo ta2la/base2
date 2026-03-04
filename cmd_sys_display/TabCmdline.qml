@@ -25,12 +25,23 @@ Rectangle {
     color: "#F0F0F0"
     anchors.fill: parent
 
-    Button {
+    Row {
         x: 10
         y: 10
-        text: "STOP CMDS REC"
-        onClicked: {
-            interactiveIface.callCmd("cmds_stop_record")
+        spacing: 8
+
+        Button {
+            text: "STOP CMDS REC"
+            onClicked: {
+                interactiveIface.callCmd("cmds_stop_record")
+            }
+        }
+
+        Button {
+            text: "CLIPBOARD CLEAN"
+            onClicked: {
+                interactiveIface.callCmd("clipboard_clean")
+            }
         }
     }
 

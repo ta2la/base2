@@ -37,6 +37,7 @@ public:
 //! Methods
     EState          oo_state() const { return oo_state_; }
     void            oo_changed();
+    void            oo_delete();
     int             oo_id() const    { return oo_id_; }
 
 //! Methods minor
@@ -50,6 +51,7 @@ protected:
     EState               oo_state_;
     QList<OregObserver*> oo_observers_;
     int                  oo_update_count_ = 0;
+    bool                 oo_destroying_   = false;
 //! @section Friends
     friend class OregObserver;
     friend class Cmds_oreg_test;
