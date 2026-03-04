@@ -38,6 +38,13 @@ Rectangle {
         }
 
         Button {
+            text: "COPY ALL"
+            onClicked: {
+                interactiveIface.callCmd("clipboard_copy_cmd_all")
+            }
+        }
+
+        Button {
             text: "CLIPBOARD CLEAN"
             onClicked: {
                 interactiveIface.callCmd("clipboard_clean")

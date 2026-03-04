@@ -59,6 +59,22 @@ public:
             return args.appendWarning("id not found");
         });
 
+        CMD_SYS.add("clipboard_copy_cmd_all",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            QClipboard* cb = QGuiApplication::clipboard();
+            if (!cb) return args.appendWarning("clipboard not available");
+            CmdExeRecCol& col = CmdExeRecCol::inst();
+            QString result;
+            for (int i = 0; i < col.count(); i++) {
+                CmdExeRec& rec = col.get(i);
+                if (!result.isEmpty()) result += "\n";
+                result += "[" + QString::number(rec.index) + "] " + rec.argsIn + rec.argsOut;
+            }
+            cb->setText(result);
+            args.append(QString("count:%1").arg(col.count()));
+            return 0;
+        });
+
         CMD_SYS.add("clipboard_clean",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
             QClipboard* cb = QGuiApplication::clipboard();
