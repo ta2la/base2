@@ -89,6 +89,20 @@ public:
             }
             return 0;
         });
+        CMD_SYS.add(
+        "change_object_test",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            if (args.count() < 3) return args.appendWarning("two args expected: id newValue");
+            int id = args.get(1).value().toInt();
+            long newValue = args.get(2).value().toLong();
+            OregObject* obj = OregPool::instance().findObject(id);
+            if (!obj) return args.appendWarning(QString("id %1 not found").arg(id));
+            TestObject* testObj = dynamic_cast<TestObject*>(obj);
+            if (!testObj) return args.appendWarning(QString("id %1 is not a TestObject").arg(id));
+            OregUpdateLock lock;
+            testObj->setValue(newValue);
+            return 0;
+        });
     }
 //=============================================================================
 };

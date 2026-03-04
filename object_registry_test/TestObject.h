@@ -27,6 +27,7 @@ public:
     TestObject(long value);
 //! Methods
     long value() const { return value_; }
+    void setValue(long v) { value_ = v; oo_changed(); }
 //! @section Overrides
     QString oo_to_string(EStringFormat format = SF_BASIC) const override;
 //! Data

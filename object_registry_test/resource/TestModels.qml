@@ -67,6 +67,22 @@ Rectangle {
                     text = ""
                 }
             }
+
+            Text {
+                text: "Edit value:"
+                font.pixelSize: 12
+            }
+
+            TextField {
+                width: 80
+                height: 24
+                font.pixelSize: 12
+                placeholderText: "id val"
+                onAccepted: {
+                    qmlInterface.callCmd("change_object_test " + text)
+                    text = ""
+                }
+            }
         }
     }
 
