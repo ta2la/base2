@@ -54,11 +54,9 @@ void OregPool::solveChanges()
             }
         }
         else {
-            assert(container->mutableContainment_ == false);
-
             for (OregObject* obj: std::as_const(oo_objects_)) {
-                if (obj->oo_state() != OregObject::OO_STATE_NEW) continue;
-                //! true for non-mutable containment
+                if (obj->oo_state() == OregObject::OO_STATE_UPTODATE) continue;
+                if (obj->oo_state() == OregObject::OO_STATE_CHANGED && !container->mutableContainment_) continue;
                 container->oo_solveContainment(obj, false);
             }
         }

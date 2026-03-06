@@ -27,6 +27,7 @@
 #include "OregUpdateLock.h"
 #include "OregFilter.h"
 #include "OregPool.h"
+#include "OregContainerList.h"
 
 //=============================================================================
 class Cmds_object_registry_test {
@@ -53,7 +54,9 @@ public:
             long from = args.get(1).value().toLong();
             long to   = args.get(2).value().toLong();
             OregUpdateLock lock;
-            new TestModel(from, to);
+            TestModel* m = new TestModel(from, to);
+            int index = OregPool::instance().containers_.indexOf(static_cast<OregContainer*>(m));
+            args.append(QString::number(index), "container_index");
             return 0;
         });
         CMD_SYS.add(
@@ -101,6 +104,58 @@ public:
             if (!testObj) return args.appendWarning(QString("id %1 is not a TestObject").arg(id));
             OregUpdateLock lock;
             testObj->setValue(newValue);
+            return 0;
+        });
+        CMD_SYS.add(
+        "oreg_test_container_display_llm",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            if (args.count() < 2) return args.appendWarning("index arg expected");
+            int index = args.get(1).value().toInt();
+            if (index >= OregPool::instance().containers_.count()) return args.appendWarning("index out of range");
+            OregContainer* cont = OregPool::instance().containers_.at(index);
+            QString filterStr = cont->oo_filter() ? cont->oo_filter()->toString() : "";
+            QString di = QString("CONTAINER %1 filter: %2").arg(index).arg(filterStr);
+            OregContainerList* listCont = dynamic_cast<OregContainerList*>(cont);
+            if (!listCont) return args.appendWarning("not a list container");
+            for (OregObserver* obs : listCont->oo_items_) {
+                TestObject* t = dynamic_cast<TestObject*>(obs->oo_object_);
+                if (t) di += QString(" [id:%1 val:%2]").arg(t->oo_id()).arg(t->value());
+            }
+            args.append(di, "RESULT");
+            return 0;
+        });
+        CMD_SYS.add(
+        "oreg_test_display_pool_llm",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            QString di;
+            for (OregObject* obj : OregPool::instance().oo_objects_) {
+                if (!di.isEmpty()) di += " ";
+                di += QString::number(obj->oo_id());
+            }
+            args.append(di, "RESULT");
+            return 0;
+        });
+        CMD_SYS.add(
+        "oreg_test_object_display",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            if (args.count() < 2) return args.appendWarning("id arg expected");
+            int id = args.get(1).value().toInt();
+            OregObject* obj = OregPool::instance().findObject(id);
+            if (!obj) return args.appendWarning(QString("id %1 not found").arg(id));
+            args.append(obj->oo_to_string(), "RESULT");
+            return 0;
+        });
+        CMD_SYS.add(
+        "oreg_list_containers_llm",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            OregPool& pool = OregPool::instance();
+            if (pool.containers_.isEmpty()) return args.appendWarning("no containers");
+            QString di;
+            for (int i = 0; i < pool.containers_.size(); i++) {
+                if (!di.isEmpty()) di += " ";
+                di += QString::number(i);
+            }
+            args.append(di, "RESULT");
             return 0;
         });
     }

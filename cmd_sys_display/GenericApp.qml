@@ -57,7 +57,7 @@ Rectangle  {
         anchors.topMargin: 50
 
         // výchozí pohled
-        source: "qrc:/Interactive.qml"
+        source: "qrc:/TabCmdline.qml"
     }
 }
 

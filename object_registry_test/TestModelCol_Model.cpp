@@ -15,10 +15,7 @@
 //=============================================================================
 
 #include "TestModelCol_Model.h"
-#include "TestObject.h"
-#include "OregUpdateLock.h"
-#include "OregPool.h"
-#include "OregFilter.h"
+#include "CmdSys.h"
 
 //=============================================================================
 TestModelCol_Model& TestModelCol_Model::inst()
@@ -30,16 +27,11 @@ TestModelCol_Model& TestModelCol_Model::inst()
 //=============================================================================
 TestModelCol_Model::TestModelCol_Model()
 {
-    new TestModel(-1000000, 1000000, this);
-    new TestModel(0, 10, this);
-    new TestModel(11, 30, this);
-    new TestModel(40, 100, this);
-
-    OregUpdateLock lock;
-    new TestObject(5);
-    new TestObject(15);
-    new TestObject(25);
-    new TestObject(50);
+    CMD_SYS.execute("create_model_test -1000000 1000000");
+    CMD_SYS.execute("create_model_test 0 10");
+    CMD_SYS.execute("create_model_test 11 30");
+    CMD_SYS.execute("create_model_test 40 100");
+    CMD_SYS.execute("create_object_test 5 15 25 50");
 }
 
 //=============================================================================

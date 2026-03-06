@@ -43,7 +43,6 @@ OregObject::~OregObject()
     assert(OregPool::instance().solvingChangesInProgress_);
     oo_destroying_ = true;
     for (OregObserver* obs : oo_observers_) {
-        obs->oo_onRemove();
         delete obs;
     }
     OregPool::instance().oo_objects_.remove(oo_id_);

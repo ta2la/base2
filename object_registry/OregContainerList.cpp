@@ -56,16 +56,29 @@ void OregContainerList::oo_clean()
 //=============================================================================
 bool OregContainerList::oo_solveContainment_prerequisities_(OregObject* object, bool force)
 {
-    if (mutableContainment_) {
-        assert(0);
+    if ( filter_!=nullptr && filter_->pass(object)==false ) {
+        if (mutableContainment_ && object->oo_state() == OregObject::OO_STATE_CHANGED) {
+            for (int i = 0; i < oo_items_.count(); i++) {
+                if (oo_items_[i]->oo_object_ == object) {
+                    delete oo_items_[i];
+                    break;
+                }
+            }
+        }
         return false;
     }
 
-    if (!force && object->oo_state()!=OregObject::OO_STATE_NEW) return false;
+    if (force || object->oo_state() == OregObject::OO_STATE_NEW) {
+        return true;
+    }
+    else if (mutableContainment_ && object->oo_state() == OregObject::OO_STATE_CHANGED) {
+        for (OregObserver* obs : oo_items_) {
+            if (obs->oo_object_ == object) return false;
+        }
+        return true;
+    }
 
-    if ( filter_!=nullptr && filter_->pass(object)==false ) return false;
-
-    return true;
+    return false;
 }
 
 //=============================================================================
@@ -89,6 +102,7 @@ bool OregContainerList::oo_solveContainment(OregObject* object, bool force)
 //=============================================================================
 void OregContainerList::oo_removeObserver(OregObserver* observer)
 {
+    oo_onObserverRemove(observer);
     oo_items_.removeOne(observer);
     for(int i = 0; i < oo_items_.count(); i++) oo_items_[i]->oo_container_index_ = i;
 }

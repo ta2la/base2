@@ -24,6 +24,7 @@ TestModel::TestModel(long from, long to, TestModelCol_Model* col_, QObject* pare
     : QAbstractListModel(parent),
       OregContainerList("TestModel")
 {
+    mutableContainment_ = true;
     oo_filterSet(new TestObjectFilter(from, to));
 
     TestModelCol_Model& col = col_ ? *col_ : TestModelCol_Model::inst();
