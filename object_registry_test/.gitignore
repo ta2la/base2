@@ -2,6 +2,7 @@
 !.gitignore
 !/*.cpp
 !/*.h
+!/*.md
 !*.pro
 !*.pri
 !/resource/
