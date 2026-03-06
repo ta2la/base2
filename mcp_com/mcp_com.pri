@@ -4,3 +4,4 @@ DEPENDPATH += $$PWD
 HEADERS += \
 
 SOURCES += \
+    $$PWD/mcp_com.cpp
