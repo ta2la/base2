@@ -55,6 +55,7 @@ protected:
 //! Friends
     friend class OregObject;
     friend class Cmds_oreg_test;
+    friend class Cmds_object_registry_test;
     friend class OregContainer;
     friend class OregUpdateLock;
     friend class OregContainerList;

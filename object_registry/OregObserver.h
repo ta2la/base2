@@ -45,6 +45,7 @@ protected:
     int            oo_container_index_ = -1;
 
     friend class Cmds_oreg_test;
+    friend class Cmds_object_registry_test;
     friend class OregContainerList;
     friend class AnalyzerModuleCol;
     friend class PromptCompModel;

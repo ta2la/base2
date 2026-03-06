@@ -57,6 +57,7 @@ protected:
     OregObserver* oo_solveContainment_(OregObject* object);
 //! @section Friends
     friend class Cmds_oreg_test;
+    friend class Cmds_object_registry_test;
 };
 
 /// @view:end

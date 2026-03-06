@@ -16,6 +16,7 @@
 
 #include "TestModelCol_Model.h"
 #include "CmdSys.h"
+#include "OregFilter.h"
 
 //=============================================================================
 TestModelCol_Model& TestModelCol_Model::inst()
@@ -26,6 +27,12 @@ TestModelCol_Model& TestModelCol_Model::inst()
 
 //=============================================================================
 TestModelCol_Model::TestModelCol_Model()
+{
+    //setupTest();
+}
+
+//=============================================================================
+void TestModelCol_Model::setupTest()
 {
     CMD_SYS.execute("create_model_test -1000000 1000000");
     CMD_SYS.execute("create_model_test 0 10");
