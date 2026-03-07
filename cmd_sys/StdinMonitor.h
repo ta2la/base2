@@ -34,6 +34,10 @@ class StdinMonitor : public QThread {
 public:
     static StdinMonitor& init() { static StdinMonitor i; i.start(); return i; }
 protected:
+    virtual void processLine(const QString& line) {
+        processLine(line);
+    }
+
 
 #ifdef Q_OS_WIN
     void run() override {
@@ -55,7 +59,7 @@ protected:
             for (const QString& line : lines) {
                 QString trimmed = line.trimmed();
                 if (!trimmed.isEmpty()) {
-                    CMD_SYS.execute_threadSafe(trimmed, "stdin");
+                    processLine(trimmed);
                 }
             }
         }
@@ -68,7 +72,7 @@ protected:
             if (!fgets(buf, sizeof(buf), stdin)) break;
             QString line = QString::fromUtf8(buf).trimmed();
             if (!line.isEmpty()) {
-                CMD_SYS.execute_threadSafe(line, "stdin");
+                processLine(line);
             }
         }
     }
