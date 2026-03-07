@@ -105,13 +105,7 @@ public:
                 if (line.startsWith("#"))
                     continue;
 
-                const bool ok = (CMD_SYS.execute(line) == 0);
-
-                if (!ok) {
-                    return args.appendError(
-                        QString("init failed at line %1").arg(lineNumber)
-                        );
-                }
+                CMD_SYS.execute_threadSafe(line);
             }
 
             args.append(fileName, "INIT_OK");

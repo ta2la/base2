@@ -34,11 +34,11 @@ TestModelCol_Model::TestModelCol_Model()
 //=============================================================================
 void TestModelCol_Model::setupTest()
 {
-    CMD_SYS.execute("create_model_test -1000000 1000000");
-    CMD_SYS.execute("create_model_test 0 10");
-    CMD_SYS.execute("create_model_test 11 30");
-    CMD_SYS.execute("create_model_test 40 100");
-    CMD_SYS.execute("create_object_test 5 15 25 50");
+    CMD_SYS.execute_threadSafe("create_model_test -1000000 1000000");
+    CMD_SYS.execute_threadSafe("create_model_test 0 10");
+    CMD_SYS.execute_threadSafe("create_model_test 11 30");
+    CMD_SYS.execute_threadSafe("create_model_test 40 100");
+    CMD_SYS.execute_threadSafe("create_object_test 5 15 25 50");
 }
 
 //=============================================================================

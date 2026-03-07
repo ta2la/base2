@@ -59,7 +59,7 @@ public slots:
     void callCmd(const QString& cmd) {
         //CmdArgCol args(cmd );
         myCmd_ = true;
-        CMD_SYS.execute(cmd);
+        CMD_SYS.execute_threadSafe(cmd);
         myCmd_ = false;
 
         //InteractiveOutput::append(args.toString());

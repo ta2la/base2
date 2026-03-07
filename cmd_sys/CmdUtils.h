@@ -81,7 +81,7 @@ public:
             if (cmd.trimmed().isEmpty())
                 continue;
 
-            CMD_SYS.execute(cmd);
+            CMD_SYS.execute_threadSafe(cmd);
             executed++;
         }
 
