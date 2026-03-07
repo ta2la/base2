@@ -14,7 +14,7 @@
 // limitations under the License.
 //=============================================================================
 /**
- * @class CmdChannelStd
+ * @class StdoutCmdOutput
  * @brief Outputs executed commands to stdout for external tool communication.
  */
 
@@ -24,12 +24,12 @@
 
 ///@view:beg
 //=============================================================================
-class CmdChannelStd : public CmdExeGuard {
+class StdoutCmdOutput : public CmdExeGuard {
     //=============================================================================
 public:
     //! @section Construction
-    CmdChannelStd();
-    static CmdChannelStd& inst() { static CmdChannelStd i; return i; }
+    StdoutCmdOutput();
+    static StdoutCmdOutput& inst() { static StdoutCmdOutput i; return i; }
     //! @section Overrides
     void commandExecuted() override;
 };

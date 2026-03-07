@@ -79,7 +79,7 @@ protected:
     friend class Cmds_cmd_sys;
     friend class Interactive_uiControl;
     friend class CmdExeRecCol;
-    friend class CmdChannelStd;
+    friend class StdoutCmdOutput;
 };
 
 ///@view:end

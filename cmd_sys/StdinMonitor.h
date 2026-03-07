@@ -14,7 +14,7 @@
 // limitations under the License.
 //=============================================================================
 /**
- * @class MonitorStdinThread
+ * @class StdinMonitor
  * @brief Reads commands from stdin in a separate thread, dispatches via execute_threadSafe.
  */
 #pragma once
@@ -30,7 +30,9 @@
 #endif
 
 //=============================================================================
-class MonitorStdinThread : public QThread {
+class StdinMonitor : public QThread {
+public:
+    static StdinMonitor& init() { static StdinMonitor i; i.start(); return i; }
 protected:
 
 #ifdef Q_OS_WIN
@@ -58,8 +60,6 @@ protected:
             }
         }
     }
-
-
 
 #else
     void run() override {

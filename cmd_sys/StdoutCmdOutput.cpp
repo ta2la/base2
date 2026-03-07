@@ -18,7 +18,7 @@
  * @brief Implementation of CmdExeRecCol class.
  */
 
-#include "CmdChannelStd.h"
+#include "StdoutCmdOutput.h"
 #include "CmdSys.h"
 #include "CmdArgCol.h"
 
@@ -26,12 +26,12 @@
 
 ///@view:beg
 //=============================================================================
-CmdChannelStd::CmdChannelStd() : CmdExeGuard(Update)
+StdoutCmdOutput::StdoutCmdOutput() : CmdExeGuard(Update)
 {
     CMD_SYS.reg(this);
 }
 //=============================================================================
-void CmdChannelStd::commandExecuted()
+void StdoutCmdOutput::commandExecuted()
 {
     CmdArgCol& args = CMD_SYS.executingArgs_;
     QTextStream ts(stdout);

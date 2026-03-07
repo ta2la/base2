@@ -15,7 +15,7 @@
 //=============================================================================
 #include "CmdSys.h"
 #include "CmdExeGuard.h"
-#include "MonitorSocketCmd.h"
+//#include "MonitorSocketCmd.h"
 
 #include <QCoreApplication>
 #include <QThread>
@@ -76,9 +76,9 @@ int CmdSys::execute_(CmdArgCol& args, QByteArray* data, const QSharedPointer<Cmd
     if (!cmd->excludeExeRec()) {
         recordCmd = true;
     }
-    else if (!MonitorSocketCmd::inst().isEmpty()) {
+    /*else if (!MonitorSocketCmd::inst().isEmpty()) {
         if ( MonitorSocketCmd::inst().registered(context->uniqueId()) ) recordCmd = true;
-    }
+    }*/
 
     if (recordCmd) {
         QString argsStr = args.toString();

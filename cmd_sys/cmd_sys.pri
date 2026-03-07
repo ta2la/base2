@@ -9,12 +9,11 @@ $$PWD/CmdExeGuard.h \
 $$PWD/CmdSys.h \
 $$PWD/Cmds_cmd_sys.h \
 $$PWD/CmdContextDataIface.h \
-$$PWD/MonitorSocketCmd.h \
-$$PWD/MonitorStdinThread.h \
+$$PWD/StdinMonitor.h \
 $$PWD/CmdUtils.h \
-$$PWD/CmdChannelStd.h
+$$PWD/StdoutCmdOutput.h
 
 SOURCES += \
 $$PWD/CmdSys.cpp \
 $$PWD/Cmds_cmd_sys.cpp \
-$$PWD/CmdChannelStd.cpp
+$$PWD/StdoutCmdOutput.cpp
