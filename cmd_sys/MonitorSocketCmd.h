@@ -19,59 +19,10 @@
  */
 #pragma once
 
-#include "CmdContextIface.h"
+#include "MonitorStdinThread.h"
 
-#include <QSharedPointer>
 #include <QMap>
-#include <QSocketNotifier>
 #include <QTextStream>
-#include <QThread>
-
-
-#ifdef Q_OS_WIN
-#include <windows.h>
-#endif
-
-//#define CMD_CONTEXT CmdContext::inst()
-
-class StdinReaderThread : public QThread {
-protected:
-    void run() override {
-#ifdef Q_OS_WIN
-        HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
-        if (hStdin == INVALID_HANDLE_VALUE || hStdin == NULL) return;
-
-        char buf[4096];
-        DWORD bytesRead;
-
-        while (!isInterruptionRequested()) {
-            if (!ReadFile(hStdin, buf, sizeof(buf) - 1, &bytesRead, NULL)) break;
-            if (bytesRead == 0) break;
-
-            buf[bytesRead] = '\0';
-
-            QString chunk = QString::fromUtf8(buf);
-            QStringList lines = chunk.split('\n', Qt::SkipEmptyParts);
-
-            for (const QString& line : lines) {
-                QString trimmed = line.trimmed();
-                if (!trimmed.isEmpty()) {
-                    CMD_SYS.execute_threadSafe(trimmed, "stdin");
-                }
-            }
-        }
-#else
-        char buf[4096];
-        while (!isInterruptionRequested()) {
-            if (!fgets(buf, sizeof(buf), stdin)) break;
-            QString line = QString::fromUtf8(buf).trimmed();
-            if (!line.isEmpty()) {
-                CMD_SYS.execute_threadSafe(line, "stdin");
-            }
-        }
-#endif
-    }
-};
 
 //=============================================================================
 class  MonitorSocketCmd  {
@@ -79,7 +30,7 @@ class  MonitorSocketCmd  {
 public:
 //! @section Construction
     MonitorSocketCmd() {
-        stdinThread_ = new StdinReaderThread();
+        stdinThread_ = new MonitorStdinThread();
         stdinThread_->start();
     }
     static MonitorSocketCmd& inst() { static MonitorSocketCmd i; return i; }
@@ -123,7 +74,7 @@ public:
         }
 #endif
 
-        stdinThread_ = new StdinReaderThread();
+        stdinThread_ = new MonitorStdinThread();
         stdinThread_->start();
     }*/
 
@@ -140,5 +91,5 @@ private slots:
 //=============================================================================
 private:
     QMap<int, int> registry_;
-    StdinReaderThread* stdinThread_ = nullptr;
+    MonitorStdinThread* stdinThread_ = nullptr;
 };

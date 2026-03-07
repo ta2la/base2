@@ -10,6 +10,7 @@ $$PWD/CmdSys.h \
 $$PWD/Cmds_cmd_sys.h \
 $$PWD/CmdContextDataIface.h \
 $$PWD/MonitorSocketCmd.h \
+$$PWD/MonitorStdinThread.h \
 $$PWD/CmdUtils.h \
 $$PWD/CmdChannelStd.h
 
