@@ -34,7 +34,6 @@ OregObject::OregObject(bool outOfPool) :
     if (outOfPool) return;
     assert(pool.solvingChangesInProgress_ == false);
     pool.oo_objects_.insert(oo_id_, this);
-    qDebug("pool");
 }
 
 //=============================================================================
