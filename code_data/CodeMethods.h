@@ -34,7 +34,7 @@ public:
         if (!f.open(QIODevice::ReadOnly)) {
             CMD_SYS.execute_threadSafe( QString() +
                             "logcmd --ERROR AnalyzerCode::composeToFile cannot open " +
-                            filePath );
+                            filePath, "", -1, "internal" );
             return QByteArray();
         }
 

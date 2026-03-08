@@ -50,8 +50,8 @@ public:
 //! @section Neighbours
     //CmdExeRecCol& exeRecord() { return CmdExeRecCol::inst(); };
 //<METHODS>
-    int execute(const QString& args, const QString& sourceName = "", int sourceIndex = -1);
-    void execute_threadSafe(const QString& args, const QString& sourceName = "", int sourceIndex = -1);
+    int execute(const QString& args, const QString& sourceName = "", int sourceIndex = -1, const QString& user = "UNKNOWN");
+    void execute_threadSafe(const QString& args, const QString& sourceName = "", int sourceIndex = -1, const QString& user = "internal");
 
     void add(const QString& name, CommandHandler handler, bool excludeExeRec = false, bool excludeUpdate = false);
     Cmd* get(const QString& mame);

@@ -36,7 +36,7 @@ public:
 protected:
     virtual void processLine(const QString& line) {
         if (line.startsWith("qt.")) return;
-        CMD_SYS.execute_threadSafe(line, "stdin");
+        CMD_SYS.execute_threadSafe(line, "stdin", -1, "EXTERNAL_STD");
     }
 
 

@@ -95,24 +95,25 @@ int CmdSys::execute_(CmdArgCol& args, QByteArray* data, const QSharedPointer<Cmd
 }
 
 //=============================================================================
-void CmdSys::execute_threadSafe(const QString& args, const QString& sourceName, int sourceIndex)
+void CmdSys::execute_threadSafe(const QString& args, const QString& sourceName, int sourceIndex, const QString& user)
 {
-    QMetaObject::invokeMethod(this, [this, args, sourceName, sourceIndex]() {
-        execute(args, sourceName, sourceIndex);
+    QMetaObject::invokeMethod(this, [this, args, sourceName, sourceIndex, user]() {
+        execute(args, sourceName, sourceIndex, user);
     }, Qt::QueuedConnection);
 }
 
 //=============================================================================
-int CmdSys::execute(const QString& args, const QString& sourceName, int sourceIndex)
+int CmdSys::execute(const QString& args, const QString& sourceName, int sourceIndex, const QString& user)
 {
     Q_ASSERT(QThread::currentThread() == this->thread());
 
     if (!executingArgs_.isNull()) {
-        execute_threadSafe(args, sourceName, sourceIndex);
+        execute_threadSafe(args, sourceName, sourceIndex, user);
         return 0;
     }
 
     executingArgs_ = CmdArgCol(args);
+    executingArgs_.append(user, "USER");
 
     //auto guard = qScopeGuard([this] { executingArgs_ = CmdArgCol(); });
 
