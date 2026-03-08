@@ -105,7 +105,7 @@ public:
                 if (line.startsWith("#"))
                     continue;
 
-                CMD_SYS.execute_threadSafe(line, "", -1, "internal");
+                CMD_SYS.execute_threadSafe(line, "", -1, "SCRIPT");
             }
 
             args.append(fileName, "INIT_OK");
