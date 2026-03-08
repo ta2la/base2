@@ -80,6 +80,7 @@ protected:
     friend class Interactive_uiControl;
     friend class CmdExeRecCol;
     friend class StdoutCmdOutput;
+    friend class WsServerLiteGuard;
 };
 
 ///@view:end

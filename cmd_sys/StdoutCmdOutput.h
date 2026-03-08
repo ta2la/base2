@@ -30,7 +30,14 @@ public:
     //! @section Construction
     StdoutCmdOutput();
     static StdoutCmdOutput& inst() { static StdoutCmdOutput i; return i; }
+    //! @section Methods
+    // TODO: Disabled by default - when enabled, Qt Creator feeds stdout back to stdin
+    //       causing command echo loop. Enable only for pipe/bridge setups (e.g. STDIO_BRIDGE).
+    void setEnabled(bool value) { enabled_ = value; }
+    bool isEnabled() const { return enabled_; }
     //! @section Overrides
     void commandExecuted() override;
+private:
+    bool enabled_ = false;
 };
 ///@view:end

@@ -33,6 +33,7 @@ StdoutCmdOutput::StdoutCmdOutput() : CmdExeGuard(Update)
 //=============================================================================
 void StdoutCmdOutput::commandExecuted()
 {
+    if (!enabled_) return;
     CmdArgCol& args = CMD_SYS.executingArgs_;
     QTextStream ts(stdout);
     ts << args.toString() << "\n";

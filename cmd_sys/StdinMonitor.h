@@ -35,7 +35,8 @@ public:
     static StdinMonitor& init() { static StdinMonitor i; i.start(); return i; }
 protected:
     virtual void processLine(const QString& line) {
-        processLine(line);
+        if (line.startsWith("qt.")) return;
+        CMD_SYS.execute_threadSafe(line, "stdin");
     }
 
 
