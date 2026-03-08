@@ -14,6 +14,20 @@ ScrollView {
         width: parent.width
         implicitHeight: contentColumn.implicitHeight
 
+        Menu {
+            id: contextMenu
+            property string filePath: ""
+
+            MenuItem {
+                text: "Copy path"
+                onTriggered: {
+                    interactiveIface.callCmd(
+                        "text_to_clipboard " + contextMenu.filePath
+                    )
+                }
+            }
+        }
+
         Column {
             id: contentColumn
             width: parent.width
@@ -39,11 +53,17 @@ ScrollView {
                     id: headerMouse
                     anchors.fill: parent
                     hoverEnabled: true
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        interactiveIface.callCmd(
-                            "set_dir " + dirModel.dir + "/.."
-                        )
+                    onClicked: function(mouse) {
+                        if (mouse.button === Qt.RightButton) {
+                            contextMenu.filePath = dirModel.dir
+                            contextMenu.popup()
+                        } else {
+                            interactiveIface.callCmd(
+                                "set_dir " + dirModel.dir + "/.."
+                            )
+                        }
                     }
                 }
             }
@@ -98,10 +118,14 @@ ScrollView {
                         id: mouseArea
                         anchors.fill: parent
                         hoverEnabled: true
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
                         cursorShape: Qt.PointingHandCursor
 
-                        onClicked: {
-                            if (fileData.isDir) {
+                        onClicked: function(mouse) {
+                            if (mouse.button === Qt.RightButton) {
+                                contextMenu.filePath = fileData.filePath
+                                contextMenu.popup()
+                            } else if (fileData.isDir) {
                                 interactiveIface.callCmd(
                                     "set_dir " + fileData.filePath
                                 )

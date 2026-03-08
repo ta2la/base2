@@ -141,6 +141,21 @@ public:
         return 0;
     });
 
+    CMD_SYS.add("text_to_clipboard",
+    []CMD_ARGS_U -> int {
+        if (args.count() < 2)
+            return args.appendError("text_to_clipboard: missing text");
+
+        QString text = args.get(1).value();
+        QClipboard* clipboard = QGuiApplication::clipboard();
+        if (!clipboard)
+            return args.appendError("text_to_clipboard: clipboard not available");
+
+        clipboard->setText(text);
+        args.append(text, "COPIED");
+        return 0;
+    });
+
     }
 //=============================================================================
 };
