@@ -33,11 +33,16 @@
 class StdinMonitor : public QThread {
 public:
     static StdinMonitor& init() { static StdinMonitor i; i.start(); return i; }
+    void setEnabled(bool value) { enabled_ = value; }
+    bool isEnabled() const { return enabled_; }
 protected:
     virtual void processLine(const QString& line) {
+        if (!enabled_) return;
         if (line.startsWith("qt.")) return;
         CMD_SYS.execute_threadSafe(line, "stdin", -1, "EXTERNAL_STD");
     }
+private:
+    bool enabled_ = false;
 
 
 #ifdef Q_OS_WIN
