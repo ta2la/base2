@@ -43,21 +43,41 @@ Rectangle  {
                     text: model.text
 
                     onClicked: {
-                        contentLoader.source = model.qml
+                        var win = mdiArea.windowAt(index)
+                        if (win) {
+                            win.visible = !win.visible
+                            if (win.visible) win.bringToFront()
+                        }
                     }
                 }
             }
         }
     }
 
-    Loader {
-        id: contentLoader
+    // MDI Area
+    Item {
+        id: mdiArea
         anchors.fill: parent
-        anchors.margins: 10
-        anchors.topMargin: 50
+        anchors.topMargin: 44
 
-        // výchozí pohled
-        source: "qrc:/TabCmdline.qml"
+        function windowAt(idx) {
+            return mdiRepeater.itemAt(idx)
+        }
+
+        Repeater {
+            id: mdiRepeater
+            model: mainTabs
+
+            delegate: MdiWindow {
+                title: model.text
+                contentSource: model.qml
+                width: 500
+                height: 400
+                x: 20 + index * 30
+                y: 10 + index * 30
+                visible: index === 0  // only first window visible initially
+            }
+        }
     }
 }
 
