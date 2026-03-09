@@ -108,8 +108,9 @@ Rectangle {
     // Content
     Loader {
         id: contentLoader
-        anchors.fill: parent
-        anchors.topMargin: titleBar.height
+        x: 0; y: titleBar.height
+        width: mdiWin.width
+        height: mdiWin.height - titleBar.height
         source: mdiWin.contentSource
     }
 
@@ -120,21 +121,21 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         cursorShape: Qt.SizeFDiagCursor
-        property real startX: 0
-        property real startY: 0
+        property real globalStartX: 0
+        property real globalStartY: 0
         property real startW: 0
         property real startH: 0
         onPressed: {
             mdiWin.bringToFront()
-            startX = mouseX; startY = mouseY
+            var global = mapToItem(mdiWin.parent, mouseX, mouseY)
+            globalStartX = global.x; globalStartY = global.y
             startW = mdiWin.width; startH = mdiWin.height
         }
         onPositionChanged: {
             if (!mdiWin.maximized) {
-                var newW = startW + mouseX - startX
-                var newH = startH + mouseY - startY
-                mdiWin.width = Math.max(200, newW)
-                mdiWin.height = Math.max(100, newH)
+                var global = mapToItem(mdiWin.parent, mouseX, mouseY)
+                mdiWin.width = Math.max(200, startW + global.x - globalStartX)
+                mdiWin.height = Math.max(100, startH + global.y - globalStartY)
             }
         }
 
