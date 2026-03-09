@@ -42,31 +42,8 @@ Rectangle  {
                 onClicked: root.toggleWindow(0)
             }
         }
-        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler" }
+        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler"; color: "#C0C8C0" }
 
-        Row {
-            x: 250
-            y: 10
-            spacing: 5
-
-            Repeater {
-                model: mainTabs
-
-                delegate: Button {
-                    width: 90
-                    height: 30
-                    text: model.text
-
-                    onClicked: {
-                        var win = mdiArea.windowAt(index)
-                        if (win) {
-                            win.visible = !win.visible
-                            if (win.visible) win.bringToFront()
-                        }
-                    }
-                }
-            }
-        }
     }
 
     // MDI Area
