@@ -60,6 +60,26 @@ Rectangle  {
         anchors.fill: parent
         anchors.topMargin: 44
 
+        Canvas {
+            anchors.fill: parent
+            z: -1
+            onPaint: {
+                var ctx = getContext("2d")
+                ctx.clearRect(0, 0, width, height)
+                ctx.strokeStyle = "#ccc"
+                ctx.lineWidth = 0.5
+                var g = 50
+                for (var x = 0; x < width; x += g) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke()
+                }
+                for (var y = 0; y < height; y += g) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke()
+                }
+            }
+            onWidthChanged: requestPaint()
+            onHeightChanged: requestPaint()
+        }
+
         function windowAt(idx) {
             return mdiRepeater.itemAt(idx)
         }
@@ -73,8 +93,8 @@ Rectangle  {
                 contentSource: model.qml
                 width: 500
                 height: 400
-                x: 20 + index * 30
-                y: 10 + index * 30
+                x: index * 50
+                y: index * 50
                 visible: index === 0  // only first window visible initially
             }
         }

@@ -13,10 +13,14 @@ Rectangle {
     property string contentSource: ""
     property bool maximized: false
 
+    property int gridSize: 50
+
     property real _prevX: 0
     property real _prevY: 0
     property real _prevW: 400
     property real _prevH: 300
+
+    function snapToGrid(val) { return Math.round(val / gridSize) * gridSize }
 
     function bringToFront() {
         var siblings = parent.children
@@ -97,8 +101,10 @@ Rectangle {
             }
             onPositionChanged: {
                 if (!mdiWin.maximized) {
-                    mdiWin.x += mouseX - startX
-                    mdiWin.y += mouseY - startY
+                    var newX = mdiWin.x + mouseX - startX
+                    var newY = mdiWin.y + mouseY - startY
+                    mdiWin.x = snapToGrid(newX)
+                    mdiWin.y = snapToGrid(newY)
                 }
             }
             onDoubleClicked: mdiWin.toggleMaximize()
@@ -134,8 +140,8 @@ Rectangle {
         onPositionChanged: {
             if (!mdiWin.maximized) {
                 var global = mapToItem(mdiWin.parent, mouseX, mouseY)
-                mdiWin.width = Math.max(200, startW + global.x - globalStartX)
-                mdiWin.height = Math.max(100, startH + global.y - globalStartY)
+                mdiWin.width = Math.max(200, snapToGrid(startW + global.x - globalStartX))
+                mdiWin.height = Math.max(100, snapToGrid(startH + global.y - globalStartY))
             }
         }
 
