@@ -28,7 +28,7 @@ Rectangle {
                     wrapMode: Text.Wrap
                     textFormat: Text.RichText
 
-                    onLinkActivated: { interactiveIface.callCmd(link); }
+                    onLinkActivated: { qmlInterface.callCmd(link); }
                 }
             }
         }
