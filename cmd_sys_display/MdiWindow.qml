@@ -1,19 +1,16 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
-Rectangle {
+Item {
     id: mdiWin
-    color: "#e8e8e8"
-    border.color: activeFocus ? "#4cc4bc" : "#999"
-    border.width: 2
-    radius: 4
-    clip: true
+    clip: false
 
     property string title: ""
     property string contentSource: ""
     property bool maximized: false
 
     property int gridSize: 50
+    property int inset: 5
 
     property real _prevX: 0
     property real _prevY: 0
@@ -45,119 +42,128 @@ Rectangle {
         }
     }
 
-    // Title bar
+    // Visual frame (inset by 5px from grid cell)
     Rectangle {
-        id: titleBar
-        width: parent.width
-        height: 26
-        color: "#4cc4bc"
-        radius: 3
+        id: frame
+        x: inset; y: inset
+        width: mdiWin.width - inset * 2
+        height: mdiWin.height - inset * 2
+        color: "#e8e8e8"
+        border.color: mdiWin.activeFocus ? "#4cc4bc" : "#999"
+        border.width: 2
+        radius: 4
+        clip: true
 
-        // Square off bottom corners
+        // Title bar
         Rectangle {
-            width: parent.width; height: 4
-            anchors.bottom: parent.bottom
-            color: parent.color
-        }
+            id: titleBar
+            width: parent.width
+            height: 26
+            color: "#4cc4bc"
+            radius: 3
 
-        Text {
-            x: 8; anchors.verticalCenter: parent.verticalCenter
-            text: mdiWin.title
-            font.pointSize: 10; font.bold: true
-            color: "#fff"
-        }
-
-        Row {
-            anchors.right: parent.right; anchors.rightMargin: 4
-            anchors.verticalCenter: parent.verticalCenter
-            spacing: 2
-
-            // Maximize/restore
-            Button {
-                width: 22; height: 20
-                text: mdiWin.maximized ? "\u2752" : "\u25a1"
-                font.pointSize: 10
-                onClicked: mdiWin.toggleMaximize()
+            Rectangle {
+                width: parent.width; height: 4
+                anchors.bottom: parent.bottom
+                color: parent.color
             }
 
-            // Hide
-            Button {
-                width: 22; height: 20
-                text: "\u2715"
-                font.pointSize: 10
-                onClicked: mdiWin.visible = false
+            Text {
+                x: 8; anchors.verticalCenter: parent.verticalCenter
+                text: mdiWin.title
+                font.pointSize: 10; font.bold: true
+                color: "#fff"
+            }
+
+            Row {
+                anchors.right: parent.right; anchors.rightMargin: 4
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 2
+
+                Button {
+                    width: 22; height: 20
+                    text: mdiWin.maximized ? "\u2752" : "\u25a1"
+                    font.pointSize: 10
+                    onClicked: mdiWin.toggleMaximize()
+                }
+
+                Button {
+                    width: 22; height: 20
+                    text: "\u2715"
+                    font.pointSize: 10
+                    onClicked: mdiWin.visible = false
+                }
+            }
+
+            MouseArea {
+                id: dragArea
+                anchors.fill: parent
+                anchors.rightMargin: 50
+                property real startX: 0
+                property real startY: 0
+                onPressed: {
+                    mdiWin.bringToFront()
+                    startX = mouseX; startY = mouseY
+                }
+                onPositionChanged: {
+                    if (!mdiWin.maximized) {
+                        var newX = mdiWin.x + mouseX - startX
+                        var newY = mdiWin.y + mouseY - startY
+                        mdiWin.x = snapToGrid(newX)
+                        mdiWin.y = snapToGrid(newY)
+                    }
+                }
+                onDoubleClicked: mdiWin.toggleMaximize()
             }
         }
 
+        // Content
+        Loader {
+            id: contentLoader
+            x: 0; y: titleBar.height
+            width: frame.width
+            height: frame.height - titleBar.height
+            source: mdiWin.contentSource
+        }
+
+        // Resize handle (bottom-right)
         MouseArea {
-            id: dragArea
-            anchors.fill: parent
-            anchors.rightMargin: 50
-            property real startX: 0
-            property real startY: 0
+            id: resizeHandle
+            width: 14; height: 14
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            cursorShape: Qt.SizeFDiagCursor
+            property real globalStartX: 0
+            property real globalStartY: 0
+            property real startW: 0
+            property real startH: 0
             onPressed: {
                 mdiWin.bringToFront()
-                startX = mouseX; startY = mouseY
+                var global = mapToItem(mdiWin.parent, mouseX, mouseY)
+                globalStartX = global.x; globalStartY = global.y
+                startW = mdiWin.width; startH = mdiWin.height
             }
             onPositionChanged: {
                 if (!mdiWin.maximized) {
-                    var newX = mdiWin.x + mouseX - startX
-                    var newY = mdiWin.y + mouseY - startY
-                    mdiWin.x = snapToGrid(newX)
-                    mdiWin.y = snapToGrid(newY)
+                    var global = mapToItem(mdiWin.parent, mouseX, mouseY)
+                    mdiWin.width = Math.max(200, snapToGrid(startW + global.x - globalStartX))
+                    mdiWin.height = Math.max(100, snapToGrid(startH + global.y - globalStartY))
                 }
             }
-            onDoubleClicked: mdiWin.toggleMaximize()
-        }
-    }
 
-    // Content
-    Loader {
-        id: contentLoader
-        x: 0; y: titleBar.height
-        width: mdiWin.width
-        height: mdiWin.height - titleBar.height
-        source: mdiWin.contentSource
-    }
-
-    // Resize handle (bottom-right)
-    MouseArea {
-        id: resizeHandle
-        width: 14; height: 14
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        cursorShape: Qt.SizeFDiagCursor
-        property real globalStartX: 0
-        property real globalStartY: 0
-        property real startW: 0
-        property real startH: 0
-        onPressed: {
-            mdiWin.bringToFront()
-            var global = mapToItem(mdiWin.parent, mouseX, mouseY)
-            globalStartX = global.x; globalStartY = global.y
-            startW = mdiWin.width; startH = mdiWin.height
-        }
-        onPositionChanged: {
-            if (!mdiWin.maximized) {
-                var global = mapToItem(mdiWin.parent, mouseX, mouseY)
-                mdiWin.width = Math.max(200, snapToGrid(startW + global.x - globalStartX))
-                mdiWin.height = Math.max(100, snapToGrid(startH + global.y - globalStartY))
-            }
-        }
-
-        // Visual grip
-        Canvas {
-            anchors.fill: parent
-            onPaint: {
-                var ctx = getContext("2d")
-                ctx.strokeStyle = "#999"
-                ctx.lineWidth = 1
-                for (var i = 0; i < 3; i++) {
-                    var offset = 3 + i * 4
-                    ctx.beginPath()
-                    ctx.moveTo(width, offset)
-                    ctx.lineTo(offset, height)
-                    ctx.stroke()
+            Canvas {
+                anchors.fill: parent
+                onPaint: {
+                    var ctx = getContext("2d")
+                    ctx.strokeStyle = "#999"
+                    ctx.lineWidth = 1
+                    for (var i = 0; i < 3; i++) {
+                        var offset = 3 + i * 4
+                        ctx.beginPath()
+                        ctx.moveTo(width, offset)
+                        ctx.lineTo(offset, height)
+                        ctx.stroke()
+                    }
                 }
             }
         }
