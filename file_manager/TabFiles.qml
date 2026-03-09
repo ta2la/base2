@@ -21,7 +21,7 @@ ScrollView {
             MenuItem {
                 text: "Copy path"
                 onTriggered: {
-                    interactiveIface.callCmd(
+                    qmlInterface.callCmd(
                         "text_to_clipboard " + contextMenu.filePath
                     )
                 }
@@ -60,7 +60,7 @@ ScrollView {
                             contextMenu.filePath = dirModel.dir
                             contextMenu.popup()
                         } else {
-                            interactiveIface.callCmd(
+                            qmlInterface.callCmd(
                                 "set_dir " + dirModel.dir + "/.."
                             )
                         }
@@ -126,11 +126,11 @@ ScrollView {
                                 contextMenu.filePath = fileData.filePath
                                 contextMenu.popup()
                             } else if (fileData.isDir) {
-                                interactiveIface.callCmd(
+                                qmlInterface.callCmd(
                                     "set_dir " + fileData.filePath
                                 )
                             } else {
-                                interactiveIface.callCmd(
+                                qmlInterface.callCmd(
                                     "system_open_path " + fileData.filePath
                                 )
                             }

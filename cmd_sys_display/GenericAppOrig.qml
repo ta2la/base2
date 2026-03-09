@@ -69,7 +69,7 @@ Rectangle  {
         x: 10; y: 50; width: root.width-20; height: root.height-60
 
         Button { x:10; y: 10; text: "STOP CMDS REC";
-            onClicked: { interactiveIface.callCmd("cmds_stop_record"); }
+            onClicked: { qmlInterface.callCmd("cmds_stop_record"); }
         }
 
         CmdsExecuted {

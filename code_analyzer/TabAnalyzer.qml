@@ -63,7 +63,7 @@ ScrollView {
                         height: 20
                         verticalAlignment: Text.AlignVCenter
 
-                        onLinkActivated: interactiveIface.callCmd(link)
+                        onLinkActivated: qmlInterface.callCmd(link)
                     }
 
                     Row { //**
@@ -76,7 +76,7 @@ ScrollView {
                             checked: moduleData.used
 
                             onToggled: {
-                                interactiveIface.callCmd(
+                                qmlInterface.callCmd(
                                     "set_module_used " + moduleData.module + " " + (checked ? "1" : "0")
                                 )
                             }
@@ -159,7 +159,7 @@ ScrollView {
                                         preventStealing: true
 
                                         onClicked: {
-                                            interactiveIface.callCmd(
+                                            qmlInterface.callCmd(
                                                 "analyzer_set_center " + fileData.name + " " + fileData.module
                                             )
                                         }

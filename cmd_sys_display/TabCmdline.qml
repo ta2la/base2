@@ -33,21 +33,21 @@ Rectangle {
         Button {
             text: "STOP CMDS REC"
             onClicked: {
-                interactiveIface.callCmd("cmds_stop_record")
+                qmlInterface.callCmd("cmds_stop_record")
             }
         }
 
         Button {
             text: "COPY ALL"
             onClicked: {
-                interactiveIface.callCmd("clipboard_copy_cmd_all")
+                qmlInterface.callCmd("clipboard_copy_cmd_all")
             }
         }
 
         Button {
             text: "CLIPBOARD CLEAN"
             onClicked: {
-                interactiveIface.callCmd("clipboard_clean")
+                qmlInterface.callCmd("clipboard_clean")
             }
         }
     }
