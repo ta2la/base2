@@ -20,14 +20,29 @@ import QtQuick.Controls 2.15
 
 Rectangle  {
     id: root;
-    color: "#D9D9D9";
+    color: "#C0C8C0";
     anchors.fill: parent;
 
-    Rectangle { id: mainSpace; color: "#4cc4bc"
+    function toggleWindow(idx) {
+        var win = mdiArea.windowAt(idx)
+        if (win) {
+            win.visible = !win.visible
+            if (win.visible) win.bringToFront()
+        }
+    }
+
+
+    Rectangle { id: mainSpace; color: "#455C71"
         x: 0; y: 0; width: root.width; height: 40
 
-        Image {x:2; y:2; width:32; height:32; source:"images/icon.svg"}
-        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assemblera" }
+        Image {x:2; y:2; width:32; height:32; source:"images/icon.svg"
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.toggleWindow(0)
+            }
+        }
+        Text {x:40; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler" }
 
         Row {
             x: 250
@@ -66,7 +81,7 @@ Rectangle  {
             onPaint: {
                 var ctx = getContext("2d")
                 ctx.clearRect(0, 0, width, height)
-                ctx.strokeStyle = "#ccc"
+                ctx.strokeStyle = "#d8d8d8"
                 ctx.lineWidth = 0.5
                 var g = 50
                 for (var x = 0; x < width; x += g) {

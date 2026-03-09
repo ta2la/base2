@@ -22,6 +22,8 @@ Rectangle {
             property string selb: "Code Focus"
             spacing: 10
             x: 0; y: 10; width: root.width-20;
+            Button { text: "Windows";     height: parent.selb===text? 32:18;
+                      onClicked: { parent.selb = text; }}
             Button { text: "Code Focus";  height: parent.selb===text? 32:18;
                       onClicked: { parent.selb = text; qmlInterface.callCmd("change_controls start_stop");}}
             Button { text: "Test Cmd";    height: parent.selb===text? 32:18;
@@ -33,6 +35,32 @@ Rectangle {
         }
     }
 
+    // Windows toggle area
+    Rectangle {
+        id: windowsArea
+        x: 10; y: 44
+        width: parent.width-20
+        height: (parent.height - 54) * 0.66
+        color: "#D8DDE8"
+        clip: true
+        visible: tabBar.children[0].selb === "Windows"
+
+        Flow {
+            anchors.fill: parent
+            anchors.margins: 5
+            spacing: 5
+
+            Repeater {
+                model: mainTabs
+                delegate: Button {
+                    width: 90; height: 26
+                    text: model.text
+                    onClicked: root.toggleWindow(index)
+                }
+            }
+        }
+    }
+
     // Command buttons area (upper 2/3)
     Rectangle {
         id: cmdArea
@@ -41,6 +69,7 @@ Rectangle {
         height: (parent.height - 54) * 0.66
         color: "#CAD7E8"
         clip: true
+        visible: tabBar.children[0].selb !== "Windows"
 
         Flickable {
             anchors.fill: parent

@@ -49,7 +49,7 @@ Item {
         width: mdiWin.width - inset * 2
         height: mdiWin.height - inset * 2
         color: "#e8e8e8"
-        border.color: mdiWin.activeFocus ? "#4cc4bc" : "#999"
+        border.color: "#455C71"
         border.width: 2
         radius: 4
         clip: true
@@ -57,16 +57,11 @@ Item {
         // Title bar
         Rectangle {
             id: titleBar
-            width: parent.width
-            height: 26
-            color: "#4cc4bc"
-            radius: 3
-
-            Rectangle {
-                width: parent.width; height: 4
-                anchors.bottom: parent.bottom
-                color: parent.color
-            }
+            x: 2; y: 2
+            width: parent.width - 4
+            height: 24
+            color: "#455C71"
+            radius: 2
 
             Text {
                 x: 8; anchors.verticalCenter: parent.verticalCenter
@@ -120,9 +115,9 @@ Item {
         // Content
         Loader {
             id: contentLoader
-            x: 0; y: titleBar.height
-            width: frame.width
-            height: frame.height - titleBar.height
+            x: 2; y: titleBar.y + titleBar.height
+            width: frame.width - 4
+            height: frame.height - titleBar.y - titleBar.height - 2
             source: mdiWin.contentSource
         }
 
