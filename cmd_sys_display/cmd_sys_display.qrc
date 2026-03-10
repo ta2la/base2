@@ -6,6 +6,5 @@
         <file>MdiWindow.qml</file>
         <file>GenericAppOrig.qml</file>
         <file>TabCmdline.qml</file>
-        <file>images/icon.svg</file>
     </qresource>
 </RCC>

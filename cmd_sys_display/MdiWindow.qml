@@ -6,6 +6,7 @@ Item {
     clip: false
 
     property string title: ""
+    property string icon: ""
     property string contentSource: ""
     property bool maximized: false
 
@@ -59,14 +60,20 @@ Item {
             id: titleBar
             x: 2; y: 2
             width: parent.width - 4
-            height: 24
+            height: 30
             color: "#455C71"
             radius: 2
 
+            Rectangle {
+                x: 4; y: 3; width: 24; height: 24; radius: 3
+                color: "transparent"; border.color: "#fff"; border.width: 1
+                visible: mdiWin.icon !== ""
+                Text { anchors.centerIn: parent; font.pointSize: 14; text: mdiWin.icon; color: "#fff" }
+            }
             Text {
-                x: 8; anchors.verticalCenter: parent.verticalCenter
+                x: mdiWin.icon !== "" ? 32 : 8; anchors.verticalCenter: parent.verticalCenter
                 text: mdiWin.title
-                font.pointSize: 10; font.bold: true
+                font.pointSize: 13; font.bold: true
                 color: "#fff"
             }
 
@@ -124,7 +131,7 @@ Item {
         // Resize handle (bottom-right)
         MouseArea {
             id: resizeHandle
-            width: 14; height: 14
+            width: 28; height: 28
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             cursorShape: Qt.SizeFDiagCursor

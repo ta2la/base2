@@ -52,10 +52,20 @@ Rectangle {
 
             Repeater {
                 model: mainTabs
-                delegate: Button {
-                    width: 90; height: 26
-                    text: model.text
-                    onClicked: root.toggleWindow(index)
+                delegate: Rectangle {
+                    visible: index > 0
+                    width: visible ? 100 : 0; height: visible ? 30 : 0
+                    radius: 2; color: "#455C71"
+                    Text {
+                        anchors.centerIn: parent
+                        text: index === 1 ? "\u2630 " + model.text : index === 2 ? "\uD83D\uDF09 " + model.text : index === 3 ? "\u00B6 " + model.text : index === 4 ? "\uD83D\uDDC1 " + model.text : index === 5 ? "\u2699 " + model.text : index === 6 ? "\u24D8 " + model.text : model.text
+                        font.pointSize: 10; font.bold: true; color: "#fff"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.toggleWindow(index)
+                    }
                 }
             }
         }
@@ -149,8 +159,8 @@ Rectangle {
         id: editComponent
         TextField {
             height: 26; property string content: ""; property string command: ""
-            text: content
-            onAccepted: { qmlInterface.callCmd(command.replace("$text", text)); text = content }
+            placeholderText: content
+            onAccepted: { qmlInterface.callCmd(command.replace("$text", text)); text = "" }
         }
     }
     Component {
