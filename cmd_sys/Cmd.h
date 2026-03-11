@@ -40,20 +40,22 @@ class  Cmd {
 //=============================================================================
 public:
 //! @section Construction
-    Cmd(const QString& name, CommandHandler handler, bool excludeExeRec = false, bool excludeUpdate = false) :
+    Cmd(const QString& name, CommandHandler handler, bool excludeExeRec = false, bool excludeUpdate = false, const QString& category = "common") :
         name_(name),
         handler_(handler),
         excludeExeRec_(excludeExeRec),
-        excludeUpdate_(excludeUpdate)
+        excludeUpdate_(excludeUpdate),
+        category_(category)
     {}
 //<METHODS>
     int execute(CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) {
         return handler_(args, data, context);
     }
 
-    QString name() const    { return name_; }
-    bool    excludeExeRec() { return excludeExeRec_; }
-    bool    excludeUpdate() { return excludeUpdate_; }
+    QString name() const     { return name_; }
+    QString category() const { return category_; }
+    bool    excludeExeRec()  { return excludeExeRec_; }
+    bool    excludeUpdate()  { return excludeUpdate_; }
 //=============================================================================
 protected:
 //! @section Data
@@ -61,5 +63,6 @@ protected:
     CommandHandler handler_;
     bool           excludeExeRec_;
     bool           excludeUpdate_;
+    QString        category_;
 };
 ///@view:end

@@ -83,7 +83,7 @@ Rectangle  {
 
             delegate: MdiWindow {
                 title: model.text
-                icon: index === 0 ? "\u2388" : index === 1 ? "\u2630" : index === 2 ? "\uD83D\uDF09" : index === 3 ? "\u00B6" : index === 4 ? "\uD83D\uDDC1" : index === 5 ? "\u2699" : index === 6 ? "\u24D8" : ""
+                icon: index === 0 ? "\u2388" : index === 1 ? "\u2630" : index === 2 ? "\uD83D\uDF09" : index === 3 ? "\u00B6" : index === 4 ? "\uD83D\uDDC1" : index === 5 ? "\u2699" : index === 6 ? "\uD83D\uDC41" : index === 7 ? "\u24D8" : ""
                 contentSource: model.qml
                 width: 500
                 height: 400

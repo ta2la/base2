@@ -14,7 +14,8 @@ public:
     enum Roles { DataRole = Qt::UserRole + 1 };
 
     DirModel(QObject* parent = nullptr);
-    static DirModel& inst() { static DirModel i; return i; }
+    static DirModel& inst()        { static DirModel i; return i; }
+    static DirModel& instPreview() { static DirModel i; return i; }
 
     void setDir(const QString& path);
     QString dir() const { return dir_; }

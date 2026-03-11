@@ -80,7 +80,8 @@ ScrollView {
                 delegate: Rectangle {
                     width: parent.width
                     height: 24
-                    color: mouseArea.containsMouse ? "#E0E8F0" : "#FFFFFF"
+                    property bool isPreviewed: fileData.filePath === previewModel.filePath
+                    color: mouseArea.containsMouse ? "#E0E8F0" : isPreviewed && previewModel.level === 2 ? "#F0C0C0" : isPreviewed && previewModel.level === 1 ? "#F0DADA" : "#FFFFFF"
 
                     Row {
                         anchors.fill: parent
@@ -125,13 +126,13 @@ ScrollView {
                             if (mouse.button === Qt.RightButton) {
                                 contextMenu.filePath = fileData.filePath
                                 contextMenu.popup()
-                            } else if (fileData.isDir) {
+                            } else if (fileData.isDir && isPreviewed) {
                                 qmlInterface.callCmd(
                                     "set_dir " + fileData.filePath
                                 )
                             } else {
                                 qmlInterface.callCmd(
-                                    "system_open_path " + fileData.filePath
+                                    "file_preview " + fileData.filePath
                                 )
                             }
                         }

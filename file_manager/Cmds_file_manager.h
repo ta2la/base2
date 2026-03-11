@@ -2,9 +2,12 @@
 
 #include "CmdSys.h"
 #include "DirModel.h"
+#include "PreviewModel.h"
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QFile>
+#include <QTextStream>
 
 //=============================================================================
 class Cmds_file_manager {
@@ -21,6 +24,28 @@ public:
             if (!dir.exists()) return args.appendError("set_dir: directory not found: " + path);
             DirModel::inst().setDir(dir.absolutePath());
             args.append(dir.absolutePath(), "DIR");
+            return 0;
+        });
+
+        CMD_SYS.add("file_preview_path",
+        []CMD_ARGS_U -> int {
+            QString path = PreviewModel::inst().filePath();
+            if (path.isEmpty()) return args.appendError("file_preview_path: no file previewed");
+            args.append(path, "PATH");
+            return 0;
+        });
+
+        CMD_SYS.add("file_preview",
+        []CMD_ARGS_U -> int {
+            QString path = args.get(1).value().trimmed();
+            if (path.isEmpty()) return args.appendError("file_preview: missing path");
+            QFileInfo fi(path);
+            if (!fi.exists()) return args.appendError("file_preview: not found: " + path);
+            PreviewModel::inst().setFile(fi.absoluteFilePath());
+            if (fi.isDir()) {
+                DirModel::instPreview().setDir(fi.absoluteFilePath());
+            }
+            args.append(fi.absoluteFilePath(), "PREVIEW");
             return 0;
         });
 

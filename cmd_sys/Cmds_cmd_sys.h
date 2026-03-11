@@ -81,6 +81,14 @@ public:
             return 0;
         });
 
+        CMD_SYS.add("cmds_list",
+        []CMD_ARGS_U -> int {
+            for (auto it = CMD_SYS.cmds_.begin(); it != CMD_SYS.cmds_.end(); ++it) {
+                args.append(it.key() + " " + it->category(), "CMD");
+            }
+            return 0;
+        });
+
         CMD_SYS.add("execute_script",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 

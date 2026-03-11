@@ -4,6 +4,7 @@ DEPENDPATH += $$PWD
 HEADERS += \
     $$PWD/FileItemData.h \
     $$PWD/DirModel.h \
+    $$PWD/PreviewModel.h \
     $$PWD/Cmds_file_manager.h
 
 SOURCES += \

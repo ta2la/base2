@@ -30,9 +30,16 @@
 ///@view:beg
 
 //=============================================================================
-void CmdSys::add(const QString& name, CommandHandler handler, bool excludeExeRec, bool excludeUpdate )
+void CmdSys::add(const QString& name, CommandHandler handler, bool excludeExeRec, bool excludeUpdate)
 {
     Cmd cmd(name, handler, excludeExeRec, excludeUpdate);
+    cmds_.insert(name, cmd);
+    timer_.start();
+}
+
+void CmdSys::add(const QString& name, CommandHandler handler, const QString& category, bool excludeExeRec, bool excludeUpdate)
+{
+    Cmd cmd(name, handler, excludeExeRec, excludeUpdate, category);
     cmds_.insert(name, cmd);
     timer_.start();
 }

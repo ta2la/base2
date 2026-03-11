@@ -54,6 +54,7 @@ public:
     void execute_threadSafe(const QString& args, const QString& sourceName = "", int sourceIndex = -1, const QString& user = "internal");
 
     void add(const QString& name, CommandHandler handler, bool excludeExeRec = false, bool excludeUpdate = false);
+    void add(const QString& name, CommandHandler handler, const QString& category, bool excludeExeRec = false, bool excludeUpdate = false);
     Cmd* get(const QString& mame);
     void reg(CmdExeGuard* guard) {
         if (guard->phase() == CmdExeGuard::Record) {
