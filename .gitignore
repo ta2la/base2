@@ -11,4 +11,6 @@
 !/code_analyzer
 !/file_manager
 !/mccp_com
+!/app_common
+!/app_common/**
 

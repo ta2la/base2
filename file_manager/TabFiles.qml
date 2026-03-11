@@ -89,14 +89,15 @@ ScrollView {
                         spacing: 8
 
                         Text {
-                            text: fileData.isDir ? "\u{1F4C1}" : "\u{1F4C4}"
-                            width: 24
+                            text: fileData.role === 1 ? "\uD83D\uDD33" : fileData.isDir ? "\u{1F4C1}" : "\u{1F4C4}"
+                            width: 24; height: parent.height
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 14
                         }
 
                         Text {
                             text: fileData.name
+                            height: parent.height
                             font.pointSize: 10
                             font.bold: fileData.isDir
                             color: "#404040"
@@ -107,7 +108,7 @@ ScrollView {
 
                         Text {
                             text: fileData.isDir ? "" : (fileData.size / 1024).toFixed(1) + " kB"
-                            width: 60
+                            width: 60; height: parent.height
                             horizontalAlignment: Text.AlignRight
                             font.pointSize: 9
                             color: "#808080"

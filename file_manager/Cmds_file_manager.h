@@ -3,6 +3,7 @@
 #include "CmdSys.h"
 #include "DirModel.h"
 #include "PreviewModel.h"
+#include "FmSettings.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -32,6 +33,25 @@ public:
             QString path = PreviewModel::inst().filePath();
             if (path.isEmpty()) return args.appendError("file_preview_path: no file previewed");
             args.append(path, "PATH");
+            return 0;
+        }, "file_manager");
+
+        CMD_SYS.add("get_code_root",
+        []CMD_ARGS_U -> int {
+            QString root = FmSettings::inst().codeRoot();
+            if (root.isEmpty()) return args.appendError("get_code_root: not set");
+            args.append(root, "CODE_ROOT");
+            return 0;
+        }, "file_manager");
+
+        CMD_SYS.add("set_code_root",
+        []CMD_ARGS_U -> int {
+            QString path = args.get(1).value().trimmed();
+            if (path.isEmpty()) return args.appendError("set_code_root: missing path");
+            QDir dir(path);
+            if (!dir.exists()) return args.appendError("set_code_root: directory not found: " + path);
+            FmSettings::inst().setCodeRoot(dir.absolutePath());
+            args.append(dir.absolutePath(), "CODE_ROOT");
             return 0;
         }, "file_manager");
 
