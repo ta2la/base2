@@ -31,12 +31,12 @@ public:
     Cmds_test0() = delete;
     static bool registerCmds_()
     {
-        CMD_SYS.add("argcol_to_string",    argcol_to_string );
-        CMD_SYS.add("argcol_from_string",  argcol_from_string );
-        CMD_SYS.add("argcol_from_string2", argcol_from_string2 );
-        CMD_SYS.add("argcol_from_string_alone", argcol_from_string_alone );
+        CMD_SYS.add("argcol_to_string",    argcol_to_string, "cmd_sys_display" );
+        CMD_SYS.add("argcol_from_string",  argcol_from_string, "cmd_sys_display" );
+        CMD_SYS.add("argcol_from_string2", argcol_from_string2, "cmd_sys_display" );
+        CMD_SYS.add("argcol_from_string_alone", argcol_from_string_alone, "cmd_sys_display" );
 
-        CMD_SYS.add("zakleta_princezna", zakleta_princezna );
+        CMD_SYS.add("zakleta_princezna", zakleta_princezna, "cmd_sys_display" );
 
         CMD_SYS.add("zakleta_princezna",
         [](CmdArgCol& args, QByteArray* data, const QSharedPointer<CmdContextIface>& context) -> int {
@@ -49,7 +49,7 @@ public:
             //args.append(argsTest.toJson(), "JSON");
 
             return 1;
-        });
+        }, "cmd_sys_display");
 
         return true;
     }

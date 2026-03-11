@@ -46,7 +46,7 @@ public:
                 new TestObject(args.get(i).value().toInt());
             }
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "create_model_test",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -58,7 +58,7 @@ public:
             int index = OregPool::instance().containers_.indexOf(static_cast<OregContainer*>(m));
             args.append(QString::number(index), "container_index");
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "display_model_col_test",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -78,7 +78,7 @@ public:
             }
             args.append(di, "RESULT");
             return 1;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "delete_object_test",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -91,7 +91,7 @@ public:
                 obj->oo_delete();
             }
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "change_object_test",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -105,7 +105,7 @@ public:
             OregUpdateLock lock;
             testObj->setValue(newValue);
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "oreg_test_container_display_llm",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -123,7 +123,7 @@ public:
             }
             args.append(di, "RESULT");
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "oreg_test_display_pool_llm",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -134,7 +134,7 @@ public:
             }
             args.append(di, "RESULT");
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "oreg_test_object_display",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -144,7 +144,7 @@ public:
             if (!obj) return args.appendWarning(QString("id %1 not found").arg(id));
             args.append(obj->oo_to_string(), "RESULT");
             return 0;
-        });
+        }, "object_registry_test");
         CMD_SYS.add(
         "oreg_list_containers_llm",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -157,7 +157,7 @@ public:
             }
             args.append(di, "RESULT");
             return 0;
-        });
+        }, "object_registry_test");
     }
 //=============================================================================
 };

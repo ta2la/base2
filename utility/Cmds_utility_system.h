@@ -59,7 +59,7 @@ public:
             return args.appendError("open_path: failed to open: " + path);
 
         return 0;
-    });
+    }, "utility");
     CMD_SYS.add("system_dot_to_svg",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -102,7 +102,7 @@ public:
                     "'>[OPEN SVG]</a>");
 
         return result;
-    });
+    }, "utility");
     CMD_SYS.add("file_to_clipboard",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -139,7 +139,7 @@ public:
 
 
         return 0;
-    });
+    }, "utility");
 
     CMD_SYS.add("text_to_clipboard",
     []CMD_ARGS_U -> int {
@@ -154,7 +154,7 @@ public:
         clipboard->setText(text);
         args.append(text, "COPIED");
         return 0;
-    });
+    }, "utility");
 
     }
 //=============================================================================

@@ -36,11 +36,11 @@ public:
     Cmds_oreg_test() = delete;
 //<METHODS>
     static void registerCmds() {
-        CMD_SYS.add("oreg_test_setup",             oreg_test_setup );
-        CMD_SYS.add("oreg_test_display_pool",      oreg_test_display_pool );
-        CMD_SYS.add("oreg_test_create_container",  oreg_test_create_container );
-        CMD_SYS.add("oreg_test_container_display", oreg_test_container_display );
-        CMD_SYS.add("oreg_test_pool_solve",        oreg_test_pool_solve );
+        CMD_SYS.add("oreg_test_setup",             oreg_test_setup,             "object_registry");
+        CMD_SYS.add("oreg_test_display_pool",      oreg_test_display_pool,      "object_registry");
+        CMD_SYS.add("oreg_test_create_container",  oreg_test_create_container,  "object_registry");
+        CMD_SYS.add("oreg_test_container_display", oreg_test_container_display, "object_registry");
+        CMD_SYS.add("oreg_test_pool_solve",        oreg_test_pool_solve,        "object_registry");
 
         /*CMD_SYS.add(
         "oreg_list_containers",
@@ -100,8 +100,7 @@ public:
             }
 
             return 0;
-        }
-        );
+        }, "object_registry");
 
     }
 //=============================================================================

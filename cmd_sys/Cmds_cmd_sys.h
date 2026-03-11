@@ -37,12 +37,12 @@ public:
         CMD_SYS.add("voidcmd",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
             return 0;
-        });
+        }, "cmd_sys");
 
         CMD_SYS.add("logcmd",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
             return 0;
-        });
+        }, "cmd_sys");
 
         CMD_SYS.add("__not_implemented__",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -50,7 +50,7 @@ public:
             QString name = args.get(0).value();
             args.appendError(QString("command not implemented: ") + name);
             return 1;
-        });
+        }, "cmd_sys");
 
         CMD_SYS.add("cmds_execute_script",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -79,15 +79,17 @@ public:
 
             args.append(QString("executed %1 command(s)").arg(executed), "INFO");
             return 0;
-        });
+        }, "cmd_sys");
 
         CMD_SYS.add("cmds_list",
         []CMD_ARGS_U -> int {
-            for (auto it = CMD_SYS.cmds_.begin(); it != CMD_SYS.cmds_.end(); ++it) {
-                args.append(it.key() + " " + it->category(), "CMD");
-            }
+            QMap<QString, QStringList> byCategory;
+            for (auto it = CMD_SYS.cmds_.begin(); it != CMD_SYS.cmds_.end(); ++it)
+                byCategory[it->category()] << it.key();
+            for (auto it = byCategory.begin(); it != byCategory.end(); ++it)
+                args.append(it.key() + " : " + it.value().join(" "), "CATEGORY");
             return 0;
-        });
+        }, "cmd_sys");
 
         CMD_SYS.add("execute_script",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -118,7 +120,7 @@ public:
 
             args.append(fileName, "INIT_OK");
             return 0;
-        });
+        }, "cmd_sys");
 
         return true;
     }

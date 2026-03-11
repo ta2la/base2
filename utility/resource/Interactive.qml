@@ -58,7 +58,7 @@ Rectangle {
                     radius: 2; color: "#455C71"
                     Text {
                         anchors.centerIn: parent
-                        text: index === 1 ? "\u2630 " + model.text : index === 2 ? "\uD83D\uDF09 " + model.text : index === 3 ? "\u00B6 " + model.text : index === 4 ? "\uD83D\uDDC1 " + model.text : index === 5 ? "\u2699 " + model.text : index === 6 ? "\u24D8 " + model.text : model.text
+                        text: index === 1 ? "\u2630 " + model.text : index === 2 ? "\uD83D\uDF09 " + model.text : index === 3 ? "\u00B6 " + model.text : index === 4 ? "\uD83D\uDDC1 " + model.text : index === 5 ? "\u2699 " + model.text : index === 6 ? "\uD83D\uDC41 " + model.text : index === 7 ? "\u24D8 " + model.text : model.text
                         font.pointSize: 10; font.bold: true; color: "#fff"
                     }
                     MouseArea {

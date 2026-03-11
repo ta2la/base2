@@ -47,7 +47,7 @@ public:
             // Model_controlsEx::inst().setContent(argText.value());
 
             return 0;
-        });
+        }, "utility");
     }
 //=============================================================================
 };

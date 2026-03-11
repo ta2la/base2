@@ -76,7 +76,7 @@ public:
             "OK");
 
         return 0;
-    });
+    }, "code_analyzer");
 CMD_SYS.add("analyzer_set_center",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -107,7 +107,7 @@ CMD_SYS.add("analyzer_set_center",
         args.append("center -> " + name, "OK");
 
         return 0;
-    });
+    }, "code_analyzer");
     CMD_SYS.add("update_claude_md",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -172,7 +172,7 @@ CMD_SYS.add("analyzer_set_center",
         args.append(claudeMdPath, "CLAUDE_MD_UPDATED");
 
         return 0;
-    });
+    }, "code_analyzer");
     }
 //=============================================================================
 protected:

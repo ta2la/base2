@@ -25,7 +25,7 @@ public:
             DirModel::inst().setDir(dir.absolutePath());
             args.append(dir.absolutePath(), "DIR");
             return 0;
-        });
+        }, "file_manager");
 
         CMD_SYS.add("file_preview_path",
         []CMD_ARGS_U -> int {
@@ -33,7 +33,7 @@ public:
             if (path.isEmpty()) return args.appendError("file_preview_path: no file previewed");
             args.append(path, "PATH");
             return 0;
-        });
+        }, "file_manager");
 
         CMD_SYS.add("file_preview",
         []CMD_ARGS_U -> int {
@@ -47,7 +47,7 @@ public:
             }
             args.append(fi.absoluteFilePath(), "PREVIEW");
             return 0;
-        });
+        }, "file_manager");
 
         return true;
     }

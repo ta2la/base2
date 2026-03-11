@@ -153,7 +153,7 @@ public:
                 "'>[COPY TO CLIPBOARD]</a>");
 
             return result;
-        });
+        }, "code_data");
 
         CMD_SYS.add("module_add",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -178,7 +178,7 @@ public:
 
             args.append(dir, "MODULE_ADDED");
             return 0;
-        });
+        }, "code_data");
 
         CMD_SYS.add("file_add",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -212,7 +212,7 @@ public:
 
             args.append(norm, "FILE_ADDED");
             return 0;
-        });
+        }, "code_data");
 
     CMD_SYS.add("dir_export_dot",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -274,7 +274,7 @@ public:
                     "'>[DOT-&gtSVG]</a>");
 
         return 0;
-    });
+    }, "code_data");
     CMD_SYS.add("set_output_dir",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
         if (args.count() < 2)
@@ -290,7 +290,7 @@ public:
         CodeSettings::inst().setOutputDir(path);
         args.append(path, "OUTPUT_DIR_SET");
         return 0;
-    });
+    }, "code_data");
     }
 
 //=============================================================================

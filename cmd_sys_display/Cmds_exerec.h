@@ -36,9 +36,9 @@ public:
     Cmds_exerec() = delete;
     static bool registerCmds_()
     {
-        CMD_SYS.add("exerec_add_filterout_command",     exerec_add_filterout_command );
-        CMD_SYS.add("exerec_remove_filterout_command",  exerec_remove_filterout_command );
-        CMD_SYS.add("cmds_stop_record",  cmds_stop_record );
+        CMD_SYS.add("exerec_add_filterout_command",     exerec_add_filterout_command, "cmd_sys_display" );
+        CMD_SYS.add("exerec_remove_filterout_command",  exerec_remove_filterout_command, "cmd_sys_display" );
+        CMD_SYS.add("cmds_stop_record",  cmds_stop_record, "cmd_sys_display" );
         CMD_SYS.add("clipboard_copy_cmd_log_item",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
             if (args.count() < 2) return args.appendWarning("one numeric arg expected: id");
@@ -57,7 +57,7 @@ public:
                 }
             }
             return args.appendWarning("id not found");
-        });
+        }, "cmd_sys_display");
 
         CMD_SYS.add("clipboard_copy_cmd_all",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -73,7 +73,7 @@ public:
             cb->setText(result);
             args.append(QString("count:%1").arg(col.count()));
             return 0;
-        });
+        }, "cmd_sys_display");
 
         CMD_SYS.add("clipboard_clean",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -81,7 +81,7 @@ public:
             if (!cb) return args.appendWarning("clipboard not available");
             cb->clear();
             return 0;
-        });
+        }, "cmd_sys_display");
 
         return true;
     }
