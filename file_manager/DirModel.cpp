@@ -47,20 +47,42 @@ void DirModel::refresh_()
 //=============================================================================
 void DirModel::sortItems_(QList<FileItemData>& items)
 {
-    std::sort(items.begin(), items.end(), [](const FileItemData& a, const FileItemData& b) {
-        auto priority = [](const FileItemData& f) -> int {
-            QString suffix = QFileInfo(f.name()).suffix();
-            if (suffix == "pro") return 0;
-            if (f.isDir() && f.name() == "resources") return 1;
-            if (suffix == "cpp") return 2;
-            if (suffix == "h")   return 2;
-            if (suffix == "pri") return 3;
-            return 10;
-        };
-        int pa = priority(a), pb = priority(b);
-        if (pa != pb) return pa < pb;
-        return a.name().compare(b.name(), Qt::CaseInsensitive) < 0;
+    auto groupPriority = [](const FileItemData& f) -> int {
+        QString suffix = QFileInfo(f.name()).suffix();
+        if (suffix == "pro") return 0;
+        if (f.isDir() && f.name() == "resources") return 1;
+        if (suffix == "cpp" || suffix == "h") return 2;
+        if (suffix == "pri") return 3;
+        return 10;
+    };
+
+    auto suffixPriority = [](const QString& suffix) -> int {
+        if (suffix == "h")   return 0;
+        if (suffix == "cpp") return 1;
+        if (suffix == "pri") return 2;
+        return 10;
+    };
+
+    std::sort(items.begin(), items.end(), [&](const FileItemData& a, const FileItemData& b) {
+        int ga = groupPriority(a), gb = groupPriority(b);
+        if (ga != gb) return ga < gb;
+        QString ba = QFileInfo(a.name()).completeBaseName();
+        QString bb = QFileInfo(b.name()).completeBaseName();
+        int cmp = ba.compare(bb, Qt::CaseInsensitive);
+        if (cmp != 0) return cmp < 0;
+        return suffixPriority(QFileInfo(a.name()).suffix())
+             < suffixPriority(QFileInfo(b.name()).suffix());
     });
+
+    // insert separators between basename groups (only for files with role)
+    for (int i = items.size() - 1; i > 0; --i) {
+        if (items[i].role() == FileItemData::None || items[i].role() == FileItemData::Separator) continue;
+        if (items[i-1].role() == FileItemData::None || items[i-1].role() == FileItemData::Separator) continue;
+        QString ba = QFileInfo(items[i].name()).completeBaseName();
+        QString bb = QFileInfo(items[i-1].name()).completeBaseName();
+        if (ba.compare(bb, Qt::CaseInsensitive) != 0)
+            items.insert(i, FileItemData::separator());
+    }
 }
 
 //=============================================================================

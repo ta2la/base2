@@ -78,12 +78,22 @@ ScrollView {
                 model: dirModel
 
                 delegate: Rectangle {
+                    property bool isSeparator: fileData.role === 8
                     width: parent.width
-                    height: 24
+                    height: isSeparator ? 5 : 24
                     property bool isPreviewed: fileData.filePath === previewModel.filePath
-                    color: mouseArea.containsMouse ? "#E0E8F0" : isPreviewed && previewModel.level === 2 ? "#F0C0C0" : isPreviewed && previewModel.level === 1 ? "#F0DADA" : "#FFFFFF"
+                    color: isSeparator ? "transparent" : mouseArea.containsMouse ? "#E0E8F0" : isPreviewed && previewModel.level === 2 ? "#F0C0C0" : isPreviewed && previewModel.level === 1 ? "#F0DADA" : "#FFFFFF"
+
+                    Rectangle {
+                        visible: isSeparator
+                        anchors.centerIn: parent
+                        width: parent.width * 0.99
+                        height: 1
+                        color: "#D0D0D0"
+                    }
 
                     Row {
+                        visible: !isSeparator
                         anchors.fill: parent
                         anchors.leftMargin: 8
                         spacing: 8
@@ -95,10 +105,12 @@ ScrollView {
                                 : fileData.role === 4 ? "\u{1F530}"
                                 : fileData.role === 5 ? "\u{1F7E6}"
                                 : fileData.role === 6 ? "\u{1F537}"
+                                : fileData.role === 7 ? "\u{25CF}"
                                 : fileData.isDir ? "\u{1F5C1}" : "\u{1F4C4}"
-                            width: 24; height: parent.height
+                            height: parent.height
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 14
+                            color: fileData.role === 7 ? "green" : "#000000"
                         }
 
                         Text {
@@ -109,16 +121,6 @@ ScrollView {
                             color: "#404040"
                             verticalAlignment: Text.AlignVCenter
                             elide: Text.ElideRight
-                            width: parent.width - 100
-                        }
-
-                        Text {
-                            text: fileData.isDir ? "" : (fileData.size / 1024).toFixed(1) + " kB"
-                            width: 60; height: parent.height
-                            horizontalAlignment: Text.AlignRight
-                            font.pointSize: 9
-                            color: "#808080"
-                            verticalAlignment: Text.AlignVCenter
                         }
                     }
 
