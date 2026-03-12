@@ -17,7 +17,7 @@ struct FileItemData {
     Q_PROPERTY(int     role     READ role     CONSTANT)
 
 public:
-    enum Role { None = 0, CodeRoot };
+    enum Role { None = 0, CodeRoot, Module };
 
     FileItemData() = default;
     FileItemData(const QFileInfo& fi)
