@@ -51,6 +51,7 @@ public:
             QDir dir(path);
             if (!dir.exists()) return args.appendError("set_code_root: directory not found: " + path);
             FmSettings::inst().setCodeRoot(dir.absolutePath());
+            DirModel::inst().setDir(dir.absolutePath());
             args.append(dir.absolutePath(), "CODE_ROOT");
             return 0;
         }, "file_manager");
@@ -74,13 +75,10 @@ public:
 
     static void initDefaultDir()
     {
-        QString appDir = QCoreApplication::applicationDirPath();
-        QDir dir(appDir);
-        while (dir.cdUp()) {
-            if (dir.dirName() == "cvz") {
-                DirModel::inst().setDir(dir.absolutePath());
-                return;
-            }
+        const QString& root = FmSettings::inst().codeRoot();
+        if (!root.isEmpty() && QDir(root).exists()) {
+            DirModel::inst().setDir(QDir::cleanPath(root));
+            return;
         }
     }
 };

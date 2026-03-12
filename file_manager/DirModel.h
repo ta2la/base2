@@ -30,6 +30,9 @@ public:
 signals:
     void dirChanged();
 
+protected:
+    static void sortItems_(QList<FileItemData>& items);
+
 private:
     void refresh_();
 

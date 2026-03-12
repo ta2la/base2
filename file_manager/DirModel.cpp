@@ -38,9 +38,29 @@ void DirModel::refresh_()
         for (const QFileInfo& fi : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries, QDir::Name)) {
             items_.append(FileItemData(fi));
         }
+        sortItems_(items_);
     }
 
     endResetModel();
+}
+
+//=============================================================================
+void DirModel::sortItems_(QList<FileItemData>& items)
+{
+    std::sort(items.begin(), items.end(), [](const FileItemData& a, const FileItemData& b) {
+        auto priority = [](const FileItemData& f) -> int {
+            QString suffix = QFileInfo(f.name()).suffix();
+            if (suffix == "pro") return 0;
+            if (f.isDir() && f.name() == "resources") return 1;
+            if (suffix == "cpp") return 2;
+            if (suffix == "h")   return 2;
+            if (suffix == "pri") return 3;
+            return 10;
+        };
+        int pa = priority(a), pb = priority(b);
+        if (pa != pb) return pa < pb;
+        return a.name().compare(b.name(), Qt::CaseInsensitive) < 0;
+    });
 }
 
 //=============================================================================

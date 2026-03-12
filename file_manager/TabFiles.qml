@@ -89,7 +89,13 @@ ScrollView {
                         spacing: 8
 
                         Text {
-                            text: fileData.role === 1 ? "\uD83D\uDD33" : fileData.isDir ? "\u{1F4C1}" : "\u{1F4C4}"
+                            text: fileData.role === 1 ? "\u{1F3DB}"
+                                : fileData.role === 2 ? "\u{1F4DA}"
+                                : fileData.role === 3 ? "\u{1F9C3}"
+                                : fileData.role === 4 ? "\u{1F530}"
+                                : fileData.role === 5 ? "\u{1F7E6}"
+                                : fileData.role === 6 ? "\u{1F537}"
+                                : fileData.isDir ? "\u{1F5C1}" : "\u{1F4C4}"
                             width: 24; height: parent.height
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 14
