@@ -6,7 +6,7 @@ include($$PWD/../build_target.pri)
 
 include(object_registry_test.pri)
 
-RESOURCES += $$PWD/resource/object_registry_test.qrc
+RESOURCES += $$PWD/Resources/object_registry_test.qrc
 
 INCLUDEPATH += $$PWD/../base
 INCLUDEPATH += $$PWD/../cmd_sys

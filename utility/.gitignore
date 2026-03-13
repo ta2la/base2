@@ -5,6 +5,6 @@
 !*.pro
 !*.pri
 moc_*.*
-!/resource
-!/resource/*.qml
-!/resource/*.qrc
+!/Resources/
+!/Resources/*.qml
+!/Resources/*.qrc

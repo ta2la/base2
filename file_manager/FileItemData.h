@@ -14,11 +14,12 @@ struct FileItemData {
     Q_PROPERTY(QString filePath READ filePath CONSTANT)
     Q_PROPERTY(qint64  size     READ size     CONSTANT)
     Q_PROPERTY(bool    isDir    READ isDir    CONSTANT)
+    Q_PROPERTY(bool    gitIgnored READ gitIgnored CONSTANT)
     Q_PROPERTY(int     role     READ role     CONSTANT)
 
 public:
-    enum Depth { ROOT = 0, ROOT_PLUS1 = 1, ROOT_PLUS2 = 2, ROOT_PLUS3 = 3 };
-    enum Role { None = 0, CodeRoot, Repo, Module, ModulePro, CppFile, HFile, PriFile };
+    enum Depth { ROOT = 0, ROOT_PLUS1 = 1, ROOT_PLUS2 = 2, ROOT_PLUS3 = 3, ROOT_PLUS4 = 4 };
+    enum Role { None = 0, CodeRoot, Repo, Module, ModulePro, CppFile, HFile, PriFile, ResourceDir, QrcFile, QmlFile };
 
     FileItemData() = default;
     FileItemData(const QFileInfo& fi)
@@ -33,7 +34,10 @@ public:
     QString filePath() const { return filePath_; }
     qint64  size()     const { return size_; }
     bool    isDir()    const { return isDir_; }
+    bool    gitIgnored() const { return gitIgnored_; }
     int     role()     const { return role_; }
+
+    void setGitIgnored(bool v) { gitIgnored_ = v; }
 
 protected:
     static int depthFromRoot_(const QFileInfo& fi) {
@@ -61,20 +65,29 @@ private:
         if (depth == ROOT_PLUS3 && fi.suffix() == "pro"
             && fi.completeBaseName() == QFileInfo(fi.absolutePath()).fileName())
             return ModulePro;
+        if (fi.isDir() && depth == ROOT_PLUS3
+            && fi.fileName().startsWith("Resource", Qt::CaseInsensitive))
+            return ResourceDir;
         if (!fi.isDir() && depth == ROOT_PLUS3) {
             QString suffix = fi.suffix();
             if (suffix == "cpp") return CppFile;
             if (suffix == "h")   return HFile;
             if (suffix == "pri") return PriFile;
         }
+        if (!fi.isDir() && depth == ROOT_PLUS4) {
+            QString suffix = fi.suffix();
+            if (suffix == "qrc") return QrcFile;
+            if (suffix == "qml") return QmlFile;
+        }
         return None;
     }
 
     QString name_;
     QString filePath_;
-    qint64  size_    = 0;
-    bool    isDir_   = false;
-    Role    role_    = None;
+    qint64  size_       = 0;
+    bool    isDir_      = false;
+    bool    gitIgnored_ = false;
+    Role    role_       = None;
 };
 
 Q_DECLARE_METATYPE(FileItemData)

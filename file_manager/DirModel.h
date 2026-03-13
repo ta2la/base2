@@ -1,6 +1,7 @@
 #pragma once
 
 #include "FileItemData.h"
+#include "FileGroupModel.h"
 
 #include <QAbstractListModel>
 #include <QFileSystemWatcher>
@@ -9,9 +10,10 @@
 //=============================================================================
 class DirModel : public QAbstractListModel {
     Q_OBJECT
-    Q_PROPERTY(QString dir READ dir NOTIFY dirChanged)
+    Q_PROPERTY(QString dir     READ dir     NOTIFY dirChanged)
+    Q_PROPERTY(QString repoName READ repoName NOTIFY dirChanged)
 public:
-    enum Roles { DataRole = Qt::UserRole + 1 };
+    enum Roles { DataRole = Qt::UserRole + 1, GroupRole };
 
     DirModel(QObject* parent = nullptr);
     static DirModel& inst()        { static DirModel i; return i; }
@@ -19,13 +21,13 @@ public:
 
     void setDir(const QString& path);
     QString dir() const { return dir_; }
+    QString repoName() const { return repoName_; }
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    const FileItemData& get(int index) const { return items_[index]; }
-    int count() const { return items_.size(); }
+    int count() const { return groups_.size(); }
 
 signals:
     void dirChanged();
@@ -35,8 +37,13 @@ protected:
 
 private:
     void refresh_();
+    void clearGroups_();
+    void buildGroups_(const QList<FileItemData>& items);
 
-    QString                dir_;
-    QList<FileItemData>    items_;
-    QFileSystemWatcher     watcher_;
+    void resolveRepoName_();
+
+    QString                     dir_;
+    QString                     repoName_;
+    QList<FileGroupModel*>      groups_;
+    QFileSystemWatcher          watcher_;
 };

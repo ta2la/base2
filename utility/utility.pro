@@ -6,7 +6,7 @@ include($$PWD/../build_target.pri)
 
 include(utility.pri)
 
-RESOURCES += $$PWD/resource/utility.qrc
+RESOURCES += $$PWD/Resources/utility.qrc
 
 INCLUDEPATH += $$PWD/../../base2/base
 INCLUDEPATH += $$PWD/../../base2/cmd_sys

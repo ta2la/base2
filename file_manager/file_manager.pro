@@ -6,7 +6,7 @@ include($$PWD/../build_target.pri)
 
 include(file_manager.pri)
 
-RESOURCES += file_manager.qrc
+RESOURCES += Resources/file_manager.qrc
 
 INCLUDEPATH += $$PWD/../base
 INCLUDEPATH += $$PWD/../cmd_sys

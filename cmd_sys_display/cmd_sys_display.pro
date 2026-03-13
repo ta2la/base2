@@ -10,4 +10,4 @@ INCLUDEPATH += $$PWD/../base
 INCLUDEPATH += $$PWD/../cmd_sys
 INCLUDEPATH += $$PWD/../utility/cpp_include_entry
 
-RESOURCES += cmd_sys_display.qrc
+RESOURCES += Resources/cmd_sys_display.qrc
