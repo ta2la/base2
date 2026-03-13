@@ -19,7 +19,7 @@ struct FileItemData {
 
 public:
     enum Depth { ROOT = 0, ROOT_PLUS1 = 1, ROOT_PLUS2 = 2, ROOT_PLUS3 = 3, ROOT_PLUS4 = 4 };
-    enum Role { None = 0, CodeRoot, Repo, Module, ModulePro, CppFile, HFile, PriFile, ResourceDir, QrcFile, QmlFile };
+    enum Role { None = 0, CodeRoot, Repo, Module, ModulePro, CppFile, HFile, PriFile, ResourceDir, QrcFile, QmlFile, GitIgnoreFile };
 
     FileItemData() = default;
     FileItemData(const QFileInfo& fi)
@@ -68,6 +68,7 @@ private:
         if (fi.isDir() && depth == ROOT_PLUS3
             && fi.fileName().startsWith("Resource", Qt::CaseInsensitive))
             return ResourceDir;
+        if (!fi.isDir() && fi.fileName() == ".gitignore") return GitIgnoreFile;
         if (!fi.isDir() && depth == ROOT_PLUS3) {
             QString suffix = fi.suffix();
             if (suffix == "cpp") return CppFile;
@@ -86,7 +87,7 @@ private:
     QString filePath_;
     qint64  size_       = 0;
     bool    isDir_      = false;
-    bool    gitIgnored_ = false;
+    bool    gitIgnored_ = true;
     Role    role_       = None;
 };
 

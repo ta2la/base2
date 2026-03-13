@@ -109,6 +109,7 @@ ScrollView {
                                         : fileData.role === 8 ? "\u{1F7E9}"
                                         : fileData.role === 9 ? "\u{1F50B}"
                                         : fileData.role === 10 ? "\u{1F539}"
+                                        : fileData.role === 11 ? "\u{2B58}"
                                         : fileData.isDir ? "\u{1F5C1}" : "\u{1F4C4}"
                                     height: 24
                                     verticalAlignment: Text.AlignVCenter
@@ -116,7 +117,7 @@ ScrollView {
                                     color: fileData.role === 7 ? "green" : "#000000"
                                 }
                                 Text {
-                                    text: fileData.name
+                                    text: (!fileData.gitIgnored ? "\u00B0 " : "") + fileData.name
                                     height: 24
                                     font.pointSize: 10
                                     font.bold: fileData.isDir

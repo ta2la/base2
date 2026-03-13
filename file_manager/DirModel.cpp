@@ -106,8 +106,9 @@ void DirModel::sortItems_(QList<FileItemData>& items)
         QString suffix = QFileInfo(f.name()).suffix();
         if (suffix == "pro") return 0;
         if (suffix == "pri") return 1;
-        if (f.isDir() && f.name().startsWith("resource", Qt::CaseInsensitive)) return 2;
-        if (suffix == "cpp" || suffix == "h") return 3;
+        if (f.role() == FileItemData::GitIgnoreFile) return 2;
+        if (f.isDir() && f.name().startsWith("resource", Qt::CaseInsensitive)) return 3;
+        if (suffix == "cpp" || suffix == "h") return 4;
         return 10;
     };
 
