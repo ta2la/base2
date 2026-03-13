@@ -40,7 +40,7 @@ ScrollView {
 
                 Text {
                     anchors.fill: parent
-                    anchors.leftMargin: 12
+                    anchors.leftMargin: 50
                     textFormat: Text.RichText
                     text: (dirModel.dir || "(no directory set)") + (dirModel.repoName ? "   <span style='background-color:#F0E8A0;'>[" + dirModel.repoName + "]</span>" : "")
                     font.pointSize: 13
@@ -53,6 +53,7 @@ ScrollView {
                 MouseArea {
                     id: headerMouse
                     anchors.fill: parent
+                    anchors.leftMargin: 50
                     hoverEnabled: true
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
                     cursorShape: Qt.PointingHandCursor
@@ -66,6 +67,15 @@ ScrollView {
                             )
                         }
                     }
+                }
+
+                Button {
+                    x: 4
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "Open"
+                    font.pointSize: 12
+                    font.bold: true
+                    onClicked: qmlInterface.callCmd("system_open_path " + dirModel.dir)
                 }
             }
 
