@@ -78,22 +78,12 @@ ScrollView {
                 model: dirModel
 
                 delegate: Rectangle {
-                    property bool isSeparator: fileData.role === 8
                     width: parent.width
-                    height: isSeparator ? 5 : 24
+                    height: 24
                     property bool isPreviewed: fileData.filePath === previewModel.filePath
-                    color: isSeparator ? "transparent" : mouseArea.containsMouse ? "#E0E8F0" : isPreviewed && previewModel.level === 2 ? "#F0C0C0" : isPreviewed && previewModel.level === 1 ? "#F0DADA" : "#FFFFFF"
-
-                    Rectangle {
-                        visible: isSeparator
-                        anchors.centerIn: parent
-                        width: parent.width * 0.99
-                        height: 1
-                        color: "#D0D0D0"
-                    }
+                    color: mouseArea.containsMouse ? "#E0E8F0" : isPreviewed && previewModel.level === 2 ? "#F0C0C0" : isPreviewed && previewModel.level === 1 ? "#F0DADA" : "#FFFFFF"
 
                     Row {
-                        visible: !isSeparator
                         anchors.fill: parent
                         anchors.leftMargin: 8
                         spacing: 8

@@ -18,7 +18,7 @@ struct FileItemData {
 
 public:
     enum Depth { ROOT = 0, ROOT_PLUS1 = 1, ROOT_PLUS2 = 2, ROOT_PLUS3 = 3 };
-    enum Role { None = 0, CodeRoot, Repo, Module, ModulePro, CppFile, HFile, PriFile, Separator };
+    enum Role { None = 0, CodeRoot, Repo, Module, ModulePro, CppFile, HFile, PriFile };
 
     FileItemData() = default;
     FileItemData(const QFileInfo& fi)
@@ -28,8 +28,6 @@ public:
         , isDir_(fi.isDir())
         , role_(resolveRole_(fi))
     {}
-
-    static FileItemData separator() { FileItemData f; f.role_ = Separator; return f; }
 
     QString name()     const { return name_; }
     QString filePath() const { return filePath_; }

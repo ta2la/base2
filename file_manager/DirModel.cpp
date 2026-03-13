@@ -74,15 +74,6 @@ void DirModel::sortItems_(QList<FileItemData>& items)
              < suffixPriority(QFileInfo(b.name()).suffix());
     });
 
-    // insert separators between basename groups (only for files with role)
-    for (int i = items.size() - 1; i > 0; --i) {
-        if (items[i].role() == FileItemData::None || items[i].role() == FileItemData::Separator) continue;
-        if (items[i-1].role() == FileItemData::None || items[i-1].role() == FileItemData::Separator) continue;
-        QString ba = QFileInfo(items[i].name()).completeBaseName();
-        QString bb = QFileInfo(items[i-1].name()).completeBaseName();
-        if (ba.compare(bb, Qt::CaseInsensitive) != 0)
-            items.insert(i, FileItemData::separator());
-    }
 }
 
 //=============================================================================
