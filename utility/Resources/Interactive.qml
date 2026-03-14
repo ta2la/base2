@@ -46,8 +46,8 @@ Rectangle {
         visible: tabBar.children[0].selb === "Windows"
 
         Flow {
-            anchors.fill: parent
-            anchors.margins: 5
+            x: 5; y: 5
+            width: parent.width - 10
             spacing: 5
 
             Repeater {
@@ -67,6 +67,17 @@ Rectangle {
                         onClicked: root.toggleWindow(index)
                     }
                 }
+            }
+        }
+
+        Rectangle {
+            x: 5; y: 80
+            width: 160; height: 30; radius: 2; color: "#708090"
+            Text { anchors.centerIn: parent; text: "Save Screen Position"; font.pointSize: 10; color: "#fff" }
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: qmlInterface.callCmd("save_window_position")
             }
         }
     }
