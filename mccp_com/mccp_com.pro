@@ -7,6 +7,6 @@ include($$PWD/../build_target.pri)
 
 include(mccp_com.pri)
 
-INCLUDEPATH += $$PWD/../base
+INCLUDEPATH += $$PWD/../base2
 INCLUDEPATH += $$PWD/../cmd_sys
 INCLUDEPATH += $$PWD/../utility

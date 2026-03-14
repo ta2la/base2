@@ -6,7 +6,7 @@ include($$PWD/../build_target.pri)
 
 include(object_registry.pri)
 
-INCLUDEPATH += $$PWD/../base
+INCLUDEPATH += $$PWD/../base2
 INCLUDEPATH += $$PWD/../cmd_sys
 INCLUDEPATH += $$PWD/../utility
 INCLUDEPATH += $$PWD/../universe_server_shared

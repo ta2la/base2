@@ -6,7 +6,7 @@ include($$PWD/../build_target.pri)
 
 include($$PWD/cmd_sys_display.pri)
 
-INCLUDEPATH += $$PWD/../base
+INCLUDEPATH += $$PWD/../base2
 INCLUDEPATH += $$PWD/../cmd_sys
 INCLUDEPATH += $$PWD/../utility/cpp_include_entry
 

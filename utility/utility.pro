@@ -8,7 +8,7 @@ include(utility.pri)
 
 RESOURCES += $$PWD/Resources/utility.qrc
 
-INCLUDEPATH += $$PWD/../../base2/base
+INCLUDEPATH += $$PWD/../../base2/base2
 INCLUDEPATH += $$PWD/../../base2/cmd_sys
 OTHER_FILES += cpp_include_entry/cpp_include_entry.md
 

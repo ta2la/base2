@@ -8,6 +8,6 @@ include(file_manager.pri)
 
 RESOURCES += Resources/file_manager.qrc
 
-INCLUDEPATH += $$PWD/../base
+INCLUDEPATH += $$PWD/../base2
 INCLUDEPATH += $$PWD/../cmd_sys
 INCLUDEPATH += $$PWD/../utility
