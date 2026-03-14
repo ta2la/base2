@@ -67,6 +67,10 @@ int CmdSys::execute_(CmdArgCol& args, QByteArray* data, const QSharedPointer<Cmd
 
     runningIndex_++;
 
+    for (int i = 0; i < filters_.size(); ++i) {
+        if (filters_[i]->pass(args)) return 0;
+    }
+
     QString name = args.get(0).value();
     Cmd* cmd = get(name);
     //QString cmdString = args.toString();

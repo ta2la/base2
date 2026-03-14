@@ -40,7 +40,7 @@ ScrollView {
 
                 Text {
                     anchors.fill: parent
-                    anchors.leftMargin: 50
+                    anchors.leftMargin: 100
                     textFormat: Text.RichText
                     text: (dirModel.dir || "(no directory set)") + (dirModel.repoName ? "   <span style='background-color:#F0E8A0;'>[" + dirModel.repoName + "]</span>" : "")
                     font.pointSize: 13

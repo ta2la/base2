@@ -23,6 +23,7 @@
 #include "Cmd.h"
 #include "CmdContext.h"
 #include "CmdExeGuard.h"
+#include "CmdExeFilter.h"
 
 #include <QMap>
 #include <QVector>
@@ -63,12 +64,14 @@ public:
         }
         guards_.append(guard);
     }
+    void reg(CmdExeFilter* filter) { filters_.append(filter); }
     void setMainThread(bool value) { mainThread_ = value; }
 //=============================================================================
 protected:
 //! @section Data
     QMap<QString, Cmd>    cmds_;
     QVector<CmdExeGuard*> guards_;
+    QVector<CmdExeFilter*> filters_;
     CmdArgCol             executingArgs_;
     int                   runningIndex_ = -1;
     QElapsedTimer         timer_;
