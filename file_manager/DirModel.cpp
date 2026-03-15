@@ -1,5 +1,7 @@
 #include "DirModel.h"
 #include "GitIgnoreMatch.h"
+#include <QProcess>
+#include <QSet>
 
 //=============================================================================
 DirModel::DirModel(QObject* parent)
@@ -51,11 +53,25 @@ void DirModel::refresh_()
     QList<FileItemData> items;
     if (!dir_.isEmpty()) {
         GitIgnoreMatch gitIgnore(dir_);
+
+        QSet<QString> gitTracked;
+        QProcess git;
+        git.setWorkingDirectory(dir_);
+        git.start("git", {"ls-files", "."});
+        if (git.waitForFinished(3000)) {
+            QString output = QString::fromUtf8(git.readAllStandardOutput());
+            for (const QString& line : output.split('\n', Qt::SkipEmptyParts)) {
+                QString first = line.section('/', 0, 0);
+                gitTracked.insert(first);
+            }
+        }
+
         QDir dir(dir_);
-        for (const QFileInfo& fi : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries, QDir::Name)) {
+        for (const QFileInfo& fi : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden, QDir::Name)) {
             FileItemData item(fi);
             if (gitIgnore.hasGitIgnore())
                 item.setGitIgnored(gitIgnore.isIgnored(fi.fileName(), fi.isDir()));
+            item.setInGit(gitTracked.contains(fi.fileName()));
             items.append(item);
         }
         sortItems_(items);

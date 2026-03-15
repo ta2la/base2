@@ -127,7 +127,7 @@ ScrollView {
                                     color: fileData.role === 7 ? "green" : "#000000"
                                 }
                                 Text {
-                                    text: (!fileData.gitIgnored ? "\u00B0 " : "") + fileData.name
+                                    text: (fileData.inGit ? "\u2299 " : !fileData.gitIgnored ? "\u00B0 " : "") + fileData.name
                                     height: 24
                                     font.pointSize: 10
                                     font.bold: fileData.isDir

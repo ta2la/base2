@@ -15,6 +15,7 @@ struct FileItemData {
     Q_PROPERTY(qint64  size     READ size     CONSTANT)
     Q_PROPERTY(bool    isDir    READ isDir    CONSTANT)
     Q_PROPERTY(bool    gitIgnored READ gitIgnored CONSTANT)
+    Q_PROPERTY(bool    inGit      READ inGit      CONSTANT)
     Q_PROPERTY(int     role     READ role     CONSTANT)
 
 public:
@@ -35,9 +36,11 @@ public:
     qint64  size()     const { return size_; }
     bool    isDir()    const { return isDir_; }
     bool    gitIgnored() const { return gitIgnored_; }
+    bool    inGit()      const { return inGit_; }
     int     role()     const { return role_; }
 
     void setGitIgnored(bool v) { gitIgnored_ = v; }
+    void setInGit(bool v)      { inGit_ = v; }
 
 protected:
     static int depthFromRoot_(const QFileInfo& fi) {
@@ -88,6 +91,7 @@ private:
     qint64  size_       = 0;
     bool    isDir_      = false;
     bool    gitIgnored_ = true;
+    bool    inGit_      = false;
     Role    role_       = None;
 };
 
