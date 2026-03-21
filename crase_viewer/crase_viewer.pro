@@ -11,3 +11,5 @@ RESOURCES += Resources/crase_viewer.qrc
 INCLUDEPATH += $$PWD/../base2
 INCLUDEPATH += $$PWD/../cmd_sys
 INCLUDEPATH += $$PWD/../utility
+
+QT += sql

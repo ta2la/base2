@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="/crase_viewer">
+    <qresource prefix="/">
+        <file>TabObjects.qml</file>
     </qresource>
 </RCC>
