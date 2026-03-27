@@ -4,6 +4,8 @@ DEPENDPATH += $$PWD
 HEADERS += \
     $$PWD/CraseObject.h \
     $$PWD/CraseObjectsBySqlModel.h \
+    $$PWD/CraseTreeItem.h \
+    $$PWD/CraseTreeModel.h \
     $$PWD/SqlAccess.h \
     $$PWD/Cmds_crase_viewer.h
 

@@ -20,11 +20,15 @@ public:
         CMD_SYS.execute_threadSafe("logcmd DBTEST reload called");
         if (!SqlAccess::inst().connect()) return;
 
-        QString query = sql.isEmpty()
+        QString cleaned = sql;
+        if (cleaned.startsWith('{') && cleaned.endsWith('}'))
+            cleaned = cleaned.mid(1, cleaned.length() - 2);
+
+        QString query = cleaned.isEmpty()
             ? "SELECT o.id, t.icon, o.value::text FROM objects o "
               "JOIN objects_types t ON o.type = t.type "
               "ORDER BY o.id"
-            : sql;
+            : cleaned;
 
         QSqlQuery q(SqlAccess::inst().db());
         if (!q.exec(query)) {
@@ -36,13 +40,13 @@ public:
         beginResetModel();
         items_.clear();
         while (q.next()) {
-            QString id   = q.value(0).toString();
+            int id       = q.value(0).toInt();
             QString icon = q.value(1).toString();
             QString text = q.value(2).toString();
             // strip JSON quotes from value
             if (text.startsWith('"') && text.endsWith('"'))
                 text = text.mid(1, text.length() - 2);
-            items_.append(CraseObject(icon, QString("[%1] %2").arg(id, text)));
+            items_.append(CraseObject(icon, QString("[%1] %2").arg(id).arg(text), id));
         }
         endResetModel();
     }
