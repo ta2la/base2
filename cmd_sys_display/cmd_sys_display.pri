@@ -9,7 +9,9 @@ $$PWD/Cmds_exerec.h \
 $$PWD/Cmds_test0.h \
 $$PWD/Model_filteroutCmds.h \
 $$PWD/CmdExeRec.h \
-$$PWD/CmdExeRecCol.h
+$$PWD/CmdExeRecCol.h \
+$$PWD/CmdModel_controls.h \
+$$PWD/CmdUiControl.h
 
 SOURCES += \
 $$PWD/ExerecModel.cpp \
