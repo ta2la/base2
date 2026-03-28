@@ -50,7 +50,7 @@ Item {
         width: mdiWin.width - inset * 2
         height: mdiWin.height - inset * 2
         color: "#e8e8e8"
-        border.color: "#455C71"
+        border.color: appStyle.barColor
         border.width: 2
         radius: 4
         clip: true
@@ -61,20 +61,20 @@ Item {
             x: 2; y: 2
             width: parent.width - 4
             height: 30
-            color: "#455C71"
+            color: appStyle.barColor
             radius: 2
 
             Rectangle {
                 x: 4; y: 3; width: 24; height: 24; radius: 3
-                color: "transparent"; border.color: "#fff"; border.width: 1
+                color: "transparent"; border.color: appStyle.textColor; border.width: 1
                 visible: mdiWin.icon !== ""
-                Text { anchors.centerIn: parent; font.pointSize: 14; text: mdiWin.icon; color: "#fff" }
+                Text { anchors.centerIn: parent; font.pointSize: 14; text: mdiWin.icon; color: appStyle.textColor }
             }
             Text {
                 x: mdiWin.icon !== "" ? 32 : 8; anchors.verticalCenter: parent.verticalCenter
                 text: mdiWin.title
                 font.pointSize: 13; font.bold: true
-                color: "#fff"
+                color: appStyle.textColor
             }
 
             Row {

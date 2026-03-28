@@ -55,11 +55,11 @@ Rectangle {
                 delegate: Rectangle {
                     visible: index > 0
                     width: visible ? 100 : 0; height: visible ? 30 : 0
-                    radius: 2; color: "#455C71"
+                    radius: 2; color: appStyle.barColor
                     Text {
                         anchors.centerIn: parent
-                        text: index === 1 ? "\u2630 " + model.text : index === 2 ? "\uD83D\uDF09 " + model.text : index === 3 ? "\u00B6 " + model.text : index === 4 ? "\uD83D\uDDC1 " + model.text : index === 5 ? "\u2699 " + model.text : index === 6 ? "\uD83D\uDC41 " + model.text : index === 7 ? "\u2299 " + model.text : index === 8 ? "\uD83C\uDF33 " + model.text : index === 9 ? "\uD83D\uDCCB " + model.text : index === 10 ? "\u24D8 " + model.text : model.text
-                        font.pointSize: 10; font.bold: true; color: "#fff"
+                        text: model.icon + " " + model.text
+                        font.pointSize: 10; font.bold: true; color: appStyle.textColor
                     }
                     MouseArea {
                         anchors.fill: parent
@@ -74,7 +74,7 @@ Rectangle {
             anchors.bottom: parent.bottom; anchors.bottomMargin: 5
             x: 5
             width: 160; height: 30; radius: 2; color: "#708090"
-            Text { anchors.centerIn: parent; text: "Save Screen Position"; font.pointSize: 10; color: "#fff" }
+            Text { anchors.centerIn: parent; text: "Save Screen Position"; font.pointSize: 10; color: appStyle.textColor }
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
@@ -86,7 +86,7 @@ Rectangle {
             anchors.bottom: parent.bottom; anchors.bottomMargin: 5
             x: 170
             width: 140; height: 30; radius: 2; color: "#708090"
-            Text { anchors.centerIn: parent; text: "Reload Db View"; font.pointSize: 10; color: "#fff" }
+            Text { anchors.centerIn: parent; text: "Reload Db View"; font.pointSize: 10; color: appStyle.textColor }
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor

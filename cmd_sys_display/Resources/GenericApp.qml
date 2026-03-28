@@ -32,18 +32,18 @@ Rectangle  {
     }
 
 
-    Rectangle { id: mainSpace; color: "#455C71"
+    Rectangle { id: mainSpace; color: appStyle.barColor
         x: 0; y: 0; width: root.width; height: 40
 
-        Rectangle { x:4; y:4; width:32; height:32; radius:4; color: "#C0C8C0"
-            Text { anchors.centerIn: parent; font.pointSize: 20; text: "\u2388" }
+        Rectangle { x:4; y:4; width:32; height:32; radius:4; color: appStyle.textColor
+            Text { anchors.centerIn: parent; font.pointSize: 20; text: appStyle.icon }
             MouseArea {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 onClicked: root.toggleWindow(0)
             }
         }
-        Text {x:42; y: 8; font.pointSize: 14; font.bold: true; text: "PROMPT Assembler"; color: "#C0C8C0" }
+        Text {x:42; y: 8; font.pointSize: 14; font.bold: true; text: Qt.application.name; color: appStyle.textColor }
 
     }
 
@@ -83,7 +83,7 @@ Rectangle  {
 
             delegate: MdiWindow {
                 title: model.text
-                icon: index === 0 ? "\u2388" : index === 1 ? "\u2630" : index === 2 ? "\uD83D\uDF09" : index === 3 ? "\u00B6" : index === 4 ? "\uD83D\uDDC1" : index === 5 ? "\u2699" : index === 6 ? "\uD83D\uDC41" : index === 7 ? "\u2299" : index === 8 ? "\uD83C\uDF33" : index === 9 ? "\uD83D\uDCCB" : index === 10 ? "\u24D8" : ""
+                icon: model.icon
                 contentSource: model.qml
                 width: 500
                 height: 400
