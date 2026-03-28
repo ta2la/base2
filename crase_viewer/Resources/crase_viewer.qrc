@@ -6,5 +6,6 @@
         <file>TabAttrTypes.qml</file>
         <file>TabRelTypes.qml</file>
         <file>TabMetadata.qml</file>
+        <file>TabDrawing.qml</file>
     </qresource>
 </RCC>

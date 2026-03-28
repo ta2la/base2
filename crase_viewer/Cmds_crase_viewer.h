@@ -3,12 +3,14 @@
 #include "CmdSys.h"
 #include "CraseObjectsBySqlModel.h"
 #include "CraseTreeModel.h"
+#include "CraseDrawingModel.h"
 
 //=============================================================================
 class Cmds_crase_viewer {
 public:
     static void setModel(CraseObjectsBySqlModel* m) { model_() = m; }
     static void setTreeModel(CraseTreeModel* m) { treeModel_() = m; }
+    static void setDrawingModel(CraseDrawingModel* m) { drawingModel_() = m; }
 
     static void registerCmds() {
         CMD_SYS.add("reload_view",
@@ -52,9 +54,19 @@ public:
             treeModel_()->previewObject(id);
             return 0;
         }, "crase_viewer");
+
+        CMD_SYS.add("crase_draw",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("crase_draw: no model");
+            int id = args.get(1).value().toInt();
+            if (id <= 0) return args.appendError("crase_draw: invalid id");
+            drawingModel_()->loadDrawing(id);
+            return 0;
+        }, "crase_viewer");
     }
 
 private:
     static CraseObjectsBySqlModel*& model_() { static CraseObjectsBySqlModel* m = nullptr; return m; }
     static CraseTreeModel*& treeModel_() { static CraseTreeModel* m = nullptr; return m; }
+    static CraseDrawingModel*& drawingModel_() { static CraseDrawingModel* m = nullptr; return m; }
 };

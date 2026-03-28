@@ -12,6 +12,8 @@ HEADERS += \
     $$PWD/CraseAttrTypesModel.h \
     $$PWD/CraseRelTypeItem.h \
     $$PWD/CraseRelTypesModel.h \
+    $$PWD/CraseDrawingItem.h \
+    $$PWD/CraseDrawingModel.h \
     $$PWD/SqlAccess.h \
     $$PWD/Cmds_crase_viewer.h
 
