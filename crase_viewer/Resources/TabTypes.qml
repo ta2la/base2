@@ -27,7 +27,7 @@ ScrollView {
                 Text {
                     anchors.fill: parent
                     anchors.leftMargin: 8
-                    text: "Object Tree"
+                    text: "Object Types"
                     font.pointSize: 13
                     font.bold: true
                     color: "#404040"
@@ -42,7 +42,7 @@ ScrollView {
             }
 
             Repeater {
-                model: craseTreeModel
+                model: craseTypesModel
 
                 delegate: Rectangle {
                     width: parent.width
@@ -51,29 +51,29 @@ ScrollView {
 
                     Row {
                         anchors.verticalCenter: parent.verticalCenter
-                        leftPadding: 8 + treeItem.level * 20
+                        leftPadding: 8
                         spacing: 6
 
                         Text {
-                            text: treeItem.icon
+                            text: typeItem.icon
                             height: 28
                             verticalAlignment: Text.AlignVCenter
                             font.pointSize: 14
                         }
                         Text {
-                            visible: treeItem.prefix !== ""
-                            text: treeItem.prefix
+                            text: typeItem.type
                             height: 28
                             font.pointSize: 10
-                            color: "#808080"
+                            font.bold: true
+                            color: "#404040"
                             verticalAlignment: Text.AlignVCenter
                         }
                         Text {
-                            text: treeItem.text
+                            visible: typeItem.attrIcons !== ""
+                            text: typeItem.attrIcons
                             height: 28
-                            font.pointSize: 10
-                            font.bold: treeItem.itemType === 0
-                            color: treeItem.itemType === 1 ? "#606060" : "#404040"
+                            font.pointSize: 12
+                            color: "#808080"
                             verticalAlignment: Text.AlignVCenter
                         }
                     }
@@ -82,11 +82,6 @@ ScrollView {
                         id: itemMouse
                         anchors.fill: parent
                         hoverEnabled: true
-                        cursorShape: treeItem.itemType === 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
-                        onClicked: {
-                            if (treeItem.itemType === 0)
-                                qmlInterface.callCmd("crase_expand " + treeItem.itemId)
-                        }
                     }
                 }
             }

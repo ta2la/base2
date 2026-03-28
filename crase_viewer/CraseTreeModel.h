@@ -6,6 +6,7 @@
 #include <QAbstractListModel>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSet>
 
 //=============================================================================
 class CraseTreeModel : public QAbstractListModel {
@@ -39,7 +40,7 @@ public:
             QString text = q.value(2).toString();
             if (text.startsWith('"') && text.endsWith('"'))
                 text = text.mid(1, text.length() - 2);
-            items_.append(CraseTreeItem(icon, QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object));
+            items_.append(CraseTreeItem(icon, "", QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object));
         }
         endResetModel();
     }
@@ -61,7 +62,7 @@ public:
 
         beginResetModel();
         items_.clear();
-        items_.append(CraseTreeItem(icon, QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object));
+        items_.append(CraseTreeItem(icon, "", QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object));
         endResetModel();
 
         expand(id);
@@ -90,10 +91,20 @@ public:
         int insertLevel = parentLevel + 1;
         QList<CraseTreeItem> newItems;
 
+        // collect ancestor ids to detect cycles
+        QSet<int> ancestors;
+        ancestors.insert(objectId);
+        for (int i = pos - 1; i >= 0; i--) {
+            if (items_[i].level() < parentLevel && items_[i].itemType() == CraseTreeItem::Object) {
+                ancestors.insert(items_[i].itemId());
+                if (items_[i].level() == 0) break;
+            }
+        }
+
         // attrs
         QSqlQuery qa(SqlAccess::inst().db());
         qa.prepare("SELECT at.icon, oa.value::text, oa.object_id "
-                   "FROM object_attrs oa JOIN attr_types at ON oa.type = at.type "
+                   "FROM attrs oa JOIN attr_types at ON oa.type = at.type "
                    "WHERE oa.object_id = ?");
         qa.addBindValue(objectId);
         if (qa.exec()) {
@@ -103,7 +114,7 @@ public:
                 int attrId   = qa.value(2).toInt();
                 if (text.startsWith('"') && text.endsWith('"'))
                     text = text.mid(1, text.length() - 2);
-                newItems.append(CraseTreeItem(icon, text, attrId, insertLevel, CraseTreeItem::Attr));
+                newItems.append(CraseTreeItem(icon, "", text, attrId, insertLevel, CraseTreeItem::Attr));
             }
         }
 
@@ -123,8 +134,9 @@ public:
                 QString name = qr1.value(3).toString();
                 if (text.startsWith('"') && text.endsWith('"'))
                     text = text.mid(1, text.length() - 2);
-                newItems.append(CraseTreeItem(icon, QString("%1: [%2] %3").arg(name).arg(relId).arg(text),
-                                              relId, insertLevel, CraseTreeItem::Object));
+                CraseTreeItem::ItemType type = ancestors.contains(relId) ? CraseTreeItem::Rel : CraseTreeItem::Object;
+                newItems.append(CraseTreeItem(icon, QString("%1: [%2]").arg(name).arg(relId), text,
+                                              relId, insertLevel, type));
             }
         }
 
@@ -144,8 +156,9 @@ public:
                 QString name = qr2.value(3).toString();
                 if (text.startsWith('"') && text.endsWith('"'))
                     text = text.mid(1, text.length() - 2);
-                newItems.append(CraseTreeItem(icon, QString("%1: [%2] %3").arg(name).arg(relId).arg(text),
-                                              relId, insertLevel, CraseTreeItem::Object));
+                CraseTreeItem::ItemType type = ancestors.contains(relId) ? CraseTreeItem::Rel : CraseTreeItem::Object;
+                newItems.append(CraseTreeItem(icon, QString("%1: [%2]").arg(name).arg(relId), text,
+                                              relId, insertLevel, type));
             }
         }
 

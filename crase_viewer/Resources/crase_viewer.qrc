@@ -2,5 +2,9 @@
     <qresource prefix="/">
         <file>TabObjects.qml</file>
         <file>TabObjectTree.qml</file>
+        <file>TabTypes.qml</file>
+        <file>TabAttrTypes.qml</file>
+        <file>TabRelTypes.qml</file>
+        <file>TabMetadata.qml</file>
     </qresource>
 </RCC>

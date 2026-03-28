@@ -17,7 +17,6 @@ public:
     CraseObjectsBySqlModel(QObject* parent = nullptr) : QAbstractListModel(parent) {}
 
     void reload(const QString& sql = "") {
-        CMD_SYS.execute_threadSafe("logcmd DBTEST reload called");
         if (!SqlAccess::inst().connect()) return;
 
         QString cleaned = sql;
@@ -36,7 +35,6 @@ public:
             return;
         }
 
-        CMD_SYS.execute_threadSafe("logcmd DBTEST query OK");
         beginResetModel();
         items_.clear();
         while (q.next()) {

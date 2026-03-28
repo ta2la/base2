@@ -22,6 +22,7 @@ public:
                 model_()->reload(sql);
                 args.append(sql, "SQL_USED");
             }
+            args.append(QString::number(model_()->rowCount()), "ROWS");
             return 0;
         }, "crase_viewer");
 

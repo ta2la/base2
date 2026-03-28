@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.15
 ScrollView {
     anchors.fill: parent
     clip: true
+    Component.onCompleted: qmlInterface.callCmd("reload_view")
 
     Rectangle {
         id: contentRoot
