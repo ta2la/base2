@@ -8,6 +8,7 @@ Rectangle {
     clip: true
 
     Canvas {
+        id: gridCanvas
         anchors.fill: parent
         z: -1
         onPaint: {
@@ -27,6 +28,47 @@ Rectangle {
         onHeightChanged: requestPaint()
     }
 
+    Canvas {
+        id: linesCanvas
+        anchors.fill: parent
+        z: 0
+
+        Connections {
+            target: craseDrawingModel
+            function onLinesChanged() { linesCanvas.requestPaint() }
+        }
+
+        onPaint: {
+            var ctx = getContext("2d")
+            ctx.clearRect(0, 0, width, height)
+            ctx.strokeStyle = "#808090"
+            ctx.lineWidth = 1.5
+            ctx.font = "10px sans-serif"
+            ctx.fillStyle = "#606070"
+
+            var lines = craseDrawingModel.lines
+            for (var i = 0; i < lines.length; i++) {
+                var l = lines[i]
+                var fx = l.fromX, fy = l.fromY, tx = l.toX, ty = l.toY
+
+                ctx.beginPath()
+                ctx.moveTo(fx, fy)
+                ctx.lineTo(tx, ty)
+                ctx.stroke()
+
+                // name1 near from end
+                var dx = tx - fx, dy = ty - fy
+                var len = Math.sqrt(dx*dx + dy*dy)
+                if (len > 0) {
+                    var ox = dx/len * 20, oy = dy/len * 20
+                    ctx.fillText(l.name1, fx + ox, fy + oy - 4)
+                    // name2 near to end
+                    ctx.fillText(l.name2, tx - ox, ty - oy - 4)
+                }
+            }
+        }
+    }
+
     Repeater {
         model: craseDrawingModel
 
@@ -36,6 +78,7 @@ Rectangle {
             width: itemRow.implicitWidth + 12
             height: 28
             radius: 4
+            z: 1
             color: itemMouse.containsMouse ? "#D0D8E0" : "#E8ECF0"
             border.color: "#A0A8B0"
             border.width: 1

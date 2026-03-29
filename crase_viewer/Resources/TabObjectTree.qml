@@ -46,36 +46,23 @@ ScrollView {
 
                 delegate: Rectangle {
                     width: parent.width
-                    height: 28
+                    height: contentText.implicitHeight + 8
                     color: itemMouse.containsMouse ? "#E0E8F0" : "transparent"
 
-                    Row {
+                    Text {
+                        id: contentText
+                        anchors.left: parent.left
+                        anchors.right: parent.right
                         anchors.verticalCenter: parent.verticalCenter
                         leftPadding: 8 + treeItem.level * 20
-                        spacing: 6
-
-                        Text {
-                            text: treeItem.icon
-                            height: 28
-                            verticalAlignment: Text.AlignVCenter
-                            font.pointSize: 14
-                        }
-                        Text {
-                            visible: treeItem.prefix !== ""
-                            text: treeItem.prefix
-                            height: 28
-                            font.pointSize: 10
-                            color: "#808080"
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                        Text {
-                            text: treeItem.text
-                            height: 28
-                            font.pointSize: 10
-                            font.bold: treeItem.itemType === 0
-                            color: treeItem.itemType === 1 ? "#606060" : "#404040"
-                            verticalAlignment: Text.AlignVCenter
-                        }
+                        rightPadding: 8
+                        wrapMode: Text.WordWrap
+                        textFormat: Text.RichText
+                        font.pointSize: 10
+                        text: "<span style='font-size:14pt'>" + treeItem.icon + "</span> "
+                              + (treeItem.prefix !== "" ? "<span style='color:#808080'>" + treeItem.prefix + "</span> " : "")
+                              + "<span style='color:" + (treeItem.itemType === 1 ? "#606060" : "#404040") + "'>"
+                              + treeItem.text + "</span>"
                     }
 
                     MouseArea {
