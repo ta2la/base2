@@ -1,0 +1,8 @@
+*
+!.gitignore
+!*.h
+!*.cpp
+!*.pro
+!*.pri
+!*.qml
+!*.qrc

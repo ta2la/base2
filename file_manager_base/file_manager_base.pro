@@ -1,11 +1,13 @@
-TARGET       = app_common
+TARGET       = file_manager_base
 TEMPLATE     = lib
 CONFIG      += staticlib c++17
 #######################################################################################
 include($$PWD/../build_target.pri)
 
-include(app_common.pri)
+include(file_manager_base.pri)
 
-INCLUDEPATH += $$PWD/../file_manager_base
-INCLUDEPATH += $$PWD/../file_manager
+INCLUDEPATH += $$PWD/../base2
 INCLUDEPATH += $$PWD/../cmd_sys
+INCLUDEPATH += $$PWD/../utility
+
+QT += core

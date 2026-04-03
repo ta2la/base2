@@ -1,10 +1,10 @@
-#include "DirModel.h"
+#include "DirModelBase.h"
 #include "GitIgnoreMatch.h"
 #include <QProcess>
 #include <QSet>
 
 //=============================================================================
-DirModel::DirModel(QObject* parent)
+DirModelBase::DirModelBase(QObject* parent)
     : QAbstractListModel(parent)
 {
     connect(&watcher_, &QFileSystemWatcher::directoryChanged,
@@ -12,7 +12,7 @@ DirModel::DirModel(QObject* parent)
 }
 
 //=============================================================================
-void DirModel::setDir(const QString& path)
+void DirModelBase::setDir(const QString& path)
 {
     if (dir_ == path) return;
 
@@ -32,7 +32,7 @@ void DirModel::setDir(const QString& path)
 }
 
 //=============================================================================
-void DirModel::resolveRepoName_()
+void DirModelBase::resolveRepoName_()
 {
     repoName_.clear();
     QDir dir(dir_);
@@ -46,7 +46,7 @@ void DirModel::resolveRepoName_()
 }
 
 //=============================================================================
-void DirModel::refresh_()
+void DirModelBase::refresh_()
 {
     beginResetModel();
 
@@ -68,7 +68,7 @@ void DirModel::refresh_()
 
         QDir dir(dir_);
         for (const QFileInfo& fi : dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden, QDir::Name)) {
-            FileItemData item(fi);
+            FileItemData item = createItem_(fi);
             if (gitIgnore.hasGitIgnore())
                 item.setGitIgnored(gitIgnore.isIgnored(fi.fileName(), fi.isDir()));
             item.setInGit(gitTracked.contains(fi.fileName()));
@@ -84,78 +84,45 @@ void DirModel::refresh_()
 }
 
 //=============================================================================
-void DirModel::clearGroups_()
+void DirModelBase::clearGroups_()
 {
     qDeleteAll(groups_);
     groups_.clear();
 }
 
 //=============================================================================
-void DirModel::buildGroups_(const QList<FileItemData>& items)
+FileItemData DirModelBase::createItem_(const QFileInfo& fi)
 {
-    auto canGroup = [](int role) {
-        return role == FileItemData::ModulePro || role == FileItemData::PriFile
-            || role == FileItemData::CppFile   || role == FileItemData::HFile;
-    };
+    return FileItemData(fi);
+}
 
-    int i = 0;
-    while (i < items.size()) {
+//=============================================================================
+void DirModelBase::sortItems_(QList<FileItemData>& items)
+{
+    std::sort(items.begin(), items.end(), [](const FileItemData& a, const FileItemData& b) {
+        if (a.isDir() != b.isDir()) return a.isDir();
+        return a.name().compare(b.name(), Qt::CaseInsensitive) < 0;
+    });
+}
+
+//=============================================================================
+void DirModelBase::buildGroups_(const QList<FileItemData>& items)
+{
+    for (const FileItemData& item : items) {
         auto* group = new FileGroupModel(this);
-        group->append(items[i]);
-        if (canGroup(items[i].role())) {
-            QString base = QFileInfo(items[i].name()).completeBaseName();
-            while (i + 1 < items.size() && canGroup(items[i+1].role())
-                   && QFileInfo(items[i+1].name()).completeBaseName().compare(base, Qt::CaseInsensitive) == 0) {
-                ++i;
-                group->append(items[i]);
-            }
-        }
+        group->append(item);
         groups_.append(group);
-        ++i;
     }
 }
 
 //=============================================================================
-void DirModel::sortItems_(QList<FileItemData>& items)
-{
-    auto groupPriority = [](const FileItemData& f) -> int {
-        QString suffix = QFileInfo(f.name()).suffix();
-        if (suffix == "pro") return 0;
-        if (suffix == "pri") return 1;
-        if (f.role() == FileItemData::GitIgnoreFile) return 2;
-        if (f.isDir() && f.name().startsWith("resource", Qt::CaseInsensitive)) return 3;
-        if (suffix == "cpp" || suffix == "h") return 4;
-        return 10;
-    };
-
-    auto suffixPriority = [](const QString& suffix) -> int {
-        if (suffix == "h")   return 0;
-        if (suffix == "cpp") return 1;
-        if (suffix == "pri") return 2;
-        return 10;
-    };
-
-    std::sort(items.begin(), items.end(), [&](const FileItemData& a, const FileItemData& b) {
-        int ga = groupPriority(a), gb = groupPriority(b);
-        if (ga != gb) return ga < gb;
-        QString ba = QFileInfo(a.name()).completeBaseName();
-        QString bb = QFileInfo(b.name()).completeBaseName();
-        int cmp = ba.compare(bb, Qt::CaseInsensitive);
-        if (cmp != 0) return cmp < 0;
-        return suffixPriority(QFileInfo(a.name()).suffix())
-             < suffixPriority(QFileInfo(b.name()).suffix());
-    });
-
-}
-
-//=============================================================================
-int DirModel::rowCount(const QModelIndex&) const
+int DirModelBase::rowCount(const QModelIndex&) const
 {
     return groups_.size();
 }
 
 //=============================================================================
-QVariant DirModel::data(const QModelIndex& index, int role) const
+QVariant DirModelBase::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid() || index.row() >= groups_.size()) return {};
     if (role == DataRole) return QVariant::fromValue(groups_[index.row()]->get(0));
@@ -164,7 +131,7 @@ QVariant DirModel::data(const QModelIndex& index, int role) const
 }
 
 //=============================================================================
-QHash<int, QByteArray> DirModel::roleNames() const
+QHash<int, QByteArray> DirModelBase::roleNames() const
 {
     return { { DataRole, "fileData" }, { GroupRole, "groupModel" } };
 }

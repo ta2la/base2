@@ -9,6 +9,7 @@
 !/cmd_sys_display
 !/code_data
 !/code_analyzer
+!/file_manager_base
 !/file_manager
 !/mccp_com
 !/app_common
