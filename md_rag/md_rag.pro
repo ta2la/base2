@@ -6,6 +6,7 @@ include($$PWD/../build_target.pri)
 
 HEADERS += $$PWD/MdItem.h
 HEADERS += $$PWD/MdModel.h
+HEADERS += $$PWD/MdParser.h
 
 INCLUDEPATH += $$PWD/../../base2/base2
 INCLUDEPATH += $$PWD/../../base2/cmd_sys
