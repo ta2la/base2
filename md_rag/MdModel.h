@@ -3,6 +3,7 @@
 #include "MdItem.h"
 #include <QAbstractListModel>
 #include <QList>
+#include <QDebug>
 
 class MdModel : public QAbstractListModel {
     Q_OBJECT
@@ -20,6 +21,7 @@ public:
 
     QVariant data(const QModelIndex& index, int role) const override {
         if (!index.isValid() || index.row() >= items_.count()) return {};
+        qDebug() << "MdModel::data row=" << index.row() << "role=" << role;
         if (role == TypeRole) return items_[index.row()].type_;
         if (role == WordModelRole)
             return QVariant::fromValue(wordModels_[index.row()]);
