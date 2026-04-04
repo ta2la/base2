@@ -6,6 +6,7 @@ INCLUDEPATH += $$PWD/../base2
 
 HEADERS += \
     $$PWD/MdDirModel.h \
+    $$PWD/BookmarkModel.h \
     $$PWD/Cmds_file_manager_md.h
 
 SOURCES += \

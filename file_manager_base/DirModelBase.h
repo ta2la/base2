@@ -40,6 +40,8 @@ protected:
 
 private:
     void refresh_();
+    void refreshFromDir_(QList<FileItemData>& items);
+    void refreshFromFile_(QList<FileItemData>& items);
     void clearGroups_();
 
     void resolveRepoName_();

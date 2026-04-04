@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>MdFileManager.qml</file>
+        <file>BookmarkManager.qml</file>
     </qresource>
 </RCC>
