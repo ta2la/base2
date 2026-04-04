@@ -83,11 +83,17 @@ public:
 
         CMD_SYS.add("cmds_list",
         []CMD_ARGS_U -> int {
+            QStringList filters;
+            for (int i = 1; i < args.count(); ++i) {
+                if (args.get(i).name() == "type") filters << args.get(i).value();
+            }
             QMap<QString, QStringList> byCategory;
             for (auto it = CMD_SYS.cmds_.begin(); it != CMD_SYS.cmds_.end(); ++it)
                 byCategory[it->category()] << it.key();
-            for (auto it = byCategory.begin(); it != byCategory.end(); ++it)
+            for (auto it = byCategory.begin(); it != byCategory.end(); ++it) {
+                if (!filters.isEmpty() && !filters.contains(it.key())) continue;
                 args.append(it.key() + " : " + it.value().join(" "), "CATEGORY");
+            }
             return 0;
         }, "cmd_sys");
 
