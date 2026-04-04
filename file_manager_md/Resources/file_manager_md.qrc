@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>MdFileManager.qml</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,11 @@
+*
+!.gitignore
+!/*.cpp
+!/*.h
+!*.pro
+!*.pri
+!*.qrc
+!*.md
+!/Resources
+!/Resources/**
+moc_*.*
