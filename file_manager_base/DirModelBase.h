@@ -18,6 +18,8 @@ public:
     DirModelBase(QObject* parent = nullptr);
 
     void setDir(const QString& path);
+    void refresh();
+    void swapItems(int a, int b);
     QString dir() const { return dir_; }
     QString repoName() const { return repoName_; }
 

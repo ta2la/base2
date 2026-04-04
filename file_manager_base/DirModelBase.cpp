@@ -33,6 +33,26 @@ void DirModelBase::setDir(const QString& path)
 }
 
 //=============================================================================
+void DirModelBase::refresh()
+{
+    refresh_();
+}
+
+//=============================================================================
+void DirModelBase::swapItems(int a, int b)
+{
+    if (a < 0 || a >= groups_.size()) return;
+    if (b < 0 || b >= groups_.size()) return;
+    if (a == b) return;
+
+    emit dataChanged(index(a), index(a));
+    emit dataChanged(index(b), index(b));
+    groups_.swapItemsAt(a, b);
+    emit dataChanged(index(a), index(a));
+    emit dataChanged(index(b), index(b));
+}
+
+//=============================================================================
 void DirModelBase::resolveRepoName_()
 {
     repoName_.clear();

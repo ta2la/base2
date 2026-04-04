@@ -1,27 +1,67 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
+import Qt.labs.folderlistmodel 2.15
 
 Rectangle {
     anchors.fill: parent
     color: "#F4F4F0"
+
+    FolderListModel {
+        id: bookFiles
+        folder: "file://" + configDir
+        nameFilters: ["*.book"]
+        showDirs: false
+    }
 
     Column {
         anchors.fill: parent
         spacing: 0
 
         Rectangle {
+            id: header
             width: parent.width
             height: 40
             color: "#E0E0E0"
 
-            Text {
+            property string currentBook: ""
+
+            Row {
                 anchors.fill: parent
-                anchors.leftMargin: 12
-                text: "\u{1F516} Bookmarks"
-                font.pointSize: 13
-                font.bold: true
-                color: "#404040"
-                verticalAlignment: Text.AlignVCenter
+                anchors.leftMargin: 8
+                spacing: 4
+
+                Repeater {
+                    model: bookFiles
+                    delegate: Rectangle {
+                        width: tabText.implicitWidth + 16
+                        height: 30
+                        anchors.verticalCenter: parent.verticalCenter
+                        radius: 3
+                        color: header.currentBook === fileName
+                             ? "#4A7A5A" : tabMouse.containsMouse ? "#C8C8C8" : "#D8D8D8"
+
+                        Text {
+                            id: tabText
+                            anchors.centerIn: parent
+                            text: fileBaseName
+                            font.pointSize: 11
+                            font.bold: true
+                            color: header.currentBook === fileName ? "#F0F0D0" : "#404040"
+                        }
+
+                        MouseArea {
+                            id: tabMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                header.currentBook = fileName
+                                bookmarkModel.selectedIndex = -1
+                                qmlInterface.callCmd("bookmark_set_file " + configDir + "/" + fileName)
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -34,7 +74,7 @@ Rectangle {
             clip: true
             model: bookmarkModel
 
-            property int selectedIndex: -1
+            property int selectedIndex: bookmarkModel.selectedIndex
 
             ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
@@ -80,9 +120,9 @@ Rectangle {
                             if (listView.selectedIndex === index) {
                                 if (fileData.role === 1)
                                     qmlInterface.callCmd("md_load " + fileData.filePath)
-                                listView.selectedIndex = -1
+                                bookmarkModel.selectedIndex = -1
                             } else {
-                                listView.selectedIndex = index
+                                bookmarkModel.selectedIndex = index
                             }
                         }
                     }
