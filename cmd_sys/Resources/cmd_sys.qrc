@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>cmds_help/voidcmd.md</file>
+        <file>cmds_help/logcmd.md</file>
+        <file>cmds_help/__not_implemented__.md</file>
+        <file>cmds_help/cmds_execute_script.md</file>
+        <file>cmds_help/cmds_categories.md</file>
+        <file>cmds_help/cmds_list.md</file>
+        <file>cmds_help/execute_script.md</file>
+        <file>cmds_help/cmd_help.md</file>
+        <file>cmds_help/__not_documented__.md</file>
+    </qresource>
+</RCC>

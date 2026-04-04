@@ -24,6 +24,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QSet>
 
 ///@view:beg
 
@@ -50,7 +51,7 @@ public:
             QString name = args.get(0).value();
             args.appendError(QString("command not implemented: ") + name);
             return 1;
-        }, "cmd_sys");
+        }, "__cmd_sys_core__");
 
         CMD_SYS.add("cmds_execute_script",
         [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
@@ -78,6 +79,37 @@ public:
                 CmdUtils::executeCommands(commands);
 
             args.append(QString("executed %1 command(s)").arg(executed), "INFO");
+            return 0;
+        }, "cmd_sys");
+
+        CMD_SYS.add("cmd_help",
+        []CMD_ARGS_U -> int {
+            if (args.count() < 2) return args.appendError("usage: cmd_help <command_name>");
+            QString name = args.get(1).value();
+            QFile f(":/cmds_help/" + name + ".md");
+            if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                f.setFileName(":/cmds_help/__not_documented__.md");
+                f.open(QIODevice::ReadOnly | QIODevice::Text);
+            }
+            QStringList lines = QString::fromUtf8(f.readAll()).trimmed().split('\n');
+            while (!lines.isEmpty() && lines.first().trimmed().startsWith("--")) {
+                QString flag = lines.takeFirst().trimmed();
+                if (flag.startsWith("--")) flag = flag.mid(2);
+                args.append("", flag);
+            }
+            args.append(lines.join('\n').trimmed(), "HELP");
+            return 0;
+        }, "cmd_sys");
+
+        CMD_SYS.add("cmds_categories",
+        []CMD_ARGS_U -> int {
+            QSet<QString> cats;
+            for (auto it = CMD_SYS.cmds_.begin(); it != CMD_SYS.cmds_.end(); ++it)
+                cats.insert(it->category());
+            QStringList sorted = cats.values();
+            sorted.sort();
+            for (const QString& cat : sorted)
+                args.append(cat, "CATEGORY");
             return 0;
         }, "cmd_sys");
 
