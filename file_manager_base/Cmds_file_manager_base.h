@@ -16,6 +16,11 @@ public:
         CMD_SYS.add(cmdName, setDir_);
     }
 
+    static void registerSetDir2(const QString& cmdName, DirModelBase& model) {
+        inst2_ = &model;
+        CMD_SYS.add(cmdName, setDir2_);
+    }
+
     static void registerSetBook(const QString& cmdName, DirModelBase& model) {
         instBook_ = &model;
         CMD_SYS.add(cmdName, setBook_);
@@ -26,6 +31,7 @@ public:
 
 private:
     static inline DirModelBase* inst_ = nullptr;
+    static inline DirModelBase* inst2_ = nullptr;
     static inline DirModelBase* instBook_ = nullptr;
 
     static int setDir_(CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) {
@@ -34,6 +40,15 @@ private:
         QDir dir(path);
         if (!dir.exists()) return -1;
         inst_->setDir(dir.absolutePath());
+        return 0;
+    }
+
+    static int setDir2_(CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) {
+        if (!inst2_ || args.count() < 2) return -1;
+        QString path = args.get(1).value().trimmed();
+        QDir dir(path);
+        if (!dir.exists()) return -1;
+        inst2_->setDir(dir.absolutePath());
         return 0;
     }
 
