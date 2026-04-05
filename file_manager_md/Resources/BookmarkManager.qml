@@ -102,7 +102,7 @@ Rectangle {
                             font.pointSize: 14
                         }
                         Text {
-                            text: fileData.name
+                            text: fileData.name + "  (" + fileData.filePath.substring(0, fileData.filePath.lastIndexOf("/")) + ")"
                             height: 28
                             font.pointSize: 10
                             font.bold: fileData.isDir

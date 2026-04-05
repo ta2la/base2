@@ -14,6 +14,7 @@ public:
         Cmds_file_manager_base::registerSetDir("md_set_dir", MdDirModel::inst());
         Cmds_file_manager_base::registerSetBook("bookmark_set_file", BookmarkModel::inst());
         CMD_SYS.add("bookmark_shift", shiftBookmark_, "file_manager_md");
+        CMD_SYS.add("bookmark_add", addBookmark_, "file_manager_md");
     }
 
 private:
@@ -50,6 +51,24 @@ private:
 
         m.swapItems(index, target);
         m.setSelectedIndex(target);
+        return 0;
+    }
+
+    static int addBookmark_(CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) {
+        if (args.count() < 2) return -1;
+        QString filePath = args.get(1).value().trimmed();
+        if (filePath.isEmpty()) return -1;
+
+        QString path = BookmarkModel::inst().dir();
+        if (path.isEmpty()) return -1;
+
+        QFile f(path);
+        if (!f.open(QIODevice::Append | QIODevice::Text)) return -1;
+        QTextStream out(&f);
+        out << filePath << "\n";
+        f.close();
+
+        BookmarkModel::inst().refresh();
         return 0;
     }
 };

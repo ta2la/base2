@@ -12,6 +12,7 @@ class DirModelBase : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY(QString dir     READ dir     NOTIFY dirChanged)
     Q_PROPERTY(QString repoName READ repoName NOTIFY dirChanged)
+    Q_PROPERTY(int selectedIndex READ selectedIndex WRITE setSelectedIndex NOTIFY selectedIndexChanged)
 public:
     enum Roles { DataRole = Qt::UserRole + 1, GroupRole };
 
@@ -29,8 +30,17 @@ public:
 
     int count() const { return groups_.size(); }
 
+    int selectedIndex() const { return selectedIndex_; }
+    void setSelectedIndex(int i) { if (selectedIndex_ == i) return; selectedIndex_ = i; emit selectedIndexChanged(); }
+
+    FileItemData selectedItem() const {
+        if (selectedIndex_ < 0 || selectedIndex_ >= groups_.size()) return {};
+        return groups_[selectedIndex_]->get(0);
+    }
+
 signals:
     void dirChanged();
+    void selectedIndexChanged();
 
 protected:
     virtual FileItemData createItem_(const QFileInfo& fi);
@@ -50,5 +60,6 @@ private:
 
     QString                     dir_;
     QString                     repoName_;
+    int                         selectedIndex_ = -1;
     QFileSystemWatcher          watcher_;
 };

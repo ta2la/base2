@@ -56,7 +56,7 @@ Rectangle {
             clip: true
             model: mdDirModel
 
-            property int selectedIndex: -1
+            property int selectedIndex: mdDirModel.selectedIndex
 
             ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
@@ -104,9 +104,9 @@ Rectangle {
                                     qmlInterface.callCmd("md_set_dir " + fileData.filePath)
                                 else if (fileData.role === 1)
                                     qmlInterface.callCmd("md_load " + fileData.filePath)
-                                listView.selectedIndex = -1
+                                mdDirModel.selectedIndex = -1
                             } else {
-                                listView.selectedIndex = index
+                                mdDirModel.selectedIndex = index
                             }
                         }
                     }
