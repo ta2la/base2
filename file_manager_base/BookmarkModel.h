@@ -1,11 +1,11 @@
 #pragma once
 
-#include "MdDirModel.h"
+#include "DirModelBase.h"
 
 //=============================================================================
-class BookmarkModel : public MdDirModel {
+class BookmarkModel : public DirModelBase {
     Q_OBJECT
 public:
-    BookmarkModel(QObject* parent = nullptr) : MdDirModel(parent) {}
+    BookmarkModel(QObject* parent = nullptr) : DirModelBase(parent) {}
     static BookmarkModel& inst() { static BookmarkModel i; return i; }
 };

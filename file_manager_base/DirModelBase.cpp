@@ -35,6 +35,8 @@ void DirModelBase::setDir(const QString& path)
 //=============================================================================
 void DirModelBase::refresh()
 {
+    selectedIndex_ = -1;
+    emit selectedIndexChanged();
     refresh_();
 }
 
@@ -78,8 +80,8 @@ void DirModelBase::refresh_()
             refreshFromFile_(items);
         } else {
             refreshFromDir_(items);
+            sortItems_(items);
         }
-        sortItems_(items);
     }
 
     clearGroups_();
@@ -148,7 +150,9 @@ void DirModelBase::clearGroups_()
 //=============================================================================
 FileItemData DirModelBase::createItem_(const QFileInfo& fi)
 {
-    return FileItemData(fi);
+    FileItemData item(fi);
+    if (!fi.isDir() && fi.suffix().toLower() == "md") item.setRole(1);
+    return item;
 }
 
 //=============================================================================

@@ -74,8 +74,6 @@ Rectangle {
             clip: true
             model: bookmarkModel
 
-            property int selectedIndex: bookmarkModel.selectedIndex
-
             ScrollBar.vertical: ScrollBar { policy: ScrollBar.AsNeeded }
 
             delegate: Item {
@@ -84,7 +82,7 @@ Rectangle {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: listView.selectedIndex === index ? "#C8D8E8"
+                    color: bookmarkModel.selectedIndex === index ? "#C8D8E8"
                          : itemMouse.containsMouse ? "#E0E8F0" : "transparent"
 
                     Row {
@@ -117,7 +115,7 @@ Rectangle {
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
-                            if (listView.selectedIndex === index) {
+                            if (bookmarkModel.selectedIndex === index) {
                                 if (fileData.role === 1)
                                     qmlInterface.callCmd("md_load " + fileData.filePath)
                                 bookmarkModel.selectedIndex = -1

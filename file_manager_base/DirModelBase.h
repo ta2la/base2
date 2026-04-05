@@ -15,6 +15,7 @@ class DirModelBase : public QAbstractListModel {
     Q_PROPERTY(int selectedIndex READ selectedIndex WRITE setSelectedIndex NOTIFY selectedIndexChanged)
 public:
     enum Roles { DataRole = Qt::UserRole + 1, GroupRole };
+    enum FileRole { None = 0, MdFile = 1 };
 
     DirModelBase(QObject* parent = nullptr);
 

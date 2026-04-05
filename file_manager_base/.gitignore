@@ -6,3 +6,5 @@
 !*.pri
 !*.qml
 !*.qrc
+!/Resources
+!/Resources/**
