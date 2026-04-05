@@ -124,8 +124,17 @@ void DirModelBase::refreshFromFile_(QList<FileItemData>& items)
     while (!f.atEnd()) {
         QString line = QString::fromUtf8(f.readLine()).trimmed();
         if (line.isEmpty()) continue;
+        int level = 0;
+        int lastSpace = line.lastIndexOf(' ');
+        if (lastSpace > 0) {
+            bool ok;
+            int val = line.mid(lastSpace + 1).toInt(&ok);
+            if (ok) { level = val; line = line.left(lastSpace); }
+        }
         QFileInfo fi(line);
-        items.append(createItem_(fi));
+        FileItemData item = createItem_(fi);
+        item.setLevel(level);
+        items.append(item);
     }
 }
 

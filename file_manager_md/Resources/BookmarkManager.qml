@@ -89,7 +89,7 @@ Rectangle {
 
                     Row {
                         anchors.fill: parent
-                        anchors.leftMargin: 12
+                        anchors.leftMargin: 12 + fileData.level * 20
                         spacing: 8
 
                         Text {

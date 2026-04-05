@@ -14,6 +14,7 @@ struct FileItemData {
     Q_PROPERTY(bool    gitIgnored READ gitIgnored CONSTANT)
     Q_PROPERTY(bool    inGit      READ inGit      CONSTANT)
     Q_PROPERTY(int     role     READ role     CONSTANT)
+    Q_PROPERTY(int     level    READ level    CONSTANT)
 
 public:
     FileItemData() = default;
@@ -31,10 +32,12 @@ public:
     bool    gitIgnored() const { return gitIgnored_; }
     bool    inGit()      const { return inGit_; }
     int     role()     const { return role_; }
+    int     level()    const { return level_; }
 
     void setGitIgnored(bool v) { gitIgnored_ = v; }
     void setInGit(bool v)      { inGit_ = v; }
     void setRole(int r)        { role_ = r; }
+    void setLevel(int l)       { level_ = l; }
 
 protected:
     QString name_;
@@ -44,6 +47,7 @@ protected:
     bool    gitIgnored_ = true;
     bool    inGit_      = false;
     int     role_       = 0;
+    int     level_      = 0;
 };
 
 Q_DECLARE_METATYPE(FileItemData)
