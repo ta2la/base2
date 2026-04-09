@@ -13,20 +13,20 @@ class Cmds_file_manager_base {
 public:
     static void registerSetDir(const QString& cmdName, DirModelBase& model) {
         inst_ = &model;
-        CMD_SYS.add(cmdName, setDir_);
+        CMD_SYS.add(cmdName, setDir_, "file_manager");
     }
 
     static void registerSetDir2(const QString& cmdName, DirModelBase& model) {
         inst2_ = &model;
-        CMD_SYS.add(cmdName, setDir2_);
+        CMD_SYS.add(cmdName, setDir2_, "file_manager");
     }
 
     static void registerSetBook(const QString& cmdName, DirModelBase& model) {
         instBook_ = &model;
-        CMD_SYS.add(cmdName, setBook_);
-        CMD_SYS.add("bookmark_shift", shiftBookmark_, "file_manager_base");
-        CMD_SYS.add("bookmark_add", addBookmark_, "file_manager_base");
-        CMD_SYS.add("bookmark_level", levelBookmark_, "file_manager_base");
+        CMD_SYS.add(cmdName, setBook_, "file_manager");
+        CMD_SYS.add("bookmark_shift", shiftBookmark_, "file_manager");
+        CMD_SYS.add("bookmark_add", addBookmark_, "file_manager");
+        CMD_SYS.add("bookmark_level", levelBookmark_, "file_manager");
     }
 
 private:

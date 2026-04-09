@@ -116,8 +116,12 @@ Rectangle {
                         cursorShape: Qt.PointingHandCursor
                         onClicked: {
                             if (bookmarkModel.selectedIndex === index) {
+                                var dir = fileData.isDir ? fileData.filePath
+                                    : fileData.filePath.substring(0, fileData.filePath.lastIndexOf("/"))
                                 if (fileData.role === 1)
                                     qmlInterface.callCmd("md_load " + fileData.filePath)
+                                qmlInterface.callCmd("md_set_dir " + dir)
+                                qmlInterface.callCmd("project_set_dir " + dir)
                                 bookmarkModel.selectedIndex = -1
                             } else {
                                 bookmarkModel.selectedIndex = index

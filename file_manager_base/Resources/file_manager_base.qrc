@@ -2,5 +2,11 @@
     <qresource prefix="/">
         <file>BookmarkManager.qml</file>
         <file>MdFileManager.qml</file>
+        <file>cmds_help/md_set_dir.md</file>
+        <file>cmds_help/project_set_dir.md</file>
+        <file>cmds_help/bookmark_set_file.md</file>
+        <file>cmds_help/bookmark_shift.md</file>
+        <file>cmds_help/bookmark_add.md</file>
+        <file>cmds_help/bookmark_level.md</file>
     </qresource>
 </RCC>

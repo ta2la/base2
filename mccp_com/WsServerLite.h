@@ -20,10 +20,14 @@ public:
 
     static WsServerLite& init(quint16 port = 12345) {
         static WsServerLite i(port);
-        static QThread thread;
-        i.moveToThread(&thread);
-        QObject::connect(&thread, &QThread::started, &i, &WsServerLite::start_);
-        thread.start();
+        static bool started = false;
+        if (!started) {
+            started = true;
+            static QThread thread;
+            i.moveToThread(&thread);
+            QObject::connect(&thread, &QThread::started, &i, &WsServerLite::start_);
+            thread.start();
+        }
         return i;
     }
 

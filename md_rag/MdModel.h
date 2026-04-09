@@ -82,6 +82,13 @@ public:
         emit cursorChanged();
     }
 
+    QString cursorWordText() const {
+        if (cursorItem_ < 0 || cursorItem_ >= items_.count()) return {};
+        const auto& words = items_[cursorItem_].words_;
+        if (cursorWord_ < 0 || cursorWord_ >= words.count()) return {};
+        return words[cursorWord_].text_;
+    }
+
     const QList<MdItem>& items() const { return items_; }
 
 signals:
