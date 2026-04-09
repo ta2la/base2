@@ -19,6 +19,7 @@ public:
     static void registerSetDir2(const QString& cmdName, DirModelBase& model) {
         inst2_ = &model;
         CMD_SYS.add(cmdName, setDir2_, "file_manager");
+        CMD_SYS.add("project_get_file", getFile_, "file_manager");
     }
 
     static void registerSetBook(const QString& cmdName, DirModelBase& model) {
@@ -157,6 +158,17 @@ private:
 
         instBook_->refresh();
         instBook_->setSelectedIndex(index);
+        return 0;
+    }
+
+    static int getFile_(CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) {
+        if (!inst2_) return -1;
+        FileItemData item = inst2_->selectedItem();
+        args.append(inst2_->dir(), "DIR");
+        if (item.filePath().isEmpty()) return 0;
+        args.append(item.filePath(), "PATH");
+        args.append(item.name(), "NAME");
+        args.append(item.isDir() ? "true" : "false", "IS_DIR");
         return 0;
     }
 };
