@@ -15,28 +15,33 @@
 //=============================================================================
 #pragma once
 
-#include <QString>
-#include <QFileInfo>
-#include <QVariant>
+#include "T2lFileRetriever.h"
 
-class FileRetrieverItem {
-    Q_GADGET
-    Q_PROPERTY(QString path          READ path          CONSTANT)
-    Q_PROPERTY(QString name          READ name          CONSTANT)
-    Q_PROPERTY(QString thumbnailPath READ thumbnailPath  CONSTANT)
+#include <QAbstractListModel>
+
+class FileRetrieverModel : public QAbstractListModel {
+    Q_OBJECT
 //=============================================================================
 public:
+//! @section Enums
+    enum Roles { ItemRole = Qt::UserRole + 1 };
 //! @section Construction
-    FileRetrieverItem() = default;
-    FileRetrieverItem(const QString& path) : path_(path) {}
-//! @section Methods
-    QString path() const { return path_; }
-    QString name() const { return QFileInfo(path_).fileName(); }
-    QString thumbnailPath() const { return "qrc:/file_manager2/resource/file.png"; }
+    FileRetrieverModel(T2l::FileRetriever* retriever, QObject* parent = nullptr)
+        : QAbstractListModel(parent), retriever_(retriever) {}
+//! @section Overrides
+    int rowCount(const QModelIndex& parent = QModelIndex()) const override {
+        if (parent.isValid()) return 0;
+        return retriever_ ? retriever_->count() : 0;
+    }
+    QVariant data(const QModelIndex& index, int role) const override {
+        if (!index.isValid() || role != ItemRole) return {};
+        return QVariant::fromValue(retriever_->item(index.row()));
+    }
+    QHash<int, QByteArray> roleNames() const override {
+        return { { ItemRole, "itemData" } };
+    }
 //=============================================================================
 protected:
 //! @section Data
-    QString path_;
+    T2l::FileRetriever* retriever_ = nullptr;
 };
-
-Q_DECLARE_METATYPE(FileRetrieverItem)

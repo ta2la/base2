@@ -15,28 +15,28 @@
 //=============================================================================
 #pragma once
 
-#include <QString>
-#include <QFileInfo>
-#include <QVariant>
+#include "T2lFileRetriever.h"
+#include <QList>
 
-class FileRetrieverItem {
-    Q_GADGET
-    Q_PROPERTY(QString path          READ path          CONSTANT)
-    Q_PROPERTY(QString name          READ name          CONSTANT)
-    Q_PROPERTY(QString thumbnailPath READ thumbnailPath  CONSTANT)
+namespace T2l
+{
+
+class FileRetrieverTest : public FileRetriever {
 //=============================================================================
 public:
 //! @section Construction
-    FileRetrieverItem() = default;
-    FileRetrieverItem(const QString& path) : path_(path) {}
-//! @section Methods
-    QString path() const { return path_; }
-    QString name() const { return QFileInfo(path_).fileName(); }
-    QString thumbnailPath() const { return "qrc:/file_manager2/resource/file.png"; }
+    FileRetrieverTest() {
+        items_.append(FileRetrieverItem("/home/pt/data/project1.t2d"));
+        items_.append(FileRetrieverItem("/home/pt/data/floor_plan.t2d"));
+        items_.append(FileRetrieverItem("/home/pt/data/section_A.t2d"));
+    }
+//! @section Overrides
+    int               count() const override { return items_.size(); }
+    FileRetrieverItem item(int index) const override { return items_.value(index); }
 //=============================================================================
 protected:
 //! @section Data
-    QString path_;
+    QList<FileRetrieverItem> items_;
 };
 
-Q_DECLARE_METATYPE(FileRetrieverItem)
+} // namespace T2l

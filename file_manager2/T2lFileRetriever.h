@@ -15,28 +15,19 @@
 //=============================================================================
 #pragma once
 
-#include <QString>
-#include <QFileInfo>
-#include <QVariant>
+#include "T2lFileRetrieverItem.h"
 
-class FileRetrieverItem {
-    Q_GADGET
-    Q_PROPERTY(QString path          READ path          CONSTANT)
-    Q_PROPERTY(QString name          READ name          CONSTANT)
-    Q_PROPERTY(QString thumbnailPath READ thumbnailPath  CONSTANT)
+namespace T2l
+{
+
+class FileRetriever {
 //=============================================================================
 public:
 //! @section Construction
-    FileRetrieverItem() = default;
-    FileRetrieverItem(const QString& path) : path_(path) {}
+    virtual ~FileRetriever() = default;
 //! @section Methods
-    QString path() const { return path_; }
-    QString name() const { return QFileInfo(path_).fileName(); }
-    QString thumbnailPath() const { return "qrc:/file_manager2/resource/file.png"; }
-//=============================================================================
-protected:
-//! @section Data
-    QString path_;
+    virtual int               count() const = 0;
+    virtual FileRetrieverItem item(int index) const = 0;
 };
 
-Q_DECLARE_METATYPE(FileRetrieverItem)
+} // namespace T2l
