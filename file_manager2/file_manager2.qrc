@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/file_manager2">
+        <file>resource/file.png</file>
+    </qresource>
+</RCC>
