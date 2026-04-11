@@ -26,8 +26,11 @@ public:
 //! @section Enums
     enum Roles { ItemRole = Qt::UserRole + 1 };
 //! @section Construction
-    FileRetrieverModel(T2l::FileRetriever* retriever, QObject* parent = nullptr)
-        : QAbstractListModel(parent), retriever_(retriever) {}
+    FileRetrieverModel(QObject* parent = nullptr) : QAbstractListModel(parent) {}
+    static FileRetrieverModel& instance() { static FileRetrieverModel i; return i; }
+//! @section Methods
+    void setRetriever(T2l::FileRetriever* r) { retriever_ = r; refresh(); }
+    Q_INVOKABLE void refresh() { beginResetModel(); endResetModel(); }
 //! @section Overrides
     int rowCount(const QModelIndex& parent = QModelIndex()) const override {
         if (parent.isValid()) return 0;
