@@ -30,6 +30,7 @@ public:
 //! @section Methods
     virtual int               count() const = 0;
     virtual FileRetrieverItem item(int index) const = 0;
+    virtual bool              ready() const { return count() > 0; }
     virtual void              setContent(const QString& content) { content_ = content; refreshParent(); }
 
     void setParent(FileRetrieverModel* parent) { parent_ = parent; }

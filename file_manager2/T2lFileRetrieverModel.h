@@ -22,6 +22,7 @@
 class FileRetrieverModel : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY(int count READ count NOTIFY contentChanged)
+    Q_PROPERTY(bool ready READ ready NOTIFY contentChanged)
 //=============================================================================
 public:
 //! @section Enums
@@ -31,6 +32,7 @@ public:
     static FileRetrieverModel& instance() { static FileRetrieverModel i; return i; }
 //! @section Methods
     int  count() const { return retriever_ ? retriever_->count() : 0; }
+    bool ready() const { return retriever_ ? retriever_->ready() : false; }
     void setRetriever(T2l::FileRetriever* r) { retriever_ = r; if (r) r->setParent(this); refresh(); }
     T2l::FileRetriever* retriever() const { return retriever_; }
     Q_INVOKABLE void refresh() { beginResetModel(); endResetModel(); emit contentChanged(); }
