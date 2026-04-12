@@ -7,4 +7,5 @@ HEADERS += \
     $$PWD/T2lFileRetrieverTest.h \
     $$PWD/T2lFileRetrieverModel.h
 
-SOURCES +=
+SOURCES += \
+    $$PWD/T2lFileRetriever.cpp

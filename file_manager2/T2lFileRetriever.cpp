@@ -13,32 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //=============================================================================
-#pragma once
+#include "T2lFileRetriever.h"
+#include "T2lFileRetrieverModel.h"
 
-#include "T2lFileRetrieverItem.h"
+using namespace T2l;
 
-class FileRetrieverModel;
-
-namespace T2l
+//=============================================================================
+void FileRetriever::refreshParent()
 {
-
-class FileRetriever {
-//=============================================================================
-public:
-//! @section Construction
-    virtual ~FileRetriever() = default;
-//! @section Methods
-    virtual int               count() const = 0;
-    virtual FileRetrieverItem item(int index) const = 0;
-    virtual void              setContent(const QString& content) { content_ = content; refreshParent(); }
-
-    void setParent(FileRetrieverModel* parent) { parent_ = parent; }
-    void refreshParent();
-//=============================================================================
-protected:
-//! @section Data
-    FileRetrieverModel* parent_ = nullptr;
-    QString             content_;
-};
-
-} // namespace T2l
+    if (parent_ != nullptr) parent_->refresh();
+}

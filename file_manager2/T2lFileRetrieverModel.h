@@ -21,6 +21,7 @@
 
 class FileRetrieverModel : public QAbstractListModel {
     Q_OBJECT
+    Q_PROPERTY(int count READ count NOTIFY contentChanged)
 //=============================================================================
 public:
 //! @section Enums
@@ -29,8 +30,14 @@ public:
     FileRetrieverModel(QObject* parent = nullptr) : QAbstractListModel(parent) {}
     static FileRetrieverModel& instance() { static FileRetrieverModel i; return i; }
 //! @section Methods
-    void setRetriever(T2l::FileRetriever* r) { retriever_ = r; refresh(); }
-    Q_INVOKABLE void refresh() { beginResetModel(); endResetModel(); }
+    int  count() const { return retriever_ ? retriever_->count() : 0; }
+    void setRetriever(T2l::FileRetriever* r) { retriever_ = r; if (r) r->setParent(this); refresh(); }
+    T2l::FileRetriever* retriever() const { return retriever_; }
+    Q_INVOKABLE void refresh() { beginResetModel(); endResetModel(); emit contentChanged(); }
+//! @section Signals
+signals:
+    void contentChanged();
+public:
 //! @section Overrides
     int rowCount(const QModelIndex& parent = QModelIndex()) const override {
         if (parent.isValid()) return 0;
