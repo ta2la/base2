@@ -7,6 +7,8 @@
 !/Resources/
 !/Resources/*.qrc
 !/Resources/*.qml
+!/Resources/cmds_help/
+!/Resources/cmds_help/*.md
 !images/
 !images/*.svg
 qrc_*.*

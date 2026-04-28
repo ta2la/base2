@@ -56,15 +56,10 @@ Rectangle {
                 ctx.lineTo(tx, ty)
                 ctx.stroke()
 
-                // name1 near from end
+                // names at 1/3 and 2/3 of the line
                 var dx = tx - fx, dy = ty - fy
-                var len = Math.sqrt(dx*dx + dy*dy)
-                if (len > 0) {
-                    var ox = dx/len * 20, oy = dy/len * 20
-                    ctx.fillText(l.name1, fx + ox, fy + oy - 4)
-                    // name2 near to end
-                    ctx.fillText(l.name2, tx - ox, ty - oy - 4)
-                }
+                ctx.fillText(l.name1, fx + dx/3, fy + dy/3 - 4)
+                ctx.fillText(l.name2, tx - dx/3, ty - dy/3 - 4)
             }
         }
     }

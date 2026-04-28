@@ -18,12 +18,12 @@ public:
         if (!SqlAccess::inst().connect()) return;
 
         QSqlQuery q(SqlAccess::inst().db());
-        if (!q.exec("SELECT icon, type FROM attr_types ORDER BY id")) return;
+        if (!q.exec("SELECT id, icon, type FROM attr_types ORDER BY id")) return;
 
         beginResetModel();
         items_.clear();
         while (q.next())
-            items_.append(CraseAttrTypeItem(q.value(0).toString(), q.value(1).toString()));
+            items_.append(CraseAttrTypeItem(q.value(0).toInt(), q.value(1).toString(), q.value(2).toString()));
         endResetModel();
     }
 

@@ -18,17 +18,18 @@ public:
         if (!SqlAccess::inst().connect()) return;
 
         QSqlQuery q(SqlAccess::inst().db());
-        if (!q.exec("SELECT t1.icon, rt.name1, rt.name2, t2.icon "
+        if (!q.exec("SELECT rt.id, COALESCE(t1.icon, rt.object_type1), rt.name1, rt.name2, "
+                     "COALESCE(t2.icon, rt.object_type2) "
                      "FROM object_rels_types rt "
-                     "JOIN objects_types t1 ON rt.object_type1 = t1.type "
-                     "JOIN objects_types t2 ON rt.object_type2 = t2.type "
+                     "LEFT JOIN objects_types t1 ON rt.object_type1 = t1.type "
+                     "LEFT JOIN objects_types t2 ON rt.object_type2 = t2.type "
                      "ORDER BY rt.id")) return;
 
         beginResetModel();
         items_.clear();
         while (q.next())
-            items_.append(CraseRelTypeItem(q.value(0).toString(), q.value(1).toString(),
-                                           q.value(2).toString(), q.value(3).toString()));
+            items_.append(CraseRelTypeItem(q.value(0).toInt(), q.value(1).toString(), q.value(2).toString(),
+                                           q.value(3).toString(), q.value(4).toString()));
         endResetModel();
     }
 

@@ -4,6 +4,9 @@
 #include "CraseObjectsBySqlModel.h"
 #include "CraseTreeModel.h"
 #include "CraseDrawingModel.h"
+#include "SqlAccess.h"
+
+#include <QSqlQuery>
 
 //=============================================================================
 class Cmds_crase_viewer {
@@ -52,6 +55,14 @@ public:
             int id = args.get(1).value().toInt();
             if (id <= 0) return args.appendError("crase_preview: invalid id");
             treeModel_()->previewObject(id);
+
+            if (drawingModel_() && SqlAccess::inst().connect()) {
+                QSqlQuery q(SqlAccess::inst().db());
+                q.prepare("SELECT type FROM objects WHERE id = ?");
+                q.addBindValue(id);
+                if (q.exec() && q.next() && q.value(0).toString() == "drawing")
+                    drawingModel_()->loadDrawing(id);
+            }
             return 0;
         }, "crase_viewer");
 

@@ -6,5 +6,6 @@
         <file>MdiWindow.qml</file>
         <file>GenericAppOrig.qml</file>
         <file>TabCmdline.qml</file>
+        <file>cmds_help/log_dump.md</file>
     </qresource>
 </RCC>

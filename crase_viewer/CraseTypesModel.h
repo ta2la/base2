@@ -26,26 +26,27 @@ public:
         }
 
         QSqlQuery q(SqlAccess::inst().db());
-        if (!q.exec("SELECT icon, type, attributes FROM objects_types ORDER BY id")) return;
+        if (!q.exec("SELECT id, icon, type, attributes FROM objects_types ORDER BY id")) return;
 
         beginResetModel();
         items_.clear();
         while (q.next()) {
-            QString icon  = q.value(0).toString();
-            QString type  = q.value(1).toString();
-            QString attrs = q.value(2).toString();
+            int     id    = q.value(0).toInt();
+            QString icon  = q.value(1).toString();
+            QString type  = q.value(2).toString();
+            QString attrs = q.value(3).toString();
 
             QString attrIcons;
             if (!attrs.isEmpty()) {
                 for (const QString& idStr : attrs.split(',', Qt::SkipEmptyParts)) {
-                    int id = idStr.trimmed().toInt();
-                    if (attrIconMap.contains(id))
-                        attrIcons += attrIconMap[id] + " ";
+                    int aid = idStr.trimmed().toInt();
+                    if (attrIconMap.contains(aid))
+                        attrIcons += attrIconMap[aid] + " ";
                 }
                 attrIcons = attrIcons.trimmed();
             }
 
-            items_.append(CraseTypeItem(icon, type, attrIcons));
+            items_.append(CraseTypeItem(id, icon, type, attrIcons));
         }
         endResetModel();
     }

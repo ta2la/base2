@@ -26,6 +26,8 @@
 #include <QString>
 #include <QGuiApplication>
 #include <QClipboard>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 ///@view:beg
 
@@ -72,6 +74,20 @@ public:
             }
             cb->setText(result);
             args.append(QString("count:%1").arg(col.count()));
+            return 0;
+        }, "cmd_sys_display");
+
+        CMD_SYS.add("log_dump",
+        [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
+            CmdExeRecCol& col = CmdExeRecCol::inst();
+            QString joined;
+            for (int i = 0; i < col.count(); i++) {
+                CmdExeRec& rec = col.get(i);
+                if (!joined.isEmpty()) joined += "\n";
+                joined += "[" + QString::number(rec.index) + "] " + rec.argsIn + rec.argsOut;
+            }
+            QJsonObject obj{{"cmd", joined}};
+            args.append(QString::fromUtf8(QJsonDocument(obj).toJson(QJsonDocument::Compact)), "LOG");
             return 0;
         }, "cmd_sys_display");
 
