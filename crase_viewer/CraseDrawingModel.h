@@ -18,12 +18,16 @@ public:
 
     CraseDrawingModel(QObject* parent = nullptr) : QAbstractListModel(parent) {}
 
+    int drawingId() const { return drawingId_; }
+
     void loadDrawing(int drawingId) {
+        drawingId_ = drawingId;
         if (!SqlAccess::inst().connect()) return;
 
         QSqlQuery q(SqlAccess::inst().db());
-        q.prepare("SELECT di.id, t.icon, di.value::text, "
-                  "(r.value->'xy'->0)::int, (r.value->'xy'->1)::int "
+        q.prepare("SELECT di.id, t.icon, di.value::text, r.rel_type_id, "
+                  "(r.value->'xy'->0)::int, (r.value->'xy'->1)::int, "
+                  "COALESCE((r.value->'wh'->0)::int, 0), COALESCE((r.value->'wh'->1)::int, 0) "
                   "FROM object_rels r "
                   "JOIN objects di ON di.id = r.id2 "
                   "JOIN objects_types t ON di.type = t.type "
@@ -36,15 +40,18 @@ public:
         QMap<int, int> idToIndex;
 
         while (q.next()) {
-            int id       = q.value(0).toInt();
-            QString icon = q.value(1).toString();
-            QString text = q.value(2).toString();
-            int x        = q.value(3).toInt();
-            int y        = q.value(4).toInt();
+            int id        = q.value(0).toInt();
+            QString icon  = q.value(1).toString();
+            QString text  = q.value(2).toString();
+            int relTypeId = q.value(3).toInt();
+            int x         = q.value(4).toInt();
+            int y         = q.value(5).toInt();
+            int w         = q.value(6).toInt();
+            int h         = q.value(7).toInt();
             if (text.startsWith('"') && text.endsWith('"'))
                 text = text.mid(1, text.length() - 2);
             idToIndex[id] = items_.size();
-            items_.append(CraseDrawingItem(icon, text, id, x, y));
+            items_.append(CraseDrawingItem(icon, text, id, relTypeId, x, y, w, h));
         }
         endResetModel();
 
@@ -78,6 +85,12 @@ public:
             const auto& from = items_[idToIndex[id1]];
             const auto& to   = items_[idToIndex[id2]];
 
+            // skip contains-in line when target sits inside source's wh box
+            if (name1 == "contains" && name2 == "in" && from.posW() > 0 && from.posH() > 0
+                && to.posX() >= from.posX() && to.posX() <= from.posX() + from.posW()
+                && to.posY() >= from.posY() && to.posY() <= from.posY() + from.posH())
+                continue;
+
             QVariantMap line;
             line["fromX"] = from.posX() + 40;
             line["fromY"] = from.posY() + 14;
@@ -108,6 +121,7 @@ signals:
     void linesChanged();
 
 private:
+    int drawingId_ = 0;
     QList<CraseDrawingItem> items_;
     QVariantList lines_;
 };

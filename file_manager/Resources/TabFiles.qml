@@ -109,6 +109,9 @@ ScrollView {
                                 spacing: 4
 
                                 Text {
+                                    // role enum from base2/file_manager/DirModel.h:
+                                    // 1=CodeRoot 2=Repo 3=Module 4=ModulePro 5=CppFile 6=HFile
+                                    // 7=PriFile 8=ResourceDir 9=QrcFile 10=QmlFile 11=GitIgnoreFile
                                     text: fileData.role === 1 ? "\u{1F3DB}"
                                         : fileData.role === 2 ? "\u{1F4DA}"
                                         : fileData.role === 3 ? "\u{1F9C3}"

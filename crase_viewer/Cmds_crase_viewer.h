@@ -7,6 +7,7 @@
 #include "SqlAccess.h"
 
 #include <QSqlQuery>
+#include <QSqlError>
 
 //=============================================================================
 class Cmds_crase_viewer {
@@ -72,6 +73,35 @@ public:
             int id = args.get(1).value().toInt();
             if (id <= 0) return args.appendError("crase_draw: invalid id");
             drawingModel_()->loadDrawing(id);
+            return 0;
+        }, "crase_viewer");
+
+        CMD_SYS.add("crase_drag",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("crase_drag: no model");
+            if (args.count() < 5) return args.appendError("crase_drag: usage: crase_drag <itemId> <relTypeId> <x> <y>");
+            int drawingId = drawingModel_()->drawingId();
+            if (drawingId <= 0) return args.appendError("crase_drag: no drawing loaded");
+            int itemId    = args.get(1).value().toInt();
+            int relTypeId = args.get(2).value().toInt();
+            int x         = args.get(3).value().toInt();
+            int y         = args.get(4).value().toInt();
+            if (!SqlAccess::inst().connect()) return args.appendError("crase_drag: no DB");
+
+            QSqlQuery q(SqlAccess::inst().db());
+            q.prepare("UPDATE object_rels "
+                      "SET value = jsonb_set(value, '{xy}', to_jsonb(ARRAY[?, ?]::int[])) "
+                      "WHERE id1 = ? AND id2 = ? AND rel_type_id = ?");
+            q.addBindValue(x);
+            q.addBindValue(y);
+            q.addBindValue(drawingId);
+            q.addBindValue(itemId);
+            q.addBindValue(relTypeId);
+            if (!q.exec()) return args.appendError("crase_drag: " + q.lastError().text());
+            if (q.numRowsAffected() == 0) return args.appendError("crase_drag: rel not found");
+
+            drawingModel_()->loadDrawing(drawingId);
+            args.append(QString("[%1]/r%2 -> %3,%4").arg(itemId).arg(relTypeId).arg(x).arg(y), "MOVED");
             return 0;
         }, "crase_viewer");
     }

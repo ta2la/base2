@@ -67,41 +67,69 @@ Rectangle {
     Repeater {
         model: craseDrawingModel
 
-        delegate: Rectangle {
+        delegate: Item {
+            id: itemRoot
             x: drawItem.posX
             y: drawItem.posY
-            width: itemRow.implicitWidth + 12
-            height: 28
-            radius: 4
+            width: itemBox.width
+            height: itemBox.height
             z: 1
-            color: itemMouse.containsMouse ? "#D0D8E0" : "#E8ECF0"
-            border.color: "#A0A8B0"
-            border.width: 1
 
-            Row {
-                id: itemRow
-                anchors.centerIn: parent
-                spacing: 4
-
-                Text {
-                    text: drawItem.icon
-                    font.pointSize: 12
-                    verticalAlignment: Text.AlignVCenter
-                }
-                Text {
-                    text: drawItem.text
-                    font.pointSize: 10
-                    color: "#404040"
-                    verticalAlignment: Text.AlignVCenter
-                }
+            // wire-frame rectangle (visible only when wh is set)
+            Rectangle {
+                visible: drawItem.posW > 0 && drawItem.posH > 0
+                width: drawItem.posW
+                height: drawItem.posH
+                color: "transparent"
+                border.color: "#A0A8B0"
+                border.width: 1
             }
 
-            MouseArea {
-                id: itemMouse
-                anchors.fill: parent
-                hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: qmlInterface.callCmd("crase_preview " + drawItem.itemId)
+            Rectangle {
+                id: itemBox
+                width: itemRow.implicitWidth + 12
+                height: 28
+                radius: 4
+                color: itemMouse.containsMouse ? "#D0D8E0" : "#E8ECF0"
+                border.color: "#A0A8B0"
+                border.width: 1
+
+                Row {
+                    id: itemRow
+                    anchors.centerIn: parent
+                    spacing: 4
+
+                    Text {
+                        text: drawItem.icon
+                        font.pointSize: 12
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    Text {
+                        text: drawItem.text
+                        font.pointSize: 10
+                        color: "#404040"
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                }
+
+                MouseArea {
+                    id: itemMouse
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    drag.target: itemRoot
+                    drag.threshold: 3
+                    property bool dragged: false
+                    onPositionChanged: if (drag.active) dragged = true
+                    onReleased: {
+                        if (dragged) {
+                            qmlInterface.callCmd("crase_drag " + drawItem.itemId + " " + drawItem.relTypeId + " " + Math.round(itemRoot.x) + " " + Math.round(itemRoot.y))
+                            dragged = false
+                        } else {
+                            qmlInterface.callCmd("crase_preview " + drawItem.itemId)
+                        }
+                    }
+                }
             }
         }
     }
