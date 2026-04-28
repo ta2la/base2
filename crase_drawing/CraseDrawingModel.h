@@ -8,21 +8,49 @@
 #include <QVariantList>
 #include <QVariantMap>
 #include <QMap>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 //=============================================================================
 class CraseDrawingModel : public QAbstractListModel {
     Q_OBJECT
     Q_PROPERTY(QVariantList lines READ lines NOTIFY linesChanged)
+    Q_PROPERTY(qreal originX READ originX NOTIFY transformChanged)
+    Q_PROPERTY(qreal originY READ originY NOTIFY transformChanged)
+    Q_PROPERTY(qreal scale   READ scale   NOTIFY transformChanged)
 public:
     enum Roles { DataRole = Qt::UserRole + 1 };
 
     CraseDrawingModel(QObject* parent = nullptr) : QAbstractListModel(parent) {}
 
-    int drawingId() const { return drawingId_; }
+    int   drawingId() const { return drawingId_; }
+    qreal originX()   const { return originX_; }
+    qreal originY()   const { return originY_; }
+    qreal scale()     const { return scale_; }
 
     void loadDrawing(int drawingId) {
         drawingId_ = drawingId;
         if (!SqlAccess::inst().connect()) return;
+
+        // fetch drawing's own origin + scale from its value JSONB
+        originX_ = 0; originY_ = 0; scale_ = 1.0;
+        QSqlQuery qd(SqlAccess::inst().db());
+        qd.prepare("SELECT value::text FROM objects WHERE id = ?");
+        qd.addBindValue(drawingId);
+        if (qd.exec() && qd.next()) {
+            QJsonDocument doc = QJsonDocument::fromJson(qd.value(0).toString().toUtf8());
+            if (doc.isObject()) {
+                QJsonObject obj = doc.object();
+                QJsonArray origin = obj.value("origin").toArray();
+                if (origin.size() >= 2) {
+                    originX_ = origin[0].toDouble();
+                    originY_ = origin[1].toDouble();
+                }
+                if (obj.contains("scale")) scale_ = obj.value("scale").toDouble(1.0);
+            }
+        }
+        emit transformChanged();
 
         QSqlQuery q(SqlAccess::inst().db());
         q.prepare("SELECT di.id, t.icon, di.value::text, r.rel_type_id, "
@@ -119,9 +147,13 @@ public:
 
 signals:
     void linesChanged();
+    void transformChanged();
 
 private:
     int drawingId_ = 0;
+    qreal originX_ = 0;
+    qreal originY_ = 0;
+    qreal scale_   = 1.0;
     QList<CraseDrawingItem> items_;
     QVariantList lines_;
 };

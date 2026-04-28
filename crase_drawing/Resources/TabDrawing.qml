@@ -3,9 +3,46 @@ import QtQuick.Controls 2.15
 
 ///@view:beg
 Rectangle {
+    id: bg
     anchors.fill: parent
     color: "#F0F0F0"
     clip: true
+
+    // transient pan offset (live during bg drag, committed via crase_pan on release)
+    property real panDx: 0
+    property real panDy: 0
+
+    MouseArea {
+        id: bgPan
+        anchors.fill: parent
+        z: 0
+        property real startX: 0
+        property real startY: 0
+        property real baseDx: 0
+        property real baseDy: 0
+        property bool dragging: false
+        onPressed: {
+            startX = mouseX; startY = mouseY
+            baseDx = bg.panDx; baseDy = bg.panDy
+            dragging = false
+        }
+        onPositionChanged: {
+            if (pressed) {
+                bg.panDx = baseDx + (mouseX - startX)
+                bg.panDy = baseDy + (mouseY - startY)
+                if (Math.abs(mouseX - startX) > 3 || Math.abs(mouseY - startY) > 3) dragging = true
+                linesCanvas.requestPaint()
+            }
+        }
+        onReleased: {
+            if (dragging) {
+                var s = craseDrawingModel.scale
+                qmlInterface.callCmd("crase_pan " + (-bg.panDx/s) + " " + (-bg.panDy/s))
+                bg.panDx = 0; bg.panDy = 0
+            }
+            dragging = false
+        }
+    }
 
     Canvas {
         id: gridCanvas
@@ -36,6 +73,7 @@ Rectangle {
         Connections {
             target: craseDrawingModel
             function onLinesChanged() { linesCanvas.requestPaint() }
+            function onTransformChanged() { linesCanvas.requestPaint() }
         }
 
         onPaint: {
@@ -46,10 +84,17 @@ Rectangle {
             ctx.font = "10px sans-serif"
             ctx.fillStyle = "#606070"
 
+            var ox = craseDrawingModel.originX
+            var oy = craseDrawingModel.originY
+            var s  = craseDrawingModel.scale
+            var px = bg.panDx
+            var py = bg.panDy
+
             var lines = craseDrawingModel.lines
             for (var i = 0; i < lines.length; i++) {
                 var l = lines[i]
-                var fx = l.fromX, fy = l.fromY, tx = l.toX, ty = l.toY
+                var fx = (l.fromX - ox) * s + px, fy = (l.fromY - oy) * s + py
+                var tx = (l.toX   - ox) * s + px, ty = (l.toY   - oy) * s + py
 
                 ctx.beginPath()
                 ctx.moveTo(fx, fy)
@@ -69,17 +114,17 @@ Rectangle {
 
         delegate: Item {
             id: itemRoot
-            x: drawItem.posX
-            y: drawItem.posY
+            x: (drawItem.posX - craseDrawingModel.originX) * craseDrawingModel.scale + bg.panDx
+            y: (drawItem.posY - craseDrawingModel.originY) * craseDrawingModel.scale + bg.panDy
             width: itemBox.width
             height: itemBox.height
             z: 1
 
-            // wire-frame rectangle (visible only when wh is set)
+            // wire-frame rectangle (visible only when wh is set, scaled)
             Rectangle {
                 visible: drawItem.posW > 0 && drawItem.posH > 0
-                width: drawItem.posW
-                height: drawItem.posH
+                width: drawItem.posW * craseDrawingModel.scale
+                height: drawItem.posH * craseDrawingModel.scale
                 color: "transparent"
                 border.color: "#A0A8B0"
                 border.width: 1
@@ -123,7 +168,10 @@ Rectangle {
                     onPositionChanged: if (drag.active) dragged = true
                     onReleased: {
                         if (dragged) {
-                            qmlInterface.callCmd("crase_drag " + drawItem.itemId + " " + drawItem.relTypeId + " " + Math.round(itemRoot.x) + " " + Math.round(itemRoot.y))
+                            var s = craseDrawingModel.scale
+                            var ax = Math.round((itemRoot.x - bg.panDx) / s + craseDrawingModel.originX)
+                            var ay = Math.round((itemRoot.y - bg.panDy) / s + craseDrawingModel.originY)
+                            qmlInterface.callCmd("crase_drag " + drawItem.itemId + " " + drawItem.relTypeId + " " + ax + " " + ay)
                             dragged = false
                         } else {
                             qmlInterface.callCmd("crase_preview " + drawItem.itemId)

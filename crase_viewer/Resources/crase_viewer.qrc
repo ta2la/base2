@@ -3,6 +3,5 @@
         <file>TabObjects.qml</file>
         <file>TabObjectTree.qml</file>
         <file>TabMetadata.qml</file>
-        <file>TabDrawing.qml</file>
     </qresource>
 </RCC>

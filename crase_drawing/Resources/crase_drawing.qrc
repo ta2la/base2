@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>TabDrawing.qml</file>
+    </qresource>
+</RCC>
