@@ -61,24 +61,63 @@ public:
             if (drawingId <= 0) return args.appendError("crase_drag: no drawing loaded");
             int itemId    = args.get(1).value().toInt();
             int relTypeId = args.get(2).value().toInt();
-            int x         = args.get(3).value().toInt();
-            int y         = args.get(4).value().toInt();
+            int newX      = args.get(3).value().toInt();
+            int newY      = args.get(4).value().toInt();
             if (!SqlAccess::inst().connect()) return args.appendError("crase_drag: no DB");
+
+            // read old xy + wh of the dragged rel
+            QSqlQuery qr(SqlAccess::inst().db());
+            qr.prepare("SELECT (value->'xy'->>0)::int, (value->'xy'->>1)::int, "
+                       "       COALESCE((value->'wh'->>0)::int, 0), COALESCE((value->'wh'->>1)::int, 0) "
+                       "FROM object_rels WHERE id1 = ? AND id2 = ? AND rel_type_id = ?");
+            qr.addBindValue(drawingId);
+            qr.addBindValue(itemId);
+            qr.addBindValue(relTypeId);
+            if (!qr.exec() || !qr.next()) return args.appendError("crase_drag: rel not found");
+            int oldX = qr.value(0).toInt();
+            int oldY = qr.value(1).toInt();
+            int w    = qr.value(2).toInt();
+            int h    = qr.value(3).toInt();
+            int dx   = newX - oldX;
+            int dy   = newY - oldY;
+
+            // if dragged item has wh, also shift any rels whose xy was inside the box
+            int contained = 0;
+            if (w > 0 && h > 0 && (dx != 0 || dy != 0)) {
+                QSqlQuery qc(SqlAccess::inst().db());
+                qc.prepare("UPDATE object_rels "
+                           "SET value = jsonb_set(value, '{xy}', to_jsonb(ARRAY["
+                           "  (value->'xy'->>0)::int + ?, (value->'xy'->>1)::int + ?"
+                           "]::int[])) "
+                           "WHERE id1 = ? AND NOT (id2 = ? AND rel_type_id = ?) "
+                           "  AND (value->'xy'->>0)::int BETWEEN ? AND ? "
+                           "  AND (value->'xy'->>1)::int BETWEEN ? AND ?");
+                qc.addBindValue(dx);
+                qc.addBindValue(dy);
+                qc.addBindValue(drawingId);
+                qc.addBindValue(itemId);
+                qc.addBindValue(relTypeId);
+                qc.addBindValue(oldX);
+                qc.addBindValue(oldX + w);
+                qc.addBindValue(oldY);
+                qc.addBindValue(oldY + h);
+                if (!qc.exec()) return args.appendError("crase_drag (contained): " + qc.lastError().text());
+                contained = qc.numRowsAffected();
+            }
 
             QSqlQuery q(SqlAccess::inst().db());
             q.prepare("UPDATE object_rels "
                       "SET value = jsonb_set(value, '{xy}', to_jsonb(ARRAY[?, ?]::int[])) "
                       "WHERE id1 = ? AND id2 = ? AND rel_type_id = ?");
-            q.addBindValue(x);
-            q.addBindValue(y);
+            q.addBindValue(newX);
+            q.addBindValue(newY);
             q.addBindValue(drawingId);
             q.addBindValue(itemId);
             q.addBindValue(relTypeId);
             if (!q.exec()) return args.appendError("crase_drag: " + q.lastError().text());
-            if (q.numRowsAffected() == 0) return args.appendError("crase_drag: rel not found");
 
             drawingModel_()->loadDrawing(drawingId);
-            args.append(QString("[%1]/r%2 -> %3,%4").arg(itemId).arg(relTypeId).arg(x).arg(y), "MOVED");
+            args.append(QString("[%1]/r%2 -> %3,%4 (contained=%5)").arg(itemId).arg(relTypeId).arg(newX).arg(newY).arg(contained), "MOVED");
             return 0;
         }, "crase_drawing");
 
