@@ -122,12 +122,52 @@ Rectangle {
 
             // wire-frame rectangle (visible only when wh is set, scaled)
             Rectangle {
+                id: wfBox
                 visible: drawItem.posW > 0 && drawItem.posH > 0
-                width: drawItem.posW * craseDrawingModel.scale
-                height: drawItem.posH * craseDrawingModel.scale
+                property real dw: 0
+                property real dh: 0
+                width:  (drawItem.posW + dw) * craseDrawingModel.scale
+                height: (drawItem.posH + dh) * craseDrawingModel.scale
                 color: "transparent"
                 border.color: "#A0A8B0"
                 border.width: 1
+
+                HoverHandler { id: wfHover }
+
+                Rectangle {
+                    id: resizeHandle
+                    visible: wfHover.hovered || resizeMouse.pressed
+                    width: 12
+                    height: 12
+                    color: "#808890"
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+
+                    MouseArea {
+                        id: resizeMouse
+                        anchors.fill: parent
+                        cursorShape: Qt.SizeFDiagCursor
+                        property real startX: 0
+                        property real startY: 0
+                        onPressed: {
+                            var p = mapToItem(itemRoot, mouse.x, mouse.y)
+                            startX = p.x; startY = p.y
+                            wfBox.dw = 0; wfBox.dh = 0
+                        }
+                        onPositionChanged: if (pressed) {
+                            var s = craseDrawingModel.scale
+                            var p = mapToItem(itemRoot, mouse.x, mouse.y)
+                            wfBox.dw = Math.max(20 - drawItem.posW, (p.x - startX) / s)
+                            wfBox.dh = Math.max(20 - drawItem.posH, (p.y - startY) / s)
+                        }
+                        onReleased: {
+                            var w = Math.round(drawItem.posW + wfBox.dw)
+                            var h = Math.round(drawItem.posH + wfBox.dh)
+                            wfBox.dw = 0; wfBox.dh = 0
+                            qmlInterface.callCmd("crase_resize " + drawItem.itemId + " " + drawItem.relTypeId + " " + w + " " + h)
+                        }
+                    }
+                }
             }
 
             Rectangle {

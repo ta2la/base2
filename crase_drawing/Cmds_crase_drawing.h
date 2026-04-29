@@ -81,6 +81,35 @@ public:
             args.append(QString("[%1]/r%2 -> %3,%4").arg(itemId).arg(relTypeId).arg(x).arg(y), "MOVED");
             return 0;
         }, "crase_drawing");
+
+        CMD_SYS.add("crase_resize",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("crase_resize: no model");
+            if (args.count() < 5) return args.appendError("crase_resize: usage: crase_resize <itemId> <relTypeId> <w> <h>");
+            int drawingId = drawingModel_()->drawingId();
+            if (drawingId <= 0) return args.appendError("crase_resize: no drawing loaded");
+            int itemId    = args.get(1).value().toInt();
+            int relTypeId = args.get(2).value().toInt();
+            int w         = args.get(3).value().toInt();
+            int h         = args.get(4).value().toInt();
+            if (!SqlAccess::inst().connect()) return args.appendError("crase_resize: no DB");
+
+            QSqlQuery q(SqlAccess::inst().db());
+            q.prepare("UPDATE object_rels "
+                      "SET value = jsonb_set(value, '{wh}', to_jsonb(ARRAY[?, ?]::int[])) "
+                      "WHERE id1 = ? AND id2 = ? AND rel_type_id = ?");
+            q.addBindValue(w);
+            q.addBindValue(h);
+            q.addBindValue(drawingId);
+            q.addBindValue(itemId);
+            q.addBindValue(relTypeId);
+            if (!q.exec()) return args.appendError("crase_resize: " + q.lastError().text());
+            if (q.numRowsAffected() == 0) return args.appendError("crase_resize: rel not found");
+
+            drawingModel_()->loadDrawing(drawingId);
+            args.append(QString("[%1]/r%2 -> %3x%4").arg(itemId).arg(relTypeId).arg(w).arg(h), "RESIZED");
+            return 0;
+        }, "crase_drawing");
     }
 
 private:
