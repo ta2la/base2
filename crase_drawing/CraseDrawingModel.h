@@ -160,8 +160,10 @@ public:
 
         QSqlQuery qr(SqlAccess::inst().db());
         if (!qr.exec(QString(
-            "SELECT r.id1, r.name1, r.name2, r.id2 "
+            "SELECT r.id1, r.name1, r.name2, r.id2, "
+            "       COALESCE(ort.icon1,''), COALESCE(ort.icon2,'') "
             "FROM object_rels r "
+            "LEFT JOIN object_rels_types ort ON ort.id = r.rel_type_id "
             "WHERE r.id1 IN (%1) AND r.id2 IN (%1) "
             "AND r.id1 != %2 AND r.id2 != %2")
             .arg(idList).arg(drawingId))) {
@@ -174,6 +176,8 @@ public:
             QString name1 = qr.value(1).toString();
             QString name2 = qr.value(2).toString();
             int id2 = qr.value(3).toInt();
+            QString icon1 = qr.value(4).toString();
+            QString icon2 = qr.value(5).toString();
 
             if (!idToIndex.contains(id1) || !idToIndex.contains(id2)) continue;
 
@@ -187,12 +191,16 @@ public:
                 continue;
 
             QVariantMap line;
-            line["fromX"] = from.posX() + 40;
-            line["fromY"] = from.posY() + 14;
-            line["toX"]   = to.posX() + 40;
-            line["toY"]   = to.posY() + 14;
+            line["fromX"]   = from.posX();
+            line["fromY"]   = from.posY();
+            line["toX"]     = to.posX();
+            line["toY"]     = to.posY();
+            line["fromIdx"] = idToIndex[id1];
+            line["toIdx"]   = idToIndex[id2];
             line["name1"] = name1;
             line["name2"] = name2;
+            line["icon1"] = icon1;
+            line["icon2"] = icon2;
             lines_.append(line);
         }
         emit linesChanged();

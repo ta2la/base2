@@ -121,6 +121,72 @@ Rectangle {
             function onTransformChanged() { linesCanvas.requestPaint() }
         }
 
+        // draw a named symbol at (x,y) rotated by angleRad (radians)
+        function drawSymbol(ctx, name, x, y, angleRad) {
+            if (!name) return
+            ctx.save()
+            ctx.translate(x, y)
+            ctx.rotate(angleRad)
+            ctx.strokeStyle = "#606070"
+            ctx.lineWidth = 1.5
+            ctx.beginPath()
+            if (name === "agreg") {
+                // filled blue diamond, tip at +x
+                ctx.fillStyle = "#3070C0"
+                ctx.moveTo(0, 0)
+                ctx.lineTo(-7, -5)
+                ctx.lineTo(-14, 0)
+                ctx.lineTo(-7, 5)
+                ctx.closePath()
+            } else if (name === "agregn") {
+                // agreg + 3 transverse ticks behind the diamond (multiplicity)
+                ctx.fillStyle = "#3070C0"
+                ctx.moveTo(0, 0)
+                ctx.lineTo(-7, -5)
+                ctx.lineTo(-14, 0)
+                ctx.lineTo(-7, 5)
+                ctx.closePath()
+                ctx.fill()
+                ctx.stroke()
+                ctx.beginPath()
+                ctx.lineWidth = 1.0
+                for (var k = 0; k < 3; k++) {
+                    var xt = -18 - k*4
+                    ctx.moveTo(xt, -4)
+                    ctx.lineTo(xt,  4)
+                }
+                ctx.stroke()
+                ctx.restore()
+                return
+            } else if (name === "deriv") {
+                // filled red triangle (arrow head), tip at +x
+                ctx.fillStyle = "#C03030"
+                ctx.moveTo(0, 0)
+                ctx.lineTo(-12, -7)
+                ctx.lineTo(-12, 7)
+                ctx.closePath()
+            } else if (name === "ref") {
+                // black asterisk: 3 lines crossing at center, 60° apart
+                ctx.strokeStyle = "#000000"
+                ctx.lineWidth = 1.5
+                var r = 7
+                for (var k = 0; k < 3; k++) {
+                    var a = k * Math.PI / 3
+                    ctx.moveTo( Math.cos(a)*r,  Math.sin(a)*r)
+                    ctx.lineTo(-Math.cos(a)*r, -Math.sin(a)*r)
+                }
+                ctx.stroke()
+                ctx.restore()
+                return
+            } else {
+                ctx.restore()
+                return
+            }
+            ctx.fill()
+            ctx.stroke()
+            ctx.restore()
+        }
+
         onPaint: {
             var ctx = getContext("2d")
             ctx.clearRect(0, 0, width, height)
@@ -138,23 +204,47 @@ Rectangle {
             var lines = craseDrawingModel.lines
             for (var i = 0; i < lines.length; i++) {
                 var l = lines[i]
-                var fx = (l.fromX - ox) * s + px, fy = (l.fromY - oy) * s + py
-                var tx = (l.toX   - ox) * s + px, ty = (l.toY   - oy) * s + py
+                var fItem = itemsRepeater.itemAt(l.fromIdx)
+                var tItem = itemsRepeater.itemAt(l.toIdx)
+                var fx, fy, tx, ty
+                if (fItem && tItem) {
+                    var fcx = fItem.x + fItem.width/2,  fcy = fItem.y + fItem.height/2
+                    var tcx = tItem.x + tItem.width/2,  tcy = tItem.y + tItem.height/2
+                    var ddx = tcx - fcx, ddy = tcy - fcy
+                    var pad = 10
+                    var fhw = fItem.width/2 + pad, fhh = fItem.height/2 + pad
+                    var thw = tItem.width/2 + pad, thh = tItem.height/2 + pad
+                    var ft = Math.min(Math.abs(ddx) > 0.001 ? fhw/Math.abs(ddx) : 1e9,
+                                      Math.abs(ddy) > 0.001 ? fhh/Math.abs(ddy) : 1e9)
+                    var tt = Math.min(Math.abs(ddx) > 0.001 ? thw/Math.abs(ddx) : 1e9,
+                                      Math.abs(ddy) > 0.001 ? thh/Math.abs(ddy) : 1e9)
+                    fx = fcx + ft*ddx;  fy = fcy + ft*ddy
+                    tx = tcx - tt*ddx;  ty = tcy - tt*ddy
+                } else {
+                    fx = (l.fromX - ox) * s + px;  fy = (l.fromY - oy) * s + py
+                    tx = (l.toX   - ox) * s + px;  ty = (l.toY   - oy) * s + py
+                }
 
                 ctx.beginPath()
                 ctx.moveTo(fx, fy)
                 ctx.lineTo(tx, ty)
                 ctx.stroke()
 
-                // names at 1/3 and 2/3 of the line
+                // names at 1/3 and 2/3
                 var dx = tx - fx, dy = ty - fy
                 ctx.fillText(l.name1, fx + dx/3, fy + dy/3 - 4)
                 ctx.fillText(l.name2, tx - dx/3, ty - dy/3 - 4)
+
+                // symbols at endpoints (rotated along line)
+                var ang = Math.atan2(dy, dx)
+                drawSymbol(ctx, l.icon1, fx, fy, ang + Math.PI)
+                drawSymbol(ctx, l.icon2, tx, ty, ang)
             }
         }
     }
 
     Repeater {
+        id: itemsRepeater
         model: craseDrawingModel
 
         delegate: Item {
@@ -275,5 +365,6 @@ Rectangle {
             }
         }
     }
+
 }
 ///@view:end
