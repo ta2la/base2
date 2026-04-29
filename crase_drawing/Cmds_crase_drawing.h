@@ -121,6 +121,48 @@ public:
             return 0;
         }, "crase_drawing");
 
+        CMD_SYS.add("crase_zoom",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("crase_zoom: no model");
+            if (args.count() < 3) return args.appendError("crase_zoom: usage: crase_zoom <x> <y> --ratio <r>");
+            int drawingId = drawingModel_()->drawingId();
+            if (drawingId <= 0) return args.appendError("crase_zoom: no drawing loaded");
+            qreal x = args.get(1).value().toDouble();
+            qreal y = args.get(2).value().toDouble();
+            qreal r = args.get("ratio", "1.0").value().toDouble();
+            if (r <= 0) return args.appendError("crase_zoom: ratio must be > 0");
+            if (!SqlAccess::inst().connect()) return args.appendError("crase_zoom: no DB");
+
+            QSqlQuery qr(SqlAccess::inst().db());
+            qr.prepare("SELECT COALESCE((value->'origin'->>0)::float8, 0), "
+                       "       COALESCE((value->'origin'->>1)::float8, 0), "
+                       "       COALESCE((value->>'scale')::float8, 1.0) "
+                       "FROM objects WHERE id = ?");
+            qr.addBindValue(drawingId);
+            qreal ox = 0, oy = 0, sc = 1.0;
+            if (qr.exec() && qr.next()) {
+                ox = qr.value(0).toDouble();
+                oy = qr.value(1).toDouble();
+                sc = qr.value(2).toDouble();
+            }
+            qreal newOx = x - (x - ox) / r;
+            qreal newOy = y - (y - oy) / r;
+            qreal newSc = sc * r;
+
+            QSqlQuery qw(SqlAccess::inst().db());
+            qw.prepare("UPDATE objects SET value = "
+                       "  jsonb_set(jsonb_set(value, '{origin}', ?::jsonb), '{scale}', ?::jsonb) "
+                       "WHERE id = ?");
+            qw.addBindValue(QString("[%1,%2]").arg(newOx).arg(newOy));
+            qw.addBindValue(QString::number(newSc));
+            qw.addBindValue(drawingId);
+            if (!qw.exec()) return args.appendError("crase_zoom: " + qw.lastError().text());
+
+            drawingModel_()->loadDrawing(drawingId);
+            args.append(QString("scale %1->%2 origin->%3,%4").arg(sc).arg(newSc).arg(newOx).arg(newOy), "ZOOMED");
+            return 0;
+        }, "crase_drawing");
+
         CMD_SYS.add("crase_resize",
         []CMD_ARGS_U -> int {
             if (!drawingModel_()) return args.appendError("crase_resize: no model");

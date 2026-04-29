@@ -12,6 +12,17 @@ Rectangle {
     property real panDx: 0
     property real panDy: 0
 
+    WheelHandler {
+        target: bg
+        onWheel: function(event) {
+            var s = craseDrawingModel.scale
+            var dx = (event.x - bg.panDx) / s + craseDrawingModel.originX
+            var dy = (event.y - bg.panDy) / s + craseDrawingModel.originY
+            var r = event.angleDelta.y > 0 ? 1.1 : 1.0/1.1
+            qmlInterface.callCmd("crase_zoom " + dx + " " + dy + " --ratio " + r)
+        }
+    }
+
     MouseArea {
         id: bgPan
         anchors.fill: parent
