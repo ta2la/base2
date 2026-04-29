@@ -19,6 +19,7 @@ class CraseDrawingModel : public QAbstractListModel {
     Q_PROPERTY(qreal originX READ originX NOTIFY transformChanged)
     Q_PROPERTY(qreal originY READ originY NOTIFY transformChanged)
     Q_PROPERTY(qreal scale   READ scale   NOTIFY transformChanged)
+    Q_PROPERTY(int   drawingId READ drawingId NOTIFY transformChanged)
 public:
     enum Roles { DataRole = Qt::UserRole + 1 };
 

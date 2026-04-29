@@ -26,7 +26,7 @@ public:
         QString query = cleaned.isEmpty()
             ? "SELECT o.id, t.icon, o.value::text FROM objects o "
               "JOIN objects_types t ON o.type = t.type "
-              "ORDER BY o.id"
+              "ORDER BY o.root DESC, o.id"
             : cleaned;
 
         QSqlQuery q(SqlAccess::inst().db());

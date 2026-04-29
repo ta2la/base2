@@ -12,6 +12,26 @@ Rectangle {
     property real panDx: 0
     property real panDy: 0
 
+    Rectangle {
+        id: statusBar
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: 22
+        color: "#404858"
+        z: 100
+        Text {
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            text: "scale " + craseDrawingModel.scale.toFixed(2)
+                + "   origin " + craseDrawingModel.originX.toFixed(0) + "," + craseDrawingModel.originY.toFixed(0)
+                + "   drawing [" + craseDrawingModel.drawingId + "]"
+            font.pointSize: 9
+            color: "#E0E4EC"
+        }
+    }
+
     WheelHandler {
         target: bg
         onWheel: function(event) {
