@@ -18,8 +18,15 @@ Rectangle {
         anchors.right: parent.right
         anchors.bottom: parent.bottom
         height: 22
-        color: "#404858"
+        color: bg.color
         z: 100
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.top: parent.top
+            height: 1
+            color: "#A0A8B0"
+        }
         Text {
             anchors.left: parent.left
             anchors.leftMargin: 8
@@ -27,8 +34,11 @@ Rectangle {
             text: "scale " + craseDrawingModel.scale.toFixed(2)
                 + "   origin " + craseDrawingModel.originX.toFixed(0) + "," + craseDrawingModel.originY.toFixed(0)
                 + "   drawing [" + craseDrawingModel.drawingId + "]"
+                + (craseDrawingModel.hiddenCount > 0
+                    ? "   " + craseDrawingModel.hiddenCount + " hidden (show at scale > " + craseDrawingModel.hiddenAtScale.toFixed(2) + ")"
+                    : "")
             font.pointSize: 9
-            color: "#E0E4EC"
+            color: "#404040"
         }
     }
 
@@ -165,6 +175,15 @@ Rectangle {
 
                 HoverHandler { id: wfHover }
 
+                Text {
+                    visible: drawItem.hiddenChildren > 0
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    text: drawItem.hiddenChildren + " objects\nscale > " + drawItem.hideThreshold.toFixed(2)
+                    font.pointSize: 11
+                    color: "#606070"
+                }
+
                 Rectangle {
                     id: resizeHandle
                     visible: wfHover.hovered || resizeMouse.pressed
@@ -221,6 +240,7 @@ Rectangle {
                         verticalAlignment: Text.AlignVCenter
                     }
                     Text {
+                        visible: drawItem.containerThreshold === 0 || craseDrawingModel.scale > drawItem.containerThreshold
                         text: drawItem.text
                         font.pointSize: 10
                         color: "#404040"
