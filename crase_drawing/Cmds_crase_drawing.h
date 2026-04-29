@@ -163,6 +163,24 @@ public:
             return 0;
         }, "crase_drawing");
 
+        CMD_SYS.add("cmd_mode_drawing",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("cmd_mode_drawing: no model");
+            QString sel = args.get("selected", "").value();
+            if (sel.isEmpty()) return 0;
+            QStringList ids = sel.split(' ', Qt::SkipEmptyParts);
+            if (ids.isEmpty()) return 0;
+            int id = ids.first().toInt();
+            if (id <= 0) return 0;
+            if (!SqlAccess::inst().connect()) return args.appendError("cmd_mode_drawing: no DB");
+            QSqlQuery q(SqlAccess::inst().db());
+            q.prepare("SELECT type FROM objects WHERE id = ?");
+            q.addBindValue(id);
+            if (q.exec() && q.next() && q.value(0).toString() == "drawing")
+                drawingModel_()->loadDrawing(id);
+            return 0;
+        }, "crase_drawing");
+
         CMD_SYS.add("cmd_mode_box",
         []CMD_ARGS_U -> int {
             if (!drawingModel_()) return args.appendError("cmd_mode_box: no model");

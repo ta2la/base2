@@ -53,16 +53,115 @@ Rectangle  {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        height: 22
+        height: 33
         color: appStyle.barColor
         z: 10
+
         Text {
+            id: modeText
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.verticalCenter: parent.verticalCenter
-            font.pointSize: 9
+            font.pointSize: 11
             color: appStyle.textColor
-            text: typeof craseMode !== "undefined" ? "mode: " + craseMode.cmd : ""
+            textFormat: Text.RichText
+            text: typeof craseMode !== "undefined"
+                  ? "mode: <b>" + craseMode.cmd + "</b>"
+                  : ""
+        }
+
+        Item {
+            id: selArea
+            anchors.left: modeText.right
+            anchors.leftMargin: 16
+            anchors.right: unselBtn.left
+            anchors.rightMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            height: 24
+            visible: typeof craseSelection !== "undefined" && craseSelection.count > 0
+
+            property bool compact: fullRow.implicitWidth > (width - selLabel.width - 8)
+
+            Text {
+                id: selLabel
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                font.pointSize: 11
+                color: appStyle.textColor
+                textFormat: Text.RichText
+                text: "selected: <b>"
+                      + (typeof craseSelection !== "undefined" ? craseSelection.count : 0)
+                      + "</b>"
+            }
+
+            Row {
+                id: fullRow
+                anchors.left: selLabel.right
+                anchors.leftMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 4
+                visible: !selArea.compact
+                Repeater {
+                    model: typeof craseSelection !== "undefined" ? craseSelection.items : null
+                    delegate: Rectangle {
+                        height: 22
+                        width: chipRow.implicitWidth + 12
+                        radius: 3
+                        color: "#F0C0D0"
+                        Row {
+                            id: chipRow
+                            anchors.centerIn: parent
+                            spacing: 4
+                            Text { text: modelData.icon; font.pointSize: 11 }
+                            Text {
+                                text: modelData.text.length > 20 ? modelData.text.substring(0, 20) + "…" : modelData.text
+                                font.pointSize: 9
+                                color: "#404040"
+                            }
+                        }
+                    }
+                }
+            }
+
+            Row {
+                id: compactRow
+                anchors.left: selLabel.right
+                anchors.leftMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 1
+                visible: selArea.compact
+                Repeater {
+                    model: typeof craseSelection !== "undefined" ? craseSelection.items : null
+                    delegate: Text { text: modelData.icon; font.pointSize: 11 }
+                }
+            }
+        }
+
+        Rectangle {
+            id: unselBtn
+            visible: typeof craseSelection !== "undefined" && craseSelection.count > 0
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            width: unselTxt.implicitWidth + 16
+            height: 24
+            radius: 3
+            color: unselMa.containsMouse ? "#708090" : "#5680A0"
+            Text {
+                id: unselTxt
+                anchors.centerIn: parent
+                text: "Unselect all"
+                font.pointSize: 9
+                font.bold: true
+                color: "#fff"
+            }
+            MouseArea {
+                id: unselMa
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: qmlInterface.callCmd("crase_select_clear")
+            }
         }
     }
 
@@ -71,7 +170,7 @@ Rectangle  {
         id: mdiArea
         anchors.fill: parent
         anchors.topMargin: 44
-        anchors.bottomMargin: 22
+        anchors.bottomMargin: 33
 
         Canvas {
             anchors.fill: parent

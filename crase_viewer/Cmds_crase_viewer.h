@@ -56,7 +56,22 @@ public:
         []CMD_ARGS_U -> int {
             int id = args.get(1).value().toInt();
             if (id <= 0) return args.appendError("crase_select_toggle: invalid id");
-            CraseSelection::inst().toggle(id);
+
+            QString icon, text;
+            if (SqlAccess::inst().connect()) {
+                QSqlQuery q(SqlAccess::inst().db());
+                q.prepare("SELECT t.icon, o.value::text FROM objects o "
+                          "JOIN objects_types t ON o.type = t.type WHERE o.id = ?");
+                q.addBindValue(id);
+                if (q.exec() && q.next()) {
+                    icon = q.value(0).toString();
+                    text = q.value(1).toString();
+                    if (text.startsWith('"') && text.endsWith('"'))
+                        text = text.mid(1, text.length() - 2);
+                }
+            }
+
+            CraseSelection::inst().toggle(id, icon, text);
             bool on = CraseSelection::inst().contains(id);
             if (model_())        model_()->refreshSelection();
             if (treeModel_())    treeModel_()->refreshSelection();
@@ -69,14 +84,22 @@ public:
 
         CMD_SYS.add("crase_select_clear",
         []CMD_ARGS_U -> int {
-            QStringList oldIds;
-            for (int id : CraseSelection::inst().ids()) oldIds.append(QString::number(id));
             CraseSelection::inst().clear();
             if (model_())        model_()->refreshSelection();
             if (treeModel_())    treeModel_()->refreshSelection();
             if (drawingModel_()) drawingModel_()->refreshSelection();
-            if (!oldIds.isEmpty())
-                CMD_SYS.execute_threadSafe(CraseMode::inst().cmd() + " --unselected " + oldIds.join(" "));
+            return 0;
+        }, "crase_viewer");
+
+        CMD_SYS.add("cmd_mode_tree",
+        []CMD_ARGS_U -> int {
+            QString sel = args.get("selected", "").value();
+            if (sel.isEmpty()) return 0;
+            QStringList ids = sel.split(' ', Qt::SkipEmptyParts);
+            if (ids.isEmpty()) return 0;
+            int id = ids.first().toInt();
+            if (id <= 0) return 0;
+            if (treeModel_()) treeModel_()->previewObject(id);
             return 0;
         }, "crase_viewer");
 

@@ -173,8 +173,6 @@ Rectangle {
                 border.color: "#A0A8B0"
                 border.width: 1
 
-                HoverHandler { id: wfHover }
-
                 Text {
                     visible: drawItem.hiddenChildren > 0
                     anchors.centerIn: parent
@@ -186,16 +184,17 @@ Rectangle {
 
                 Rectangle {
                     id: resizeHandle
-                    visible: wfHover.hovered || resizeMouse.pressed
                     width: 12
                     height: 12
                     color: "#808890"
+                    opacity: resizeMouse.containsMouse || resizeMouse.pressed ? 1 : 0
                     anchors.right: parent.right
                     anchors.bottom: parent.bottom
 
                     MouseArea {
                         id: resizeMouse
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.SizeFDiagCursor
                         property real startX: 0
                         property real startY: 0
