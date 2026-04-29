@@ -36,6 +36,9 @@ public:
     qreal scale()         const { return scale_; }
     int   hiddenCount()   const { return hiddenCount_; }
     qreal hiddenAtScale() const { return hiddenAtScale_; }
+    qreal viewportW()     const { return viewportW_; }
+    qreal viewportH()     const { return viewportH_; }
+    Q_INVOKABLE void setViewport(qreal w, qreal h) { viewportW_ = w; viewportH_ = h; }
 
     void loadDrawing(int drawingId) {
         drawingId_ = drawingId;
@@ -227,6 +230,8 @@ private:
     qreal scale_   = 1.0;
     int   hiddenCount_   = 0;
     qreal hiddenAtScale_ = 0;
+    qreal viewportW_     = 0;
+    qreal viewportH_     = 0;
     QList<CraseDrawingItem> items_;
     QVariantList lines_;
 };

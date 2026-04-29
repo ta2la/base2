@@ -163,6 +163,58 @@ public:
             return 0;
         }, "crase_drawing");
 
+        CMD_SYS.add("crase_xy",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("crase_xy: no model");
+            int drawingId = drawingModel_()->drawingId();
+            if (drawingId <= 0) return args.appendError("crase_xy: no drawing loaded");
+            if (args.count() < 2) return args.appendError("crase_xy: usage: crase_xy <object-id>");
+            int objectId = args.get(1).value().toInt();
+            if (objectId <= 0) return args.appendError("crase_xy: invalid object-id");
+            if (!SqlAccess::inst().connect()) return args.appendError("crase_xy: no DB");
+
+            QSqlQuery q(SqlAccess::inst().db());
+            q.prepare("SELECT (value->'xy'->>0)::int, (value->'xy'->>1)::int "
+                      "FROM object_rels WHERE id1 = ? AND id2 = ?");
+            q.addBindValue(drawingId);
+            q.addBindValue(objectId);
+            if (!q.exec()) return args.appendError("crase_xy: " + q.lastError().text());
+            if (!q.next()) return args.appendError(QString("crase_xy: object [%1] not in drawing [%2]").arg(objectId).arg(drawingId));
+            int x = q.value(0).toInt();
+            int y = q.value(1).toInt();
+            args.append(QString("%1 %2").arg(x).arg(y), "XY");
+            return 0;
+        }, "crase_drawing");
+
+        CMD_SYS.add("crase_center",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("crase_center: no model");
+            int drawingId = drawingModel_()->drawingId();
+            if (drawingId <= 0) return args.appendError("crase_center: no drawing loaded");
+            QStringList parts = args.get("xy", "").value().split(' ', Qt::SkipEmptyParts);
+            if (parts.size() < 2) return args.appendError("crase_center: usage: crase_center --xy <x> <y>");
+            qreal x = parts[0].toDouble();
+            qreal y = parts[1].toDouble();
+            qreal sc = drawingModel_()->scale();
+            qreal vw = drawingModel_()->viewportW();
+            qreal vh = drawingModel_()->viewportH();
+            if (sc <= 0 || vw <= 0 || vh <= 0) return args.appendError("crase_center: viewport/scale not set");
+            if (!SqlAccess::inst().connect()) return args.appendError("crase_center: no DB");
+
+            qreal newOx = x - vw / (2.0 * sc);
+            qreal newOy = y - vh / (2.0 * sc);
+
+            QSqlQuery qw(SqlAccess::inst().db());
+            qw.prepare("UPDATE objects SET value = jsonb_set(value, '{origin}', ?::jsonb) WHERE id = ?");
+            qw.addBindValue(QString("[%1,%2]").arg(newOx).arg(newOy));
+            qw.addBindValue(drawingId);
+            if (!qw.exec()) return args.appendError("crase_center: " + qw.lastError().text());
+
+            drawingModel_()->loadDrawing(drawingId);
+            args.append(QString("xy %1,%2 origin->%3,%4").arg(x).arg(y).arg(newOx).arg(newOy), "CENTERED");
+            return 0;
+        }, "crase_drawing");
+
         CMD_SYS.add("cmd_mode_drawing",
         []CMD_ARGS_U -> int {
             if (!drawingModel_()) return args.appendError("cmd_mode_drawing: no model");

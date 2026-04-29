@@ -12,6 +12,10 @@ Rectangle {
     property real panDx: 0
     property real panDy: 0
 
+    Component.onCompleted: craseDrawingModel.setViewport(width, height)
+    onWidthChanged:        craseDrawingModel.setViewport(width, height)
+    onHeightChanged:       craseDrawingModel.setViewport(width, height)
+
     Rectangle {
         id: statusBar
         anchors.left: parent.left
