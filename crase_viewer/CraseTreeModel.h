@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CraseTreeItem.h"
+#include "CraseSelection.h"
 #include "SqlAccess.h"
 
 #include <QAbstractListModel>
@@ -40,7 +41,7 @@ public:
             QString text = q.value(2).toString();
             if (text.startsWith('"') && text.endsWith('"'))
                 text = text.mid(1, text.length() - 2);
-            items_.append(CraseTreeItem(icon, "", QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object));
+            items_.append(CraseTreeItem(icon, "", QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object, CraseSelection::inst().contains(id)));
         }
         endResetModel();
     }
@@ -62,7 +63,7 @@ public:
 
         beginResetModel();
         items_.clear();
-        items_.append(CraseTreeItem(icon, "", QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object));
+        items_.append(CraseTreeItem(icon, "", QString("[%1] %2").arg(id).arg(text), id, 0, CraseTreeItem::Object, CraseSelection::inst().contains(id)));
         endResetModel();
 
         expand(id);
@@ -136,7 +137,7 @@ public:
                     text = text.mid(1, text.length() - 2);
                 CraseTreeItem::ItemType type = ancestors.contains(relId) ? CraseTreeItem::Rel : CraseTreeItem::Object;
                 newItems.append(CraseTreeItem(icon, QString("%1: [%2]").arg(name).arg(relId), text,
-                                              relId, insertLevel, type));
+                                              relId, insertLevel, type, CraseSelection::inst().contains(relId)));
             }
         }
 
@@ -158,7 +159,7 @@ public:
                     text = text.mid(1, text.length() - 2);
                 CraseTreeItem::ItemType type = ancestors.contains(relId) ? CraseTreeItem::Rel : CraseTreeItem::Object;
                 newItems.append(CraseTreeItem(icon, QString("%1: [%2]").arg(name).arg(relId), text,
-                                              relId, insertLevel, type));
+                                              relId, insertLevel, type, CraseSelection::inst().contains(relId)));
             }
         }
 
@@ -168,6 +169,13 @@ public:
         for (int i = 0; i < newItems.size(); i++)
             items_.insert(pos + 1 + i, newItems[i]);
         endInsertRows();
+    }
+
+    void refreshSelection() {
+        for (int i = 0; i < items_.size(); i++)
+            items_[i].setSelected(CraseSelection::inst().contains(items_[i].itemId()));
+        if (!items_.isEmpty())
+            emit dataChanged(index(0), index(items_.size() - 1));
     }
 
     int rowCount(const QModelIndex& = QModelIndex()) const override { return items_.size(); }

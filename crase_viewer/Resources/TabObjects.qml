@@ -48,7 +48,7 @@ ScrollView {
                 delegate: Rectangle {
                     width: parent.width
                     height: 28
-                    color: itemMouse.containsMouse ? "#E0E8F0" : "transparent"
+                    color: craseObject.selected ? "#F0C0D0" : itemMouse.containsMouse ? "#E0E8F0" : "transparent"
 
                     Row {
                         anchors.verticalCenter: parent.verticalCenter

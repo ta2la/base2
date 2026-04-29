@@ -47,7 +47,7 @@ ScrollView {
                 delegate: Rectangle {
                     width: parent.width
                     height: contentText.implicitHeight + 8
-                    color: itemMouse.containsMouse ? "#E0E8F0" : "transparent"
+                    color: treeItem.selected ? "#F0C0D0" : itemMouse.containsMouse ? "#E0E8F0" : "transparent"
 
                     Text {
                         id: contentText

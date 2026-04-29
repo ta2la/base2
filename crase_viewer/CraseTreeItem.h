@@ -12,13 +12,14 @@ struct CraseTreeItem {
     Q_PROPERTY(int     itemId   READ itemId   CONSTANT)
     Q_PROPERTY(int     level    READ level    CONSTANT)
     Q_PROPERTY(int     itemType READ itemType CONSTANT)
+    Q_PROPERTY(bool    selected READ selected CONSTANT)
 
 public:
     enum ItemType { Object = 0, Attr = 1, Rel = 2 };
 
     CraseTreeItem() = default;
-    CraseTreeItem(const QString& icon, const QString& prefix, const QString& text, int itemId, int level, ItemType itemType)
-        : icon_(icon), prefix_(prefix), text_(text), itemId_(itemId), level_(level), itemType_(itemType) {}
+    CraseTreeItem(const QString& icon, const QString& prefix, const QString& text, int itemId, int level, ItemType itemType, bool selected = false)
+        : icon_(icon), prefix_(prefix), text_(text), itemId_(itemId), level_(level), itemType_(itemType), selected_(selected) {}
 
     QString icon()     const { return icon_; }
     QString prefix()   const { return prefix_; }
@@ -26,6 +27,9 @@ public:
     int     itemId()   const { return itemId_; }
     int     level()    const { return level_; }
     int     itemType() const { return itemType_; }
+    bool    selected() const { return selected_; }
+
+    void    setSelected(bool s) { selected_ = s; }
 
 private:
     QString  icon_;
@@ -34,6 +38,7 @@ private:
     int      itemId_   = 0;
     int      level_    = 0;
     ItemType itemType_ = Object;
+    bool     selected_ = false;
 };
 
 Q_DECLARE_METATYPE(CraseTreeItem)

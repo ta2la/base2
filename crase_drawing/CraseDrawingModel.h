@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CraseDrawingItem.h"
+#include "CraseSelection.h"
 #include "SqlAccess.h"
 
 #include <QAbstractListModel>
@@ -139,8 +140,9 @@ public:
                 }
             }
 
+            bool sel = CraseSelection::inst().contains(id);
             idToIndex[id] = items_.size();
-            items_.append(CraseDrawingItem(icon, text, id, relTypeId, x, y, w, h, hChildren, hThr, containerThr));
+            items_.append(CraseDrawingItem(icon, text, id, relTypeId, x, y, w, h, hChildren, hThr, containerThr, sel));
         }
         endResetModel();
         emit transformChanged();
@@ -194,6 +196,13 @@ public:
     }
 
     QVariantList lines() const { return lines_; }
+
+    void refreshSelection() {
+        for (int i = 0; i < items_.size(); i++)
+            items_[i].setSelected(CraseSelection::inst().contains(items_[i].itemId()));
+        if (!items_.isEmpty())
+            emit dataChanged(index(0), index(items_.size() - 1));
+    }
 
     int rowCount(const QModelIndex& = QModelIndex()) const override { return items_.size(); }
 

@@ -47,11 +47,31 @@ Rectangle  {
 
     }
 
+    // App status bar (bottom)
+    Rectangle {
+        id: appStatusBar
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: 22
+        color: appStyle.barColor
+        z: 10
+        Text {
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            font.pointSize: 9
+            color: appStyle.textColor
+            text: typeof craseMode !== "undefined" ? "mode: " + craseMode.cmd : ""
+        }
+    }
+
     // MDI Area
     Item {
         id: mdiArea
         anchors.fill: parent
         anchors.topMargin: 44
+        anchors.bottomMargin: 22
 
         Canvas {
             anchors.fill: parent

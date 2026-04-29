@@ -17,16 +17,18 @@ struct CraseDrawingItem {
     Q_PROPERTY(int     hiddenChildren     READ hiddenChildren     CONSTANT)
     Q_PROPERTY(qreal   hideThreshold      READ hideThreshold      CONSTANT)
     Q_PROPERTY(qreal   containerThreshold READ containerThreshold CONSTANT)
+    Q_PROPERTY(bool    selected           READ selected           CONSTANT)
 
 public:
     CraseDrawingItem() = default;
     CraseDrawingItem(const QString& icon, const QString& text, int itemId, int relTypeId,
                      int x, int y, int w, int h,
-                     int hiddenChildren = 0, qreal hideThreshold = 0, qreal containerThreshold = 0)
+                     int hiddenChildren = 0, qreal hideThreshold = 0, qreal containerThreshold = 0,
+                     bool selected = false)
         : icon_(icon), text_(text), itemId_(itemId), relTypeId_(relTypeId),
           posX_(x), posY_(y), posW_(w), posH_(h),
           hiddenChildren_(hiddenChildren), hideThreshold_(hideThreshold),
-          containerThreshold_(containerThreshold) {}
+          containerThreshold_(containerThreshold), selected_(selected) {}
 
     QString icon()           const { return icon_; }
     QString text()           const { return text_; }
@@ -39,6 +41,9 @@ public:
     int     hiddenChildren()     const { return hiddenChildren_; }
     qreal   hideThreshold()      const { return hideThreshold_; }
     qreal   containerThreshold() const { return containerThreshold_; }
+    bool    selected()           const { return selected_; }
+
+    void    setSelected(bool s) { selected_ = s; }
 
 private:
     QString icon_;
@@ -52,6 +57,7 @@ private:
     int     hiddenChildren_     = 0;
     qreal   hideThreshold_      = 0;
     qreal   containerThreshold_ = 0;
+    bool    selected_           = false;
 };
 
 Q_DECLARE_METATYPE(CraseDrawingItem)

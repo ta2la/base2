@@ -163,6 +163,47 @@ public:
             return 0;
         }, "crase_drawing");
 
+        CMD_SYS.add("cmd_mode_box",
+        []CMD_ARGS_U -> int {
+            if (!drawingModel_()) return args.appendError("cmd_mode_box: no model");
+            int drawingId = drawingModel_()->drawingId();
+            if (drawingId <= 0) return args.appendError("cmd_mode_box: no drawing loaded");
+            QString unselValues = args.get("unselected", "").value();
+            if (unselValues.isEmpty()) return 0;
+            if (!SqlAccess::inst().connect()) return args.appendError("cmd_mode_box: no DB");
+
+            QStringList ids = unselValues.split(' ', Qt::SkipEmptyParts);
+            int toggled = 0;
+            for (const QString& s : ids) {
+                int itemId = s.toInt();
+                if (itemId <= 0) continue;
+
+                QSqlQuery qr(SqlAccess::inst().db());
+                qr.prepare("SELECT COALESCE((value->'wh'->>0)::int, 0) "
+                           "FROM object_rels WHERE id1 = ? AND id2 = ?");
+                qr.addBindValue(drawingId);
+                qr.addBindValue(itemId);
+                if (!qr.exec() || !qr.next()) continue;
+                int currentW = qr.value(0).toInt();
+
+                QSqlQuery qw(SqlAccess::inst().db());
+                if (currentW > 0)
+                    qw.prepare("UPDATE object_rels SET value = value - 'wh' "
+                               "WHERE id1 = ? AND id2 = ?");
+                else
+                    qw.prepare("UPDATE object_rels "
+                               "SET value = jsonb_set(value, '{wh}', '[120,80]'::jsonb) "
+                               "WHERE id1 = ? AND id2 = ?");
+                qw.addBindValue(drawingId);
+                qw.addBindValue(itemId);
+                if (qw.exec()) toggled++;
+            }
+
+            if (toggled > 0) drawingModel_()->loadDrawing(drawingId);
+            args.append(QString::number(toggled), "TOGGLED");
+            return 0;
+        }, "crase_drawing");
+
         CMD_SYS.add("crase_resize",
         []CMD_ARGS_U -> int {
             if (!drawingModel_()) return args.appendError("crase_resize: no model");

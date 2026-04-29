@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CraseObject.h"
+#include "CraseSelection.h"
 #include "SqlAccess.h"
 
 #include <QAbstractListModel>
@@ -44,9 +45,16 @@ public:
             // strip JSON quotes from value
             if (text.startsWith('"') && text.endsWith('"'))
                 text = text.mid(1, text.length() - 2);
-            items_.append(CraseObject(icon, QString("[%1] %2").arg(id).arg(text), id));
+            items_.append(CraseObject(icon, QString("[%1] %2").arg(id).arg(text), id, CraseSelection::inst().contains(id)));
         }
         endResetModel();
+    }
+
+    void refreshSelection() {
+        for (int i = 0; i < items_.size(); i++)
+            items_[i].setSelected(CraseSelection::inst().contains(items_[i].itemId()));
+        if (!items_.isEmpty())
+            emit dataChanged(index(0), index(items_.size() - 1));
     }
 
     int rowCount(const QModelIndex& = QModelIndex()) const override { return items_.size(); }

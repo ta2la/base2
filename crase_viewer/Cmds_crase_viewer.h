@@ -4,6 +4,8 @@
 #include "CraseObjectsBySqlModel.h"
 #include "CraseTreeModel.h"
 #include "CraseDrawingModel.h"
+#include "CraseSelection.h"
+#include "CraseMode.h"
 #include "SqlAccess.h"
 
 #include <QSqlQuery>
@@ -47,6 +49,43 @@ public:
             int id = args.get(1).value().toInt();
             if (id <= 0) return args.appendError("crase_expand: invalid id");
             treeModel_()->expand(id);
+            return 0;
+        }, "crase_viewer");
+
+        CMD_SYS.add("crase_select_toggle",
+        []CMD_ARGS_U -> int {
+            int id = args.get(1).value().toInt();
+            if (id <= 0) return args.appendError("crase_select_toggle: invalid id");
+            CraseSelection::inst().toggle(id);
+            bool on = CraseSelection::inst().contains(id);
+            if (model_())        model_()->refreshSelection();
+            if (treeModel_())    treeModel_()->refreshSelection();
+            if (drawingModel_()) drawingModel_()->refreshSelection();
+            CMD_SYS.execute_threadSafe(
+                CraseMode::inst().cmd() + (on ? " --selected " : " --unselected ") + QString::number(id));
+            args.append(on ? "ON" : "OFF", QString("[%1]").arg(id));
+            return 0;
+        }, "crase_viewer");
+
+        CMD_SYS.add("crase_select_clear",
+        []CMD_ARGS_U -> int {
+            QStringList oldIds;
+            for (int id : CraseSelection::inst().ids()) oldIds.append(QString::number(id));
+            CraseSelection::inst().clear();
+            if (model_())        model_()->refreshSelection();
+            if (treeModel_())    treeModel_()->refreshSelection();
+            if (drawingModel_()) drawingModel_()->refreshSelection();
+            if (!oldIds.isEmpty())
+                CMD_SYS.execute_threadSafe(CraseMode::inst().cmd() + " --unselected " + oldIds.join(" "));
+            return 0;
+        }, "crase_viewer");
+
+        CMD_SYS.add("crase_set_mode",
+        []CMD_ARGS_U -> int {
+            QString name = args.count() > 1 ? args.get(1).value() : QString();
+            if (name.isEmpty()) name = "voidcmd";
+            CraseMode::inst().setCmd(name);
+            args.append(name, "MODE");
             return 0;
         }, "crase_viewer");
 

@@ -225,7 +225,7 @@ Rectangle {
                 width: itemRow.implicitWidth + 12
                 height: 28
                 radius: 4
-                color: itemMouse.containsMouse ? "#D0D8E0" : "#E8ECF0"
+                color: drawItem.selected ? "#F0C0D0" : itemMouse.containsMouse ? "#D0D8E0" : "#E8ECF0"
                 border.color: "#A0A8B0"
                 border.width: 1
 
@@ -265,7 +265,7 @@ Rectangle {
                             qmlInterface.callCmd("crase_drag " + drawItem.itemId + " " + drawItem.relTypeId + " " + ax + " " + ay)
                             dragged = false
                         } else {
-                            qmlInterface.callCmd("crase_preview " + drawItem.itemId)
+                            qmlInterface.callCmd("crase_select_toggle " + drawItem.itemId)
                         }
                     }
                 }
