@@ -4,7 +4,6 @@ DEPENDPATH += $$PWD
 HEADERS += \
     $$PWD/CraseDrawingItem.h \
     $$PWD/CraseDrawingModel.h \
-    $$PWD/CraseSelection.h \
     $$PWD/Cmds_crase_drawing.h
 
 SOURCES += \

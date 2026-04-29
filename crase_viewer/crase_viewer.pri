@@ -13,6 +13,7 @@ HEADERS += \
     $$PWD/CraseRelTypeItem.h \
     $$PWD/CraseRelTypesModel.h \
     $$PWD/CraseMode.h \
+    $$PWD/CraseSelection.h \
     $$PWD/SqlAccess.h \
     $$PWD/Cmds_crase_viewer.h
 
