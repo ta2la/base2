@@ -2,6 +2,7 @@
 
 #include "CmdSys.h"
 #include "CraseDrawingModel.h"
+#include "CraseSelection.h"
 #include "SqlAccess.h"
 
 #include <QSqlQuery>
@@ -116,8 +117,34 @@ public:
             q.addBindValue(relTypeId);
             if (!q.exec()) return args.appendError("crase_drag: " + q.lastError().text());
 
+            // if dragged item is in selection, shift other selected items by same delta
+            int selShifted = 0;
+            if (CraseSelection::inst().contains(itemId) && (dx != 0 || dy != 0)) {
+                QStringList otherIds;
+                const QVariantList sel = CraseSelection::inst().items();
+                for (const QVariant& v : sel) {
+                    int sid = v.toMap()["id"].toInt();
+                    if (sid > 0 && sid != itemId) otherIds.append(QString::number(sid));
+                }
+                if (!otherIds.isEmpty()) {
+                    QSqlQuery qs(SqlAccess::inst().db());
+                    qs.prepare(QString(
+                        "UPDATE object_rels "
+                        "SET value = jsonb_set(value, '{xy}', to_jsonb(ARRAY["
+                        "  (value->'xy'->>0)::int + ?, (value->'xy'->>1)::int + ?"
+                        "]::int[])) "
+                        "WHERE id1 = ? AND id2 IN (%1) AND value->'xy' IS NOT NULL")
+                        .arg(otherIds.join(',')));
+                    qs.addBindValue(dx);
+                    qs.addBindValue(dy);
+                    qs.addBindValue(drawingId);
+                    if (!qs.exec()) return args.appendError("crase_drag (selection): " + qs.lastError().text());
+                    selShifted = qs.numRowsAffected();
+                }
+            }
+
             drawingModel_()->loadDrawing(drawingId);
-            args.append(QString("[%1]/r%2 -> %3,%4 (contained=%5)").arg(itemId).arg(relTypeId).arg(newX).arg(newY).arg(contained), "MOVED");
+            args.append(QString("[%1]/r%2 -> %3,%4 (contained=%5, sel=%6)").arg(itemId).arg(relTypeId).arg(newX).arg(newY).arg(contained).arg(selShifted), "MOVED");
             return 0;
         }, "crase_drawing");
 

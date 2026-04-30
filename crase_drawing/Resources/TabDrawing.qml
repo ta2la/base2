@@ -131,21 +131,13 @@ Rectangle {
             ctx.lineWidth = 1.5
             ctx.beginPath()
             if (name === "agreg") {
-                // filled blue diamond, tip at +x
+                // filled blue circle, sitting behind line endpoint
                 ctx.fillStyle = "#3070C0"
-                ctx.moveTo(0, 0)
-                ctx.lineTo(-7, -5)
-                ctx.lineTo(-14, 0)
-                ctx.lineTo(-7, 5)
-                ctx.closePath()
+                ctx.arc(-5, 0, 5, 0, 2*Math.PI)
             } else if (name === "agregn") {
-                // agreg + 3 transverse ticks behind the diamond (multiplicity)
+                // agreg circle + 3 transverse ticks behind it (multiplicity)
                 ctx.fillStyle = "#3070C0"
-                ctx.moveTo(0, 0)
-                ctx.lineTo(-7, -5)
-                ctx.lineTo(-14, 0)
-                ctx.lineTo(-7, 5)
-                ctx.closePath()
+                ctx.arc(-5, 0, 5, 0, 2*Math.PI)
                 ctx.fill()
                 ctx.stroke()
                 ctx.beginPath()
@@ -159,12 +151,23 @@ Rectangle {
                 ctx.restore()
                 return
             } else if (name === "deriv") {
-                // filled red triangle (arrow head), tip at +x
-                ctx.fillStyle = "#C03030"
+                // filled red triangle (arrow head, no border), tip at +x
+                ctx.fillStyle = "#FF0000"
                 ctx.moveTo(0, 0)
                 ctx.lineTo(-12, -7)
                 ctx.lineTo(-12, 7)
                 ctx.closePath()
+                ctx.fill()
+                ctx.restore()
+                return
+            } else if (name === "deriv_agreg") {
+                // red outline circle (no fill)
+                ctx.strokeStyle = "#FF0000"
+                ctx.lineWidth = 1.5
+                ctx.arc(-5, 0, 5, 0, 2*Math.PI)
+                ctx.stroke()
+                ctx.restore()
+                return
             } else if (name === "ref") {
                 // black asterisk: 3 lines crossing at center, 60° apart
                 ctx.strokeStyle = "#000000"
@@ -208,12 +211,12 @@ Rectangle {
                 var tItem = itemsRepeater.itemAt(l.toIdx)
                 var fx, fy, tx, ty
                 if (fItem && tItem) {
-                    var fcx = fItem.x + fItem.width/2,  fcy = fItem.y + fItem.height/2
-                    var tcx = tItem.x + tItem.width/2,  tcy = tItem.y + tItem.height/2
+                    var fcx = fItem.x + fItem.effW/2,  fcy = fItem.y + fItem.effH/2
+                    var tcx = tItem.x + tItem.effW/2,  tcy = tItem.y + tItem.effH/2
                     var ddx = tcx - fcx, ddy = tcy - fcy
                     var pad = 10
-                    var fhw = fItem.width/2 + pad, fhh = fItem.height/2 + pad
-                    var thw = tItem.width/2 + pad, thh = tItem.height/2 + pad
+                    var fhw = fItem.effW/2 + pad, fhh = fItem.effH/2 + pad
+                    var thw = tItem.effW/2 + pad, thh = tItem.effH/2 + pad
                     var ft = Math.min(Math.abs(ddx) > 0.001 ? fhw/Math.abs(ddx) : 1e9,
                                       Math.abs(ddy) > 0.001 ? fhh/Math.abs(ddy) : 1e9)
                     var tt = Math.min(Math.abs(ddx) > 0.001 ? thw/Math.abs(ddx) : 1e9,
@@ -254,6 +257,10 @@ Rectangle {
             width: itemBox.width
             height: itemBox.height
             z: 1
+
+            // effective box for connectors: wireframe if wh set, else item label
+            property real effW: drawItem.posW > 0 ? drawItem.posW * craseDrawingModel.scale : itemBox.width
+            property real effH: drawItem.posH > 0 ? drawItem.posH * craseDrawingModel.scale : itemBox.height
 
             // wire-frame rectangle (visible only when wh is set, scaled)
             Rectangle {
@@ -334,7 +341,7 @@ Rectangle {
                     }
                     Text {
                         visible: drawItem.containerThreshold === 0 || craseDrawingModel.scale > drawItem.containerThreshold
-                        text: drawItem.text
+                        text: "[" + drawItem.itemId + "] " + drawItem.text
                         font.pointSize: 10
                         color: "#404040"
                         verticalAlignment: Text.AlignVCenter
@@ -356,6 +363,7 @@ Rectangle {
                             var ax = Math.round((itemRoot.x - bg.panDx) / s + craseDrawingModel.originX)
                             var ay = Math.round((itemRoot.y - bg.panDy) / s + craseDrawingModel.originY)
                             qmlInterface.callCmd("crase_drag " + drawItem.itemId + " " + drawItem.relTypeId + " " + ax + " " + ay)
+                            qmlInterface.callCmd("crase_select_clear")
                             dragged = false
                         } else {
                             qmlInterface.callCmd("crase_select_toggle " + drawItem.itemId)

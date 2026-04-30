@@ -114,7 +114,7 @@ Rectangle  {
                             spacing: 4
                             Text { text: modelData.icon; font.pointSize: 11 }
                             Text {
-                                text: modelData.text.length > 20 ? modelData.text.substring(0, 20) + "…" : modelData.text
+                                text: "[" + modelData.id + "] " + (modelData.text.length > 20 ? modelData.text.substring(0, 20) + "…" : modelData.text)
                                 font.pointSize: 9
                                 color: "#404040"
                             }
