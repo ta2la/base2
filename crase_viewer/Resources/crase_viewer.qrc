@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>TabObjects.qml</file>
-        <file>TabObjectTree.qml</file>
-        <file>TabMetadata.qml</file>
-    </qresource>
-</RCC>
