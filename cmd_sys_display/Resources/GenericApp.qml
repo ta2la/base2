@@ -31,6 +31,14 @@ Rectangle  {
         }
     }
 
+    // global right-click → unselect all
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        z: 200
+        onClicked: qmlInterface.callCmd("crase_select_clear")
+    }
+
 
     Rectangle { id: mainSpace; color: appStyle.barColor
         x: 0; y: 0; width: root.width; height: 40
