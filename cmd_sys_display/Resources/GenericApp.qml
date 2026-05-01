@@ -62,7 +62,9 @@ Rectangle  {
                 model: [
                     {cmd: "cmd_mode_box",     icon: "▭"},
                     {cmd: "cmd_mode_tree",    icon: "🌳"},
-                    {cmd: "cmd_mode_drawing", icon: "📐"}
+                    {cmd: "cmd_mode_drawing", icon: "📐"},
+                    {cmd: "cmd_mode_draw",    icon: "✏️"},
+                    {cmd: "cmd_mode_claude",  icon: "✴️"}
                 ]
                 delegate: Rectangle {
                     property bool active: typeof craseMode !== "undefined" && craseMode.cmd === modelData.cmd

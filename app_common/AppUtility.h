@@ -26,7 +26,14 @@ public:
     }
 
     static int replaceOrAppendInConfig(const QString& line, QString& error) {
-        QString path = QDir::cleanPath(AppPaths::inst().dirConfig() + "/config.t2l");
+        QString dir  = AppPaths::inst().dirConfig();
+        QString path = QDir::cleanPath(dir + "/config.t2l");
+
+        QDir d(dir);
+        if (!d.exists() && !d.mkpath(".")) {
+            error = "cannot create config dir " + dir;
+            return -1;
+        }
 
         QStringList lines;
         QFile file(path);
