@@ -51,8 +51,47 @@ Rectangle  {
                 onClicked: root.toggleWindow(0)
             }
         }
-        Text {x:42; y: 8; font.pointSize: 14; font.bold: true; text: Qt.application.name; color: appStyle.textColor }
+        Text {id: appNameText; x:42; y: 8; font.pointSize: 14; font.bold: true; text: Qt.application.name; color: appStyle.textColor }
 
+        Row {
+            anchors.left: appNameText.right
+            anchors.leftMargin: 16
+            anchors.verticalCenter: appNameText.verticalCenter
+            spacing: 4
+            Repeater {
+                model: [
+                    {cmd: "cmd_mode_box",     icon: "▭"},
+                    {cmd: "cmd_mode_tree",    icon: "🌳"},
+                    {cmd: "cmd_mode_drawing", icon: "📐"}
+                ]
+                delegate: Rectangle {
+                    property bool active: typeof craseMode !== "undefined" && craseMode.cmd === modelData.cmd
+                    width: btnText.implicitWidth + 16
+                    height: 24
+                    radius: 3
+                    color: active ? "#C04040"
+                          : btnMa.containsMouse ? Qt.tint(Qt.lighter(appStyle.barColor, 1.2), "#40FF8080")
+                          : Qt.tint(Qt.lighter(appStyle.barColor, 1.05), "#30FF8080")
+                    border.color: "#C0C0C0"
+                    border.width: 1
+                    Text {
+                        id: btnText
+                        anchors.centerIn: parent
+                        font.pointSize: 10
+                        font.bold: true
+                        color: appStyle.textColor
+                        text: modelData.icon + " " + modelData.cmd
+                    }
+                    MouseArea {
+                        id: btnMa
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: qmlInterface.callCmd("crase_set_mode " + modelData.cmd)
+                    }
+                }
+            }
+        }
     }
 
     // App status bar (bottom)
