@@ -31,6 +31,40 @@ Rectangle  {
         }
     }
 
+    function setWindowGeom(idx, x, y, w, h) {
+        var win = mdiArea.windowAt(idx)
+        if (!win) return
+        win.x = x; win.y = y
+        win.width = w; win.height = h
+        win.visible = true
+        win.bringToFront()
+    }
+
+    function setWindowGeomPct(idx, xp, yp, wp, hp) {
+        var win = mdiArea.windowAt(idx)
+        if (!win) return
+        win.x = mdiArea.width  * xp / 100
+        win.y = mdiArea.height * yp / 100
+        win.width  = mdiArea.width  * wp / 100
+        win.height = mdiArea.height * hp / 100
+        win.visible = true
+        win.bringToFront()
+    }
+
+    // arrange a 2x2 grid of windows with fixed pixel gap and margin.
+    // bottomRatio = how much taller bottom row is vs top (1.25 = 25% taller).
+    function arrange2x2(idx_tl, idx_tr, idx_bl, idx_br, gap, margin, bottomRatio) {
+        var aw = mdiArea.width, ah = mdiArea.height
+        var cellW = (aw - 2*margin - gap) / 2
+        var totalH = ah - 2*margin - gap
+        var topH = totalH / (1 + bottomRatio)
+        var botH = totalH - topH
+        setWindowGeom(idx_tl, margin,            margin,                cellW, topH)
+        setWindowGeom(idx_tr, margin+cellW+gap,  margin,                cellW, topH)
+        setWindowGeom(idx_bl, margin,            margin+topH+gap,       cellW, botH)
+        setWindowGeom(idx_br, margin+cellW+gap,  margin+topH+gap,       cellW, botH)
+    }
+
     // global right-click → unselect all
     MouseArea {
         anchors.fill: parent
@@ -64,6 +98,7 @@ Rectangle  {
                     {cmd: "cmd_mode_tree",    icon: "🌳"},
                     {cmd: "cmd_mode_drawing", icon: "📐"},
                     {cmd: "cmd_mode_draw",    icon: "✏️"},
+                    {cmd: "cmd_mode_undraw",  icon: "🧹"},
                     {cmd: "cmd_mode_claude",  icon: "✴️"}
                 ]
                 delegate: Rectangle {

@@ -20,6 +20,57 @@ public:
     static void setRootItem(QQuickItem* item) { rootItem_() = item; }
 
     static void registerCmds() {
+        CMD_SYS.add("open_window",
+        []CMD_ARGS_U -> int {
+            if (args.count() < 2) return args.appendError("open_window: usage: open_window <idx>");
+            int idx = args.get(1).value().toInt();
+            QQuickItem* root = rootItem_();
+            if (!root) return args.appendError("open_window: no root item");
+            QMetaObject::invokeMethod(root, "toggleWindow", Q_ARG(QVariant, QVariant(idx)));
+            args.append(QString::number(idx), "WIN");
+            return 0;
+        }, "app_common");
+
+        CMD_SYS.add("set_mdi_window",
+        []CMD_ARGS_U -> int {
+            if (args.count() < 6) return args.appendError("set_mdi_window: usage: set_mdi_window <idx> <x> <y> <w> <h>");
+            int idx = args.get(1).value().toInt();
+            int x   = args.get(2).value().toInt();
+            int y   = args.get(3).value().toInt();
+            int w   = args.get(4).value().toInt();
+            int h   = args.get(5).value().toInt();
+            QQuickItem* root = rootItem_();
+            if (!root) return args.appendError("set_mdi_window: no root item");
+            QMetaObject::invokeMethod(root, "setWindowGeom",
+                Q_ARG(QVariant, QVariant(idx)),
+                Q_ARG(QVariant, QVariant(x)),
+                Q_ARG(QVariant, QVariant(y)),
+                Q_ARG(QVariant, QVariant(w)),
+                Q_ARG(QVariant, QVariant(h)));
+            args.append(QString("%1: %2,%3 %4x%5").arg(idx).arg(x).arg(y).arg(w).arg(h), "WIN");
+            return 0;
+        }, "app_common");
+
+        CMD_SYS.add("set_mdi_window_pct",
+        []CMD_ARGS_U -> int {
+            if (args.count() < 6) return args.appendError("set_mdi_window_pct: usage: set_mdi_window_pct <idx> <x%> <y%> <w%> <h%>");
+            int idx = args.get(1).value().toInt();
+            int xp  = args.get(2).value().toInt();
+            int yp  = args.get(3).value().toInt();
+            int wp  = args.get(4).value().toInt();
+            int hp  = args.get(5).value().toInt();
+            QQuickItem* root = rootItem_();
+            if (!root) return args.appendError("set_mdi_window_pct: no root item");
+            QMetaObject::invokeMethod(root, "setWindowGeomPct",
+                Q_ARG(QVariant, QVariant(idx)),
+                Q_ARG(QVariant, QVariant(xp)),
+                Q_ARG(QVariant, QVariant(yp)),
+                Q_ARG(QVariant, QVariant(wp)),
+                Q_ARG(QVariant, QVariant(hp)));
+            args.append(QString("%1: %2%,%3% %4%x%5%").arg(idx).arg(xp).arg(yp).arg(wp).arg(hp), "WIN");
+            return 0;
+        }, "app_common");
+
         CMD_SYS.add("screenshot",
         []CMD_ARGS_U -> int {
             QString path = args.get(1).value().trimmed();
