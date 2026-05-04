@@ -99,6 +99,7 @@ Rectangle  {
                     {cmd: "cmd_mode_drawing", icon: "📐"},
                     {cmd: "cmd_mode_draw",    icon: "✏️"},
                     {cmd: "cmd_mode_undraw",  icon: "🧹"},
+                    {cmd: "cmd_mode_filter",  icon: "▼"},
                     {cmd: "cmd_mode_claude",  icon: "✴️"}
                 ]
                 delegate: Rectangle {
