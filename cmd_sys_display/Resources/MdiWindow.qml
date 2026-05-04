@@ -78,9 +78,18 @@ Item {
             }
 
             Row {
+                id: titleRow
                 anchors.right: parent.right; anchors.rightMargin: 4
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 2
+
+                // optional content-provided title bar widget; content's root
+                // can expose a Component property `titleBarExtra` and it appears here
+                Loader {
+                    sourceComponent: contentLoader.item && contentLoader.item.titleBarExtra
+                                     ? contentLoader.item.titleBarExtra : null
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
                 Button {
                     width: 22; height: 20
@@ -99,8 +108,10 @@ Item {
 
             MouseArea {
                 id: dragArea
-                anchors.fill: parent
-                anchors.rightMargin: 50
+                anchors.left: parent.left
+                anchors.right: titleRow.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 property real startX: 0
                 property real startY: 0
                 onPressed: {
