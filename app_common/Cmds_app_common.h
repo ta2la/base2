@@ -10,6 +10,8 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QMouseEvent>
+#include <QProcess>
+#include <QTimer>
 
 //=============================================================================
 class Cmds_app_common {
@@ -20,6 +22,20 @@ public:
     static void setRootItem(QQuickItem* item) { rootItem_() = item; }
 
     static void registerCmds() {
+        CMD_SYS.add("app_restart",
+        []CMD_ARGS_U -> int {
+            QString exe = QCoreApplication::applicationFilePath();
+            QStringList argv = QCoreApplication::arguments();
+            argv.removeFirst();
+            args.append(exe, "EXE");
+            // defer to allow this cmd to log/return before we exit
+            QTimer::singleShot(100, [exe, argv]() {
+                QProcess::startDetached(exe, argv);
+                QCoreApplication::quit();
+            });
+            return 0;
+        }, "app_common");
+
         CMD_SYS.add("open_window",
         []CMD_ARGS_U -> int {
             if (args.count() < 2) return args.appendError("open_window: usage: open_window <idx>");
