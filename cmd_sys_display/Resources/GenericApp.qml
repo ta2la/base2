@@ -295,6 +295,14 @@ Rectangle  {
             }
         }
     }
+
+    // Optional app-provided full-screen overlay (e.g. boot blocker).
+    // Apps set context property `bootOverlaySource` (string URL) to enable.
+    Loader {
+        anchors.fill: parent
+        z: 1000
+        source: typeof bootOverlaySource !== "undefined" ? bootOverlaySource : ""
+    }
 }
 
 ///@view:end
