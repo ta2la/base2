@@ -10,7 +10,9 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QMouseEvent>
+#ifndef Q_OS_WASM
 #include <QProcess>
+#endif
 #include <QTimer>
 
 //=============================================================================
@@ -22,6 +24,7 @@ public:
     static void setRootItem(QQuickItem* item) { rootItem_() = item; }
 
     static void registerCmds() {
+#ifndef Q_OS_WASM
         CMD_SYS.add("app_restart",
         []CMD_ARGS_U -> int {
             QString exe = QCoreApplication::applicationFilePath();
@@ -35,6 +38,7 @@ public:
             });
             return 0;
         }, "app_common");
+#endif
 
         CMD_SYS.add("open_window",
         []CMD_ARGS_U -> int {

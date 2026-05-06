@@ -24,7 +24,9 @@
 #include <QFileInfo>
 #include <QDesktopServices>
 #include <QUrl>
+#ifndef Q_OS_WASM
 #include <QProcess>
+#endif
 #include <QClipboard>
 #include <QGuiApplication>
 
@@ -60,6 +62,7 @@ public:
 
         return 0;
     }, "utility");
+#ifndef Q_OS_WASM
     CMD_SYS.add("system_dot_to_svg",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
@@ -103,6 +106,7 @@ public:
 
         return result;
     }, "utility");
+#endif
     CMD_SYS.add("file_to_clipboard",
     [](CmdArgCol& args, QByteArray*, const QSharedPointer<CmdContextIface>&) -> int {
 
