@@ -85,6 +85,7 @@ protected:
     friend class CmdExeRecCol;
     friend class StdoutCmdOutput;
     friend class WsServerLiteGuard;
+    friend class WasmCmdGuard;
 };
 
 ///@view:end

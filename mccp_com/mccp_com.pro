@@ -1,7 +1,7 @@
 TARGET       = mccp_com
 TEMPLATE     = lib
 CONFIG      += staticlib c++17
-QT          += websockets
+!wasm: QT   += websockets
 #######################################################################################
 include($$PWD/../build_target.pri)
 
