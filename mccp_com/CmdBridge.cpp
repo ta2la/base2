@@ -45,8 +45,12 @@ EM_JS(void, crase_repl_install_, (), {
       + 'font-family:monospace;font-size:12px;'
       + 'box-shadow:0 2px 6px rgba(0,0,0,0.15)';
     const label = document.createElement('div');
-    label.textContent = 'CRASE REPL';
-    label.style.cssText = 'font-weight:bold;margin-bottom:4px;color:#333';
+    label.textContent = 'MCP DOM CONNECTOR';
+    label.title = 'click to expand / collapse';
+    label.style.cssText = 'font-weight:bold;color:#333;cursor:pointer;'
+                       + 'user-select:none;-webkit-user-select:none';
+    const body = document.createElement('div');
+    body.style.cssText = 'display:none;margin-top:4px';
     const input = document.createElement('input');
     input.id = 'craseCmd';
     input.type = 'text';
@@ -58,10 +62,17 @@ EM_JS(void, crase_repl_install_, (), {
         'width:480px;height:280px;margin:4px 0 0;padding:4px;'
       + 'background:#f4f4f4;border:1px solid #ddd;overflow:auto;'
       + 'white-space:pre-wrap;font-family:monospace;font-size:11px';
+    body.appendChild(input);
+    body.appendChild(out);
     wrap.appendChild(label);
-    wrap.appendChild(input);
-    wrap.appendChild(out);
+    wrap.appendChild(body);
     document.body.appendChild(wrap);
+
+    label.addEventListener('click', function(){
+        const open = body.style.display !== 'none';
+        body.style.display = open ? 'none' : 'block';
+        if (!open) input.focus();
+    });
 
     input.addEventListener('keydown', function(e){
         if (e.key !== 'Enter') return;
