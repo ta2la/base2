@@ -1,3 +1,5 @@
+# repo-visibility: public
+# CLAUDE.md not tracked here — private content (lives only in private repos)
 *
 !build_target.pri
 !.gitignore
@@ -17,3 +19,6 @@
 !/app_common/**
 !/md_rag
 
+
+# CLAUDE*.md never tracked here — risk of accidental secrets/access notes; lives only in the CLAUDE repo
+CLAUDE*.md
